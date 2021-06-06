@@ -1,4 +1,4 @@
-package com.example.WhereIsEveryone;
+package com.example.WhereIsEveryone.view;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -23,6 +23,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.example.WhereIsEveryone.R;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -114,9 +115,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
             }
         };
 
-
-        askForPermissions(Manifest.permission.ACCESS_COARSE_LOCATION, resources.getString(R.string.location_permission_text));
-        askForPermissions(Manifest.permission.ACCESS_FINE_LOCATION, resources.getString(R.string.location_permission_text));
+        // TODO(kumpel): This will change in next commit I hope,
+        //               so I left this activity without checking etc.
+        //               (see LoginActivity to see how we should ask for permission).
+//        askForPermissions(Manifest.permission.ACCESS_COARSE_LOCATION, resources.getString(R.string.location_permission_text));
+//        askForPermissions(Manifest.permission.ACCESS_FINE_LOCATION, resources.getString(R.string.location_permission_text));
 
         startLocationUpdates();
 

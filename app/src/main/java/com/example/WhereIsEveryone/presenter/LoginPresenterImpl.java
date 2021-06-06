@@ -1,4 +1,12 @@
-package com.example.WhereIsEveryone;
+package com.example.WhereIsEveryone.presenter;
+
+import androidx.annotation.Nullable;
+
+import com.example.WhereIsEveryone.model.LoginResult;
+import com.example.WhereIsEveryone.model.LoginService;
+import com.example.WhereIsEveryone.R;
+import com.example.WhereIsEveryone.model.UserService;
+import com.example.WhereIsEveryone.view.LoginView;
 
 public class LoginPresenterImpl implements LoginPresenter {
 
@@ -24,23 +32,23 @@ public class LoginPresenterImpl implements LoginPresenter {
         LoginResult loginResult = loginService.login(login, password);
 
         if (loginResult.getError() != null) {
-            view.showError(loginResult.getError());
+            // TODO(kumpel): Basing on error type we will get proper string
+            switch (loginResult.getError()) {
+                case LoginFailed:
+                    view.showError(R.string.login_failed);
+                case ConnectionError:
+                    view.showError(R.string.connection_error);
+            }
+
             return;
         }
 
         userService.saveToken(loginResult.getToken());
 
-
-
         view.showSuccess();
     }
 
-    @Override
-    public UserService getUserService() {
-        return userService;
-    }
-
-    private boolean isNullOrEmpty(String string) {
-        return string.equals(null) || string.isEmpty();
+    private boolean isNullOrEmpty(@Nullable String string) {
+        return string == null || string.isEmpty();
     }
 }

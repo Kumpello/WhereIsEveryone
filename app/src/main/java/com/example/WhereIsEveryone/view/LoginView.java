@@ -1,10 +1,9 @@
-package com.example.WhereIsEveryone;
+package com.example.WhereIsEveryone.view;
 
 import androidx.annotation.StringRes;
 
 public interface LoginView {
     void showError(@StringRes int errorMessage);
-    void showError(String error);
     void showProgress();
     void showSuccess();
 }
