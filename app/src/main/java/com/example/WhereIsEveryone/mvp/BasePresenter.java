@@ -6,7 +6,7 @@ public class BasePresenter<V extends Contract.View> implements Contract.Presente
 
     @Override
     public V getView() {
-        return null;
+        return view;
     }
 
     @Override

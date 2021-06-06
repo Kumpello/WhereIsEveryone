@@ -8,6 +8,8 @@ import com.example.WhereIsEveryone.model.LoginService;
 import com.example.WhereIsEveryone.model.LoginServiceImpl;
 import com.example.WhereIsEveryone.model.UserService;
 import com.example.WhereIsEveryone.model.UserServiceImpl;
+import com.example.WhereIsEveryone.mvp.BasePresenter;
+import com.example.WhereIsEveryone.mvp.Contract;
 import com.example.WhereIsEveryone.presenter.LoginPresenter;
 import com.example.WhereIsEveryone.presenter.LoginPresenterImpl;
 import com.example.WhereIsEveryone.presenter.SignUpPresenter;
@@ -67,16 +69,26 @@ public class DependencyContainer {
     @NonNull
     public LoginPresenter getLoginPresenter(LoginView view) {
         return new LoginPresenterImpl(
-                view,
                 getLoginService(getLoginIpAddress()),
                 getUserService()
         );
     }
 
+    @NonNull
     public SignUpPresenter getSingUpPresenter(final SignUpView view) {
-        return new SignUpPresenterImpl(
-                view,
-                getLoginService(getLoginIpAddress())
+        return new SignUpPresenterImpl(getLoginService(getLoginIpAddress())
         );
+    }
+
+    @SuppressWarnings("unchecked")
+    public <V extends Contract.View> BasePresenter<V> getPresenter(V injector) {
+        if (injector instanceof SignUpView) {
+            // ugly, but it'll work
+            return (BasePresenter<V>) getSingUpPresenter((SignUpView) injector);
+        } else if (injector instanceof LoginView) {
+            return (BasePresenter<V>) getLoginPresenter((LoginView) injector);
+        }
+
+        throw new IllegalArgumentException("no presenter for such a view");
     }
 }

@@ -10,8 +10,7 @@ public class SignUpPresenterImpl extends BasePresenter<SignUpView> implements Si
 
     private final LoginService loginService;
 
-    public SignUpPresenterImpl(SignUpView view, LoginService loginService) {
-        this.view = view;
+    public SignUpPresenterImpl(LoginService loginService) {
         this.loginService = loginService;
     }
 

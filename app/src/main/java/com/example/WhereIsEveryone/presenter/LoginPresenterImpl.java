@@ -14,7 +14,7 @@ public class LoginPresenterImpl extends BasePresenter<LoginView> implements Logi
     private final LoginService loginService;
     private final UserService userService;
 
-    public LoginPresenterImpl(LoginView view, LoginService loginService, UserService userService) {
+    public LoginPresenterImpl(LoginService loginService, UserService userService) {
         this.loginService = loginService;
         this.userService = userService;
     }

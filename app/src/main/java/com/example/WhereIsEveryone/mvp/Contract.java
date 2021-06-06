@@ -1,7 +1,5 @@
 package com.example.WhereIsEveryone.mvp;
 
-import androidx.annotation.CallSuper;
-
 public interface Contract {
     interface View {
     }

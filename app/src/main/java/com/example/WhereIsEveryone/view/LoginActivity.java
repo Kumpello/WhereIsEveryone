@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import androidx.annotation.StringRes;
 
+import com.example.WhereIsEveryone.mvp.BaseActivity;
 import com.example.WhereIsEveryone.presenter.LoginPresenter;
 import com.example.WhereIsEveryone.R;
 import com.example.WhereIsEveryone.databinding.ActivityLoginBinding;
@@ -28,8 +29,6 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
-
-        presenter = getContainer().getLoginPresenter(this);
 
         // TODO(kumpel): Look how lambda can simplify the code ;)
         //               This is exactly the same like "new View.OnClick..."

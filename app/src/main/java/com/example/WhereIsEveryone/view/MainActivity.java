@@ -3,7 +3,7 @@ package com.example.WhereIsEveryone.view;
 import android.os.Bundle;
 
 import com.example.WhereIsEveryone.R;
-import com.example.WhereIsEveryone.view.BaseActivity;
+import com.example.WhereIsEveryone.mvp.BaseActivity;
 
 public class MainActivity extends BaseActivity {
 

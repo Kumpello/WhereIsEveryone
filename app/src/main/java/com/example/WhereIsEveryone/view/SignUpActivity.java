@@ -11,10 +11,8 @@ import android.widget.Toast;
 
 import com.example.WhereIsEveryone.R;
 import com.example.WhereIsEveryone.databinding.ActivitySignUpBinding;
+import com.example.WhereIsEveryone.mvp.BaseActivity;
 import com.example.WhereIsEveryone.presenter.SignUpPresenter;
-import com.example.WhereIsEveryone.view.BaseActivity;
-import com.example.WhereIsEveryone.view.LoginActivity;
-import com.example.WhereIsEveryone.view.SignUpView;
 
 public class SignUpActivity extends BaseActivity<SignUpPresenter> implements SignUpView {
 
@@ -28,8 +26,6 @@ public class SignUpActivity extends BaseActivity<SignUpPresenter> implements Sig
         binding = ActivitySignUpBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
-
-        presenter = this.getContainer().getSingUpPresenter(this);
 
         binding.loginText.setOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);

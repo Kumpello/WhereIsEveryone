@@ -3,7 +3,10 @@ package com.example.WhereIsEveryone.mvp;
 import androidx.annotation.CallSuper;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class BaseActivity<P extends BasePresenter> extends AppCompatActivity implements Contract.View {
+import com.example.WhereIsEveryone.DependencyContainer;
+import com.example.WhereIsEveryone.MyApplication;
+
+public class BaseActivity<P extends Contract.Presenter> extends AppCompatActivity implements Contract.View {
 
     protected P presenter;
 
@@ -11,6 +14,7 @@ public class BaseActivity<P extends BasePresenter> extends AppCompatActivity imp
     @CallSuper
     protected void onStart() {
         super.onStart();
+        this.presenter = (P) getContainer().getPresenter(this);
         presenter.attachView(this);
     }
 
@@ -20,4 +24,9 @@ public class BaseActivity<P extends BasePresenter> extends AppCompatActivity imp
         super.onStop();
         presenter.detachView();
     }
+
+    protected DependencyContainer getContainer() {
+        return ((MyApplication) this.getApplication()).getContainer();
+    }
+
 }
