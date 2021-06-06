@@ -6,16 +6,15 @@ import com.example.WhereIsEveryone.model.LoginResult;
 import com.example.WhereIsEveryone.model.LoginService;
 import com.example.WhereIsEveryone.R;
 import com.example.WhereIsEveryone.model.UserService;
+import com.example.WhereIsEveryone.mvp.BasePresenter;
 import com.example.WhereIsEveryone.view.LoginView;
 
-public class LoginPresenterImpl implements LoginPresenter {
+public class LoginPresenterImpl extends BasePresenter<LoginView> implements LoginPresenter {
 
-    private final LoginView view;
     private final LoginService loginService;
     private final UserService userService;
 
     public LoginPresenterImpl(LoginView view, LoginService loginService, UserService userService) {
-        this.view = view;
         this.loginService = loginService;
         this.userService = userService;
     }

@@ -12,13 +12,13 @@ import androidx.annotation.StringRes;
 import com.example.WhereIsEveryone.presenter.LoginPresenter;
 import com.example.WhereIsEveryone.R;
 import com.example.WhereIsEveryone.databinding.ActivityLoginBinding;
+import com.example.WhereIsEveryone.todo.MapActivity;
 
 // Let's extend BaseActivity that keeps some helpers method
 // like "getContainer"
-public class LoginActivity extends BaseActivity implements LoginView {
+public class LoginActivity extends BaseActivity<LoginPresenter> implements LoginView {
 
     private ActivityLoginBinding binding;
-    private LoginPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

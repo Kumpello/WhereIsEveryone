@@ -16,11 +16,9 @@ import com.example.WhereIsEveryone.view.BaseActivity;
 import com.example.WhereIsEveryone.view.LoginActivity;
 import com.example.WhereIsEveryone.view.SignUpView;
 
-// TODO(kumpel): LoginView? There MUST be a View interface even if it's not used.
-public class SignUpActivity extends BaseActivity implements SignUpView {
+public class SignUpActivity extends BaseActivity<SignUpPresenter> implements SignUpView {
 
     private ActivitySignUpBinding binding;
-    private SignUpPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +52,6 @@ public class SignUpActivity extends BaseActivity implements SignUpView {
         Handler handler = new Handler(Looper.getMainLooper());
         handler.post(() -> {
             presenter.signUpButtonClicked(login, email, password);
-            ;
         });
     }
 

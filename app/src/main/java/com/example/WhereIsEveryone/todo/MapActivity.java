@@ -1,4 +1,4 @@
-package com.example.WhereIsEveryone.view;
+package com.example.WhereIsEveryone.todo;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;

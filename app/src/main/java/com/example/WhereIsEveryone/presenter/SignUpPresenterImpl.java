@@ -3,11 +3,11 @@ package com.example.WhereIsEveryone.presenter;
 import com.example.WhereIsEveryone.R;
 import com.example.WhereIsEveryone.model.LoginResult;
 import com.example.WhereIsEveryone.model.LoginService;
+import com.example.WhereIsEveryone.mvp.BasePresenter;
 import com.example.WhereIsEveryone.view.SignUpView;
 
-public class SignUpPresenterImpl implements SignUpPresenter {
+public class SignUpPresenterImpl extends BasePresenter<SignUpView> implements SignUpPresenter {
 
-    private final SignUpView view;
     private final LoginService loginService;
 
     public SignUpPresenterImpl(SignUpView view, LoginService loginService) {
