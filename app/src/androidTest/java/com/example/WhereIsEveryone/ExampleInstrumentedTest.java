@@ -1,4 +1,4 @@
-package com.example.whereiseveryone;
+package com.example.WhereIsEveryone;
 
 import android.content.Context;
 

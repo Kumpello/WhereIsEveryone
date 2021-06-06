@@ -1,15 +1,12 @@
-package com.example.whereiseveryone;
+package com.example.WhereIsEveryone;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -20,8 +17,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
-import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.view.View;
@@ -34,7 +29,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -48,7 +42,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class Map extends FragmentActivity implements OnMapReadyCallback, SensorEventListener {
+public class MapActivity extends FragmentActivity implements OnMapReadyCallback, SensorEventListener {
 
     private GoogleMap mMap;
     private FusedLocationProviderClient fusedLocationClient;
@@ -67,9 +61,9 @@ public class Map extends FragmentActivity implements OnMapReadyCallback, SensorE
     private float azimuth;
     private ImageButton getLocationButton;
 
-    final private int FASTEST_INTERVAL = 500;
-    final private int INTERVAL = 2000;
-    final private float m = (float) (180 / Math.PI);
+    private final int FASTEST_INTERVAL = 500;
+    private final int INTERVAL = 2000;
+    private final float m = (float) (180 / Math.PI);
 
 
     @Override
@@ -258,38 +252,6 @@ public class Map extends FragmentActivity implements OnMapReadyCallback, SensorE
 
     }
 
-    public void askForPermissions(String permission, String message) {
-        int requestCode = 0;
-        switch (permission) {
-            case Manifest.permission.ACCESS_FINE_LOCATION:
-                requestCode = 1;
-                break;
-            case Manifest.permission.ACCESS_COARSE_LOCATION:
-                requestCode = 2;
-                break;
-        }
-        if (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED) {
-            getLastLocation();
-        } else if (shouldShowRequestPermissionRationale(permission)) {
-            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
-            builder.setTitle(resources.getString(R.string.permission_needed));
-            builder.setMessage(message);
-            builder.setNegativeButton(resources.getString(R.string.decline), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }});
-            builder.setPositiveButton(resources.getString(R.string.accept), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    requestPermissions(new String[]{permission}, 1);
-                    dialog.dismiss();
-                }});
-            builder.show();
-        } else {
-            requestPermissions(new String[] {permission}, 1);
-        }
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

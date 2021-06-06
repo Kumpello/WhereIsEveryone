@@ -1,4 +1,4 @@
-package com.example.whereiseveryone;
+package com.example.WhereIsEveryone;
 
 import androidx.appcompat.app.AppCompatActivity;
 

@@ -12,4 +12,9 @@
     <string name="internet_permission_text">Internet connection is needed for this application to work</string>
     <string name="accept">Sure</string>
     <string name="decline">No!</string>
+    <string name="all_strings_required">All fields required</string>
+    <string name="login_failed">Wrong login or password</string>
+    <string name="signup_failed">Login or email occupied</string>
+    <string name="connection_error">Connection error</string>
+    <string name="empty_fields">All fields required!</string>
 </resources>
