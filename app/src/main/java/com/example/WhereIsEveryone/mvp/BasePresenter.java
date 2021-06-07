@@ -1,5 +1,7 @@
 package com.example.WhereIsEveryone.mvp;
 
+import androidx.annotation.CallSuper;
+
 public class BasePresenter<V extends Contract.View> implements Contract.Presenter<V> {
 
     protected V view;
@@ -10,11 +12,13 @@ public class BasePresenter<V extends Contract.View> implements Contract.Presente
     }
 
     @Override
+    @CallSuper
     public void attachView(final V view) {
         this.view = view;
     }
 
     @Override
+    @CallSuper
     public void detachView() {
         this.view = null;
     }

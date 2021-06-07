@@ -67,7 +67,7 @@ public class DependencyContainer {
     // We want to create presenters every time,
     // so we shouldn't keep any references to them
     @NonNull
-    public LoginPresenter getLoginPresenter(LoginView view) {
+    public LoginPresenter getLoginPresenter() {
         return new LoginPresenterImpl(
                 getLoginService(getLoginIpAddress()),
                 getUserService()
@@ -75,7 +75,7 @@ public class DependencyContainer {
     }
 
     @NonNull
-    public SignUpPresenter getSingUpPresenter(final SignUpView view) {
+    public SignUpPresenter getSingUpPresenter() {
         return new SignUpPresenterImpl(getLoginService(getLoginIpAddress())
         );
     }
@@ -84,9 +84,9 @@ public class DependencyContainer {
     public <V extends Contract.View> BasePresenter<V> getPresenter(V injector) {
         if (injector instanceof SignUpView) {
             // ugly, but it'll work
-            return (BasePresenter<V>) getSingUpPresenter((SignUpView) injector);
+            return (BasePresenter<V>) getSingUpPresenter();
         } else if (injector instanceof LoginView) {
-            return (BasePresenter<V>) getLoginPresenter((LoginView) injector);
+            return (BasePresenter<V>) getLoginPresenter();
         }
 
         throw new IllegalArgumentException("no presenter for such a view");
