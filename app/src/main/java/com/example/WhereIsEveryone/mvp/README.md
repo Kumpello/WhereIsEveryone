@@ -37,7 +37,7 @@ interface GDPRView extends Contract.View {
 }
 
 // must extends Presenter with generic type
-interface GDPRPresenter extends Contract.Presenter<Contract.View> { 
+interface GDPRPresenter extends Contract.Presenter<GDPRView> { 
     void showMoreClicked();
     void okClicked(boolean agreed);
 }
