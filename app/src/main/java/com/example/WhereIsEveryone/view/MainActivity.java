@@ -1,10 +1,11 @@
-package com.example.WhereIsEveryone;
-
-import androidx.appcompat.app.AppCompatActivity;
+package com.example.WhereIsEveryone.view;
 
 import android.os.Bundle;
 
-public class MainActivity extends AppCompatActivity {
+import com.example.WhereIsEveryone.R;
+import com.example.WhereIsEveryone.mvp.BaseActivity;
+
+public class MainActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -3,15 +3,10 @@ package com.example.WhereIsEveryone;
 import android.app.Application;
 
 public class MyApplication extends Application {
-    private UserService userService;
 
-    public UserService getUserService() {
-        return userService;
+    private final DependencyContainer container = new DependencyContainer(this);
+
+    public DependencyContainer getContainer() {
+        return container;
     }
-
-    public void setUserService(UserService userService) {
-        this.userService = userService;
-    }
-
-    public DependencyContainer dependencyContainer = new DependencyContainer();
 }
