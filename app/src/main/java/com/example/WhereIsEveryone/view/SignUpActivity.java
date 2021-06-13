@@ -33,10 +33,7 @@ public class SignUpActivity extends BaseActivity<SignUpPresenter> implements Sig
             finish();
         });
 
-        binding.btnSignUp.setOnClickListener(v -> {
-            // No need to ask for Internet permission
-            getSignUpFields();
-        });
+        binding.btnSignUp.setOnClickListener(v -> getSignUpFields());
 
     }
 
@@ -55,6 +52,7 @@ public class SignUpActivity extends BaseActivity<SignUpPresenter> implements Sig
     public void showError(@StringRes int errorMessage) {
         String error = getString(errorMessage);
         Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
+        binding.progressBar.setVisibility(View.GONE);
     }
 
     @Override

@@ -13,10 +13,8 @@ import com.example.WhereIsEveryone.mvp.BaseActivity;
 import com.example.WhereIsEveryone.presenter.LoginPresenter;
 import com.example.WhereIsEveryone.R;
 import com.example.WhereIsEveryone.databinding.ActivityLoginBinding;
-import com.example.WhereIsEveryone.todo.MapActivity;
 
-// Let's extend BaseActivity that keeps some helpers method
-// like "getContainer"
+
 public class LoginActivity extends BaseActivity<LoginPresenter> implements LoginView {
 
     private ActivityLoginBinding binding;
@@ -30,8 +28,6 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
         View view = binding.getRoot();
         setContentView(view);
 
-        // TODO(kumpel): Look how lambda can simplify the code ;)
-        //               This is exactly the same like "new View.OnClick..."
         binding.signUpText.setOnClickListener(v -> {
             // FYI: We can keep it like here, but it would be nice to do at some time
             // NavigatorClass that gets this responsibility of ouf here
@@ -41,18 +37,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
             finish();
         });
 
-        binding.btnLogin.setOnClickListener(v -> {
-            // TODO(kumpel): We don't ask permission handler directly!
-            //               We tell the presenter to do that!
-            //               Then the presenter tells the view, for example, to show the dialog.
-            //
-            // I left the code to show the idea, but FYI
-            // Internet permission is not runtime, so we don't need to ask for permission.
-            // So the code may be removed.
-            //
-            // presenter.permissionNeeded(Manifest.permission.INTERNET);
-            getLoginFields();
-        });
+        binding.btnLogin.setOnClickListener(v -> getLoginFields());
     }
 
 

@@ -9,7 +9,7 @@ public class LoginServiceImpl implements LoginService {
     // TODO(kumpel): This may be just a static field
     //               As it's an internal login implementation
     //               And it shouldn't change between version
-    private static final String SUCCESS_STRING = "TODO";
+    private static final String SUCCESS_STRING = "Sign Up Success";
 
     private final String ipAddress;
 
@@ -30,7 +30,7 @@ public class LoginServiceImpl implements LoginService {
         if (putData.startPut()) {
             if (putData.onComplete()) {
                 String result = putData.getResult();
-                if (result.equals(SUCCESS_STRING)) {
+                if (result.equals("Login Success")) {
                     return new LoginResult(null, putData.getData());
                 } else {
                     return new LoginResult(LoginResult.Error.LoginFailed, null);
@@ -54,7 +54,7 @@ public class LoginServiceImpl implements LoginService {
         if (putData.startPut()) {
             if (putData.onComplete()) {
                 String result = putData.getResult();
-                if (result.equals(SUCCESS_STRING)) {
+                if (result.equals("Sign Up Success")) {
                     return new LoginResult(null, putData.getData());
                 } else {
                     return new LoginResult(LoginResult.Error.SignUpFailed, null);

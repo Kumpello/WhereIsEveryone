@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.WhereIsEveryone.DependencyContainer;
 import com.example.WhereIsEveryone.MyApplication;
 
+import java.io.InvalidObjectException;
+
 public class BaseActivity<P extends Contract.Presenter> extends AppCompatActivity implements Contract.View {
 
     protected P presenter;
@@ -14,7 +16,11 @@ public class BaseActivity<P extends Contract.Presenter> extends AppCompatActivit
     @CallSuper
     protected void onStart() {
         super.onStart();
-        this.presenter = (P) getContainer().getPresenter(this);
+        try {
+            this.presenter = (P) getContainer().getPresenter(this);
+        } catch (InvalidObjectException e) {
+            System.out.println(e);
+        }
         presenter.attachView(this);
     }
 

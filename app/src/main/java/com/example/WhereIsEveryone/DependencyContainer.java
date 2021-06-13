@@ -1,30 +1,41 @@
 package com.example.WhereIsEveryone;
 
+import android.app.Activity;
 import android.app.Application;
 
 import androidx.annotation.NonNull;
 
 import com.example.WhereIsEveryone.model.LoginService;
 import com.example.WhereIsEveryone.model.LoginServiceImpl;
+import com.example.WhereIsEveryone.model.MapService;
+import com.example.WhereIsEveryone.model.MapServiceImpl;
+import com.example.WhereIsEveryone.model.PermissionHandler;
+import com.example.WhereIsEveryone.model.PermissionHandlerImpl;
 import com.example.WhereIsEveryone.model.UserService;
 import com.example.WhereIsEveryone.model.UserServiceImpl;
 import com.example.WhereIsEveryone.mvp.BasePresenter;
 import com.example.WhereIsEveryone.mvp.Contract;
 import com.example.WhereIsEveryone.presenter.LoginPresenter;
 import com.example.WhereIsEveryone.presenter.LoginPresenterImpl;
+import com.example.WhereIsEveryone.presenter.MapPresenter;
+import com.example.WhereIsEveryone.presenter.MapPresenterImpl;
 import com.example.WhereIsEveryone.presenter.SignUpPresenter;
 import com.example.WhereIsEveryone.presenter.SignUpPresenterImpl;
 import com.example.WhereIsEveryone.view.LoginView;
+import com.example.WhereIsEveryone.view.MapView;
 import com.example.WhereIsEveryone.view.SignUpView;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.io.InvalidObjectException;
 
 public class DependencyContainer {
 
     private final Application application;
 
-    // Model bindings - let's keep them as singletons;
-    // no need to create an instance each time.
     private LoginService loginService;
     private UserService userService;
+
 
     private String loginIpAddress;
 
@@ -55,10 +66,8 @@ public class DependencyContainer {
 
     @NonNull
     public String getLoginIpAddress() {
-        // TODO(kumpel): I cannot find the IP, but if it would be in strings,
-        //               it's the how it should be obtained
         if (loginIpAddress == null) {
-            loginIpAddress = this.application.getString(0);
+            loginIpAddress = this.application.getString(R.string.login_ip_address);
         }
 
         return loginIpAddress;
@@ -80,13 +89,37 @@ public class DependencyContainer {
         );
     }
 
+    @NotNull
+    public MapPresenter getMapPresenter(Activity activity) {
+        return new MapPresenterImpl(getMapService(activity), getPermissionHandler(activity));
+    }
+
+    @NotNull
+    public MapService getMapService(Activity activity) {
+        return new MapServiceImpl(activity);
+    }
+
+    @NotNull
+    public PermissionHandler getPermissionHandler(Activity activity) {
+        return new PermissionHandlerImpl(activity);
+    }
+
     @SuppressWarnings("unchecked")
-    public <V extends Contract.View> BasePresenter<V> getPresenter(V injector) {
+    public <V extends Contract.View> BasePresenter<V> getPresenter(V injector) throws InvalidObjectException {
+        Activity activity;
+        if(injector instanceof Activity) {
+            activity = (Activity) injector;
+        } else {
+            throw new InvalidObjectException("Injector must be Activity object");
+        }
+
         if (injector instanceof SignUpView) {
             // ugly, but it'll work
             return (BasePresenter<V>) getSingUpPresenter();
         } else if (injector instanceof LoginView) {
             return (BasePresenter<V>) getLoginPresenter();
+        } else if (injector instanceof MapView) {
+            return (BasePresenter<V>) getMapPresenter(activity);
         }
 
         throw new IllegalArgumentException("no presenter for such a view");

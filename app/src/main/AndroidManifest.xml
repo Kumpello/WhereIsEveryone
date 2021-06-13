@@ -34,7 +34,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name="com.example.WhereIsEveryone.todo.MapActivity"
+            android:name="com.example.WhereIsEveryone.view.MapActivity"
             android:label="@string/title_activity_map"></activity>
         <activity
             android:name="com.example.WhereIsEveryone.view.LoginActivity"
