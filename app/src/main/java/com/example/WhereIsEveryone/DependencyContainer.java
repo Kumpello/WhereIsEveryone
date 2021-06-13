@@ -27,7 +27,6 @@ import com.example.WhereIsEveryone.view.SignUpView;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.InvalidObjectException;
 
 public class DependencyContainer {
 
@@ -105,12 +104,12 @@ public class DependencyContainer {
     }
 
     @SuppressWarnings("unchecked")
-    public <V extends Contract.View> BasePresenter<V> getPresenter(V injector) throws InvalidObjectException {
+    public <V extends Contract.View> BasePresenter<V> getPresenter(V injector) throws IllegalArgumentException {
         Activity activity;
         if(injector instanceof Activity) {
             activity = (Activity) injector;
         } else {
-            throw new InvalidObjectException("Injector must be Activity object");
+            throw new IllegalArgumentException("Injector must be Activity object");
         }
 
         if (injector instanceof SignUpView) {
