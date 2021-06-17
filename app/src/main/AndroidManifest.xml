@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.WhereIsEveryone">
+    package="com.example.whereiseveryone">
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -12,7 +12,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <application
-        android:name=".MyApplication"
+        android:name="com.example.whereiseveryone.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -34,10 +34,10 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name="com.example.WhereIsEveryone.view.MapActivity"
+            android:name="com.example.whereiseveryone.view.MapActivity"
             android:label="@string/title_activity_map"></activity>
         <activity
-            android:name="com.example.WhereIsEveryone.view.LoginActivity"
+            android:name="com.example.whereiseveryone.view.LoginActivity"
             android:theme="@style/Theme.Design.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -46,9 +46,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.example.WhereIsEveryone.view.SignUpActivity"
+            android:name="com.example.whereiseveryone.view.SignUpActivity"
             android:theme="@style/Theme.Design.Light.NoActionBar"></activity>
-        <activity android:name="com.example.WhereIsEveryone.view.MainActivity" />
+        <activity android:name="com.example.whereiseveryone.view.MainActivity" />
     </application>
 
 </manifest>
