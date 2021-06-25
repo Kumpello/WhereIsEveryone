@@ -64,21 +64,19 @@ public class MapActivity extends BaseActivity<MapPresenter> implements OnMapRead
 
     public void centerCamera() {
         if (presenter.updateUserLocationAndDirection()) {
-            runOnUiThread(() -> {
-                CameraPosition cameraPosition = new CameraPosition.Builder()
-                        .target(presenter.getUserLatLng())
-                        .zoom(15)
-                        .bearing(presenter.getAzimuth())
-                        .build();
-                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-            });
+            CameraPosition cameraPosition = new CameraPosition.Builder()
+                    .target(presenter.getUserLatLng())
+                    .zoom(15)
+                    .bearing(presenter.getAzimuth())
+                    .build();
+            runOnUiThread(() -> mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition)));
         }
     }
 
     @Override
     public void updateUserLocation() {
+        presenter.updateUserLocationAndDirection();
         runOnUiThread(() -> {
-            presenter.updateUserLocationAndDirection();
             userMarker.setPosition(presenter.getUserLatLng());
             userMarker.setRotation(presenter.getAzimuth());
         });

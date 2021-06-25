@@ -16,36 +16,32 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
-
 
 import static android.content.Context.SENSOR_SERVICE;
 
 public class MapServiceImpl implements MapService, SensorEventListener {
 
-    private Activity activity;
+    private final Activity activity;
 
-    private FusedLocationProviderClient fusedLocationClient;
+    private final FusedLocationProviderClient fusedLocationClient;
     private Location userLocation;
-    private LocationRequest userLocationRequest;
-    private SensorManager sensorManager;
-    private boolean requestingLocationUpdates;
-    private LocationCallback locationCallback;
+    private final LocationRequest userLocationRequest;
+    private final SensorManager sensorManager;
+    private final boolean requestingLocationUpdates;
+    private final LocationCallback locationCallback;
 
     private final float[] accelerometerReading = new float[3];
     private final float[] magnetometerReading = new float[3];
     private final float[] rotationMatrix = new float[9];
     private final float[] orientationAngles = new float[3];
 
-    private final int FASTEST_INTERVAL = 500;
-    private final int INTERVAL = 2000;
-    private final float M = (float) (180 / Math.PI);
-
     public MapServiceImpl(Activity activity) {
         this.activity = activity;
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity);
         userLocationRequest = LocationRequest.create();
+        int FASTEST_INTERVAL = 500;
         userLocationRequest.setFastestInterval(FASTEST_INTERVAL);
+        int INTERVAL = 2000;
         userLocationRequest.setInterval(INTERVAL);
         userLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         sensorManager = (SensorManager) activity.getSystemService(SENSOR_SERVICE);
@@ -54,9 +50,9 @@ public class MapServiceImpl implements MapService, SensorEventListener {
         locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(@NonNull @org.jetbrains.annotations.NotNull LocationResult locationResult) {
-                if (locationResult == null) {
-                    return;
-                }
+//                if (locationResult == null) {
+//                    return;
+//                }
                 userLocation = locationResult.getLastLocation();
             }
         };
@@ -65,12 +61,9 @@ public class MapServiceImpl implements MapService, SensorEventListener {
     @SuppressLint("MissingPermission")
     public void updateLastLocation(){
         fusedLocationClient.getLastLocation()
-                .addOnSuccessListener(activity, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        if (location != null) {
-                            userLocation = location;
-                        }
+                .addOnSuccessListener(activity, location -> {
+                    if (location != null) {
+                        userLocation = location;
                     }
                 });
     }
@@ -103,10 +96,11 @@ public class MapServiceImpl implements MapService, SensorEventListener {
 
     @Override
     public float getAzimuth() {
+        float m = (float) (180 / Math.PI);
         if (orientationAngles[0] >= 0) {
-            return orientationAngles[0] * M;
+            return orientationAngles[0] * m;
         } else {
-            return 360 + (orientationAngles[0] * M);
+            return 360 + (orientationAngles[0] * m);
         }
     }
 

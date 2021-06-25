@@ -7,19 +7,19 @@ import android.location.Location;
 import com.example.whereiseveryone.model.MapService;
 import com.example.whereiseveryone.model.PermissionHandler;
 import com.example.whereiseveryone.mvp.BasePresenter;
+import com.example.whereiseveryone.utils.SimpleTimer;
 import com.example.whereiseveryone.view.MapView;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class MapPresenterImpl extends BasePresenter<MapView> implements MapPresenter {
     private final MapService mapService;
     private final PermissionHandler permissionHandler;
     private final List<String> permissionsNeeded;
-    Timer timer;
+
+    private final SimpleTimer timer;
 
 
     public MapPresenterImpl(MapService mapService, PermissionHandler permissionHandler) {
@@ -28,7 +28,8 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
         permissionsNeeded.add(Manifest.permission.ACCESS_FINE_LOCATION);
         this.mapService = mapService;
         this.permissionHandler = permissionHandler;
-        timer = new Timer();
+
+        timer = new SimpleTimer();
     }
 
 
@@ -52,25 +53,18 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
         checkPermissions(permissionsNeeded);
         mapService.startLocationUpdates();
 
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                updateLastLocation();
-                updateUserLocationAndDirection();
-                view.addUserMarker();
-            }
+        timer.startDelayed(() -> {
+            updateLastLocation();
+            updateUserLocationAndDirection();
+            view.addUserMarker();
         }, 500);
 
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                view.updateUserLocation();
-            }
-        }, 1000, 500);
+        timer.start(() -> view.updateUserLocation(), 1300);
     }
 
     @Override
     public void stopLocationUpdates() {
+        timer.stop();
         mapService.stopLocationUpdates();
     }
 
