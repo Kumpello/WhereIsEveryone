@@ -4,6 +4,7 @@ import android.location.Location;
 
 public interface MapService {
     boolean updateUserLocationAndDirection();
+    boolean locationCallbackReady();
     void updateLastLocation();
     float getAzimuth();
     Location getLocation();

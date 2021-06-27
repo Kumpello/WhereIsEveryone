@@ -109,6 +109,8 @@ public class MapActivity extends BaseActivity<MapPresenter> implements OnMapRead
         mMap.getUiSettings().setAllGesturesEnabled(true);
 
         presenter.updateLastLocation();
+
+
         if (presenter.updateUserLocationAndDirection()) {
             LatLng userLocationLatLng = presenter.getUserLatLng();
             mMap.moveCamera(CameraUpdateFactory.newLatLng(userLocationLatLng));

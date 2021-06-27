@@ -28,6 +28,7 @@ public class MapServiceImpl implements MapService, SensorEventListener {
     private final LocationRequest userLocationRequest;
     private final SensorManager sensorManager;
     private final boolean requestingLocationUpdates;
+    private boolean locationCallbackReady;
     private final LocationCallback locationCallback;
 
     private final float[] accelerometerReading = new float[3];
@@ -46,6 +47,7 @@ public class MapServiceImpl implements MapService, SensorEventListener {
         userLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         sensorManager = (SensorManager) activity.getSystemService(SENSOR_SERVICE);
         requestingLocationUpdates = true;
+        locationCallbackReady = false;
 
         locationCallback = new LocationCallback() {
             @Override
@@ -54,8 +56,14 @@ public class MapServiceImpl implements MapService, SensorEventListener {
 //                    return;
 //                }
                 userLocation = locationResult.getLastLocation();
+                locationCallbackReady = true;
             }
         };
+    }
+
+    @Override
+    public boolean locationCallbackReady(){
+        return locationCallbackReady;
     }
 
     @SuppressLint("MissingPermission")

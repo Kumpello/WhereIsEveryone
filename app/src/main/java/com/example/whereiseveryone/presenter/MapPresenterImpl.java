@@ -18,6 +18,7 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
     private final MapService mapService;
     private final PermissionHandler permissionHandler;
     private final List<String> permissionsNeeded;
+    private boolean userMarkerPlaced;
 
     private final SimpleTimer timer;
 
@@ -28,6 +29,7 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
         permissionsNeeded.add(Manifest.permission.ACCESS_FINE_LOCATION);
         this.mapService = mapService;
         this.permissionHandler = permissionHandler;
+        userMarkerPlaced = false;
 
         timer = new SimpleTimer();
     }
@@ -53,13 +55,15 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
         checkPermissions(permissionsNeeded);
         mapService.startLocationUpdates();
 
-        timer.startDelayed(() -> {
-            updateLastLocation();
-            updateUserLocationAndDirection();
-            view.addUserMarker();
-        }, 500);
-
-        timer.start(() -> view.updateUserLocation(), 1300);
+        timer.start(() -> {
+            if (mapService.locationCallbackReady()) {
+                if(!userMarkerPlaced){
+                    view.addUserMarker();
+                    userMarkerPlaced = true;
+                }
+                view.updateUserLocation();
+            }
+        }, 1000);
     }
 
     @Override
