@@ -18,4 +18,8 @@
     <string name="connection_error">Connection error</string>
     <string name="empty_fields">All fields required!</string>
     <string name="password_too_short">Password needs to be 6 characters minimum</string>
+    <string name="menu_settings">Settings</string>
+    <string name="menu_map_view">Map</string>
+    <string name="menu_navigation_view">Navigation</string>
+    <string name="menu_friends">Friends</string>
 </resources>
