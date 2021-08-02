@@ -16,12 +16,15 @@ import com.example.whereiseveryone.model.UserService;
 import com.example.whereiseveryone.model.UserServiceImpl;
 import com.example.whereiseveryone.mvp.BasePresenter;
 import com.example.whereiseveryone.mvp.Contract;
+import com.example.whereiseveryone.presenter.FriendsPresenter;
+import com.example.whereiseveryone.presenter.FriendsPresenterImpl;
 import com.example.whereiseveryone.presenter.LoginPresenter;
 import com.example.whereiseveryone.presenter.LoginPresenterImpl;
 import com.example.whereiseveryone.presenter.MapPresenter;
 import com.example.whereiseveryone.presenter.MapPresenterImpl;
 import com.example.whereiseveryone.presenter.SignUpPresenter;
 import com.example.whereiseveryone.presenter.SignUpPresenterImpl;
+import com.example.whereiseveryone.view.FriendsView;
 import com.example.whereiseveryone.view.LoginView;
 import com.example.whereiseveryone.view.MapView;
 import com.example.whereiseveryone.view.SignUpView;
@@ -85,6 +88,11 @@ public class DependencyContainer {
         return new MapPresenterImpl(getMapService(activity), getPermissionHandler(activity));
     }
 
+    @NonNull
+    public FriendsPresenter getFriendsPresenter() {
+        return new FriendsPresenterImpl();
+    }
+
     @NotNull
     public MapService getMapService(Activity activity) {
         return new MapServiceImpl(activity);
@@ -114,6 +122,8 @@ public class DependencyContainer {
             return (BasePresenter<V>) getLoginPresenter();
         } else if (injector instanceof MapView) {
             return (BasePresenter<V>) getMapPresenter(activity);
+        } else if (injector instanceof FriendsView) {
+            return (BasePresenter<V>) getFriendsPresenter();
         }
 
         throw new IllegalArgumentException("no presenter for such a view");
