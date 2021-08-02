@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/signUpActivity">
+
+    <activity
+        android:id="@+id/signUpActivity"
+        android:name="com.example.whereiseveryone.view.SignUpActivity"
+        android:label="activity_sign_up"
+        tools:layout="@layout/activity_sign_up" />
+    <activity
+        android:id="@+id/loginActivity"
+        android:name="com.example.whereiseveryone.view.LoginActivity"
+        android:label="activity_login"
+        tools:layout="@layout/activity_login" />
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="com.example.whereiseveryone.view.MapFragment"
+        android:label="MapFragment" />
+</navigation>

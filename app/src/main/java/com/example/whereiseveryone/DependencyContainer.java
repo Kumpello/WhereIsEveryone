@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 import com.example.whereiseveryone.model.LoginService;
 import com.example.whereiseveryone.model.LoginServiceImpl;
@@ -97,9 +98,12 @@ public class DependencyContainer {
     @SuppressWarnings("unchecked")
     public <V extends Contract.View> BasePresenter<V> getPresenter(V injector) throws IllegalArgumentException {
         Activity activity;
+
         if(injector instanceof Activity) {
             activity = (Activity) injector;
-        } else {
+        }else if(injector instanceof Fragment) {
+            activity = (Activity) ((Fragment) injector).getActivity();
+        }else {
             throw new IllegalArgumentException("Injector must be Activity object");
         }
 
