@@ -2,21 +2,25 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/nav_graph"
-    app:startDestination="@id/signUpActivity">
+    android:id="@+id/nav_graph">
 
-    <activity
-        android:id="@+id/signUpActivity"
-        android:name="com.example.whereiseveryone.view.SignUpActivity"
-        android:label="activity_sign_up"
-        tools:layout="@layout/activity_sign_up" />
-    <activity
-        android:id="@+id/loginActivity"
-        android:name="com.example.whereiseveryone.view.LoginActivity"
-        android:label="activity_login"
-        tools:layout="@layout/activity_login" />
     <fragment
         android:id="@+id/mapFragment"
         android:name="com.example.whereiseveryone.view.MapFragment"
-        android:label="MapFragment" />
+        android:label="MapFragment" >
+        <action
+            android:id="@+id/action_mapFragment_to_friendsFragment3"
+            app:destination="@id/friendsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/friendsFragment"
+        android:name="com.example.whereiseveryone.view.FriendsFragment"
+        android:label="fragment_friends"
+        tools:layout="@layout/fragment_friends" >
+        <action
+            android:id="@+id/action_friendsFragment_to_mapFragment2"
+            app:destination="@id/mapFragment" />
+    </fragment>
+
+
 </navigation>
