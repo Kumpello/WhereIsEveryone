@@ -67,4 +67,8 @@ public class LoginServiceImpl implements LoginService {
         emailAndPassword = new String[] {email, password};
     }
 
+    @Override
+    public boolean checkIfLogged() {
+        return mAuth.getCurrentUser() != null;
+    }
 }

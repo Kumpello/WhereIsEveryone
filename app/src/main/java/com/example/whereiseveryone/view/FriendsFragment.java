@@ -10,13 +10,15 @@ import android.view.ViewGroup;
 
 import com.example.whereiseveryone.R;
 import com.example.whereiseveryone.databinding.FragmentFriendsBinding;
+import com.example.whereiseveryone.mvp.BaseFragment;
+import com.example.whereiseveryone.presenter.FriendsPresenter;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link FriendsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FriendsFragment extends Fragment {
+public class FriendsFragment extends BaseFragment<FriendsPresenter> implements FriendsView{
 
     private FragmentFriendsBinding binding;
 
@@ -35,6 +37,9 @@ public class FriendsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        binding.addFriend.setOnClickListener(v -> {
+            addFriend();
+        });
     }
 
     @Override
@@ -50,4 +55,16 @@ public class FriendsFragment extends Fragment {
         super.onDestroyView();
         binding = null;
     }
+
+    @Override
+    public void addFriend(){
+        presenter.addFriend();
+    }
+
+    @Override
+    public void removeFriend() {
+
+    }
+
+
 }

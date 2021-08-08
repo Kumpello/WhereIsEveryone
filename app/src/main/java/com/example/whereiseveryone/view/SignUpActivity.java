@@ -23,6 +23,12 @@ public class SignUpActivity extends BaseActivity<SignUpPresenter> implements Sig
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
+        if (presenter.checkIfLogged()) {
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
         binding = ActivitySignUpBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
