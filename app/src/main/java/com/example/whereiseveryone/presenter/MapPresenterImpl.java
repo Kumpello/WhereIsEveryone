@@ -6,6 +6,8 @@ import android.location.Location;
 
 import com.example.whereiseveryone.model.MapService;
 import com.example.whereiseveryone.model.PermissionHandler;
+import com.example.whereiseveryone.model.User;
+import com.example.whereiseveryone.model.UserService;
 import com.example.whereiseveryone.mvp.BasePresenter;
 import com.example.whereiseveryone.utils.SimpleTimer;
 import com.example.whereiseveryone.view.MapView;
@@ -19,19 +21,20 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
     private final PermissionHandler permissionHandler;
     private final List<String> permissionsNeeded;
     private boolean userMarkerPlaced;
-
     private final SimpleTimer timer;
+    private UserService userService;
+    private User user;
 
 
-    public MapPresenterImpl(MapService mapService, PermissionHandler permissionHandler) {
+    public MapPresenterImpl(MapService mapService, PermissionHandler permissionHandler, UserService userService, SimpleTimer timer) {
         permissionsNeeded = new ArrayList<>();
         permissionsNeeded.add(Manifest.permission.ACCESS_COARSE_LOCATION);
         permissionsNeeded.add(Manifest.permission.ACCESS_FINE_LOCATION);
         this.mapService = mapService;
         this.permissionHandler = permissionHandler;
         userMarkerPlaced = false;
-
-        timer = new SimpleTimer();
+        this.userService = userService;
+        this.timer = timer;
     }
 
 

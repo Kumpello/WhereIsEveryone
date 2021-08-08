@@ -24,6 +24,7 @@ import com.example.whereiseveryone.presenter.MapPresenter;
 import com.example.whereiseveryone.presenter.MapPresenterImpl;
 import com.example.whereiseveryone.presenter.SignUpPresenter;
 import com.example.whereiseveryone.presenter.SignUpPresenterImpl;
+import com.example.whereiseveryone.utils.SimpleTimer;
 import com.example.whereiseveryone.view.FriendsView;
 import com.example.whereiseveryone.view.LoginView;
 import com.example.whereiseveryone.view.MapView;
@@ -58,9 +59,9 @@ public class DependencyContainer {
     }
 
     @NonNull
-    public UserService getUserService() {
+    public UserService getUserService(Activity activity) {
         if (userService == null) {
-            userService = new UserServiceImpl();
+            userService = new UserServiceImpl(activity);
         }
 
         return userService;
@@ -73,8 +74,7 @@ public class DependencyContainer {
     public LoginPresenter getLoginPresenter(Activity activity) {
         return new LoginPresenterImpl(
                 getLoginService(),
-                getUserService(),
-                activity
+                getUserService(activity)
         );
     }
 
@@ -86,7 +86,7 @@ public class DependencyContainer {
 
     @NotNull
     public MapPresenter getMapPresenter(Activity activity) {
-        return new MapPresenterImpl(getMapService(activity), getPermissionHandler(activity));
+        return new MapPresenterImpl(getMapService(activity), getPermissionHandler(activity), getUserService(activity), new SimpleTimer());
     }
 
     @NonNull

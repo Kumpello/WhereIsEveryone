@@ -1,5 +1,8 @@
 package com.example.whereiseveryone.model;
 
+import static android.content.Context.MODE_PRIVATE;
+
+import android.app.Activity;
 import android.content.SharedPreferences;
 
 import androidx.annotation.Nullable;
@@ -11,7 +14,8 @@ public class UserServiceImpl implements UserService {
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor myEdit;
 
-    public UserServiceImpl() {
+    public UserServiceImpl(Activity activity) {
+        sharedPreferences = activity.getSharedPreferences("WhereIsEveryone",MODE_PRIVATE);
         this.userID = null;
     }
 
@@ -20,6 +24,7 @@ public class UserServiceImpl implements UserService {
         userID = token;
         myEdit.putString(userKey, userID);
         myEdit.commit();
+        myEdit.apply();
     }
 
     @Override

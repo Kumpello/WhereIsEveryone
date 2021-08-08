@@ -22,7 +22,7 @@ public class LoginServiceImpl implements LoginService {
     @Override
     public void login(Consumer<LoginResult> consumer) {
         String email = emailAndPassword[0];
-        String password =emailAndPassword[1];
+        String password = emailAndPassword[1];
 
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
@@ -43,7 +43,7 @@ public class LoginServiceImpl implements LoginService {
     @Override
     public void signUp(Consumer<LoginResult> consumer) {
         String email = emailAndPassword[0];
-        String password =emailAndPassword[1];
+        String password = emailAndPassword[1];
 
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
@@ -56,7 +56,7 @@ public class LoginServiceImpl implements LoginService {
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                        //Todo: Error veryfication
+                        //Todo: Error verification
                         consumer.accept(new LoginResult(LoginResult.Error.SignUpFailed, null));
                     }
                 });
