@@ -1,5 +1,7 @@
 package com.example.whereiseveryone.model;
 
+import android.content.SharedPreferences;
+
 import androidx.annotation.Nullable;
 
 public interface UserService {
@@ -9,4 +11,6 @@ public interface UserService {
     // returns user-token or null if there is no user logged in
     @Nullable
     String getToken();
+
+    void passSharedPreferences(SharedPreferences sharedPreferences);
 }

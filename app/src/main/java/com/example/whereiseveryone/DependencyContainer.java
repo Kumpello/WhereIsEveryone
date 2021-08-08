@@ -70,10 +70,11 @@ public class DependencyContainer {
     // We want to create presenters every time,
     // so we shouldn't keep any references to them
     @NonNull
-    public LoginPresenter getLoginPresenter() {
+    public LoginPresenter getLoginPresenter(Activity activity) {
         return new LoginPresenterImpl(
                 getLoginService(),
-                getUserService()
+                getUserService(),
+                activity
         );
     }
 
@@ -119,7 +120,7 @@ public class DependencyContainer {
             // ugly, but it'll work
             return (BasePresenter<V>) getSingUpPresenter();
         } else if (injector instanceof LoginView) {
-            return (BasePresenter<V>) getLoginPresenter();
+            return (BasePresenter<V>) getLoginPresenter(activity);
         } else if (injector instanceof MapView) {
             return (BasePresenter<V>) getMapPresenter(activity);
         } else if (injector instanceof FriendsView) {
