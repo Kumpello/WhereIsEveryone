@@ -23,7 +23,6 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
     private boolean userMarkerPlaced;
     private final SimpleTimer timer;
     private UserService userService;
-    private User user;
 
 
     public MapPresenterImpl(MapService mapService, PermissionHandler permissionHandler, UserService userService, SimpleTimer timer) {

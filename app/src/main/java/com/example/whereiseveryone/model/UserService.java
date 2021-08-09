@@ -13,4 +13,6 @@ public interface UserService {
     String getToken();
 
     void passSharedPreferences(SharedPreferences sharedPreferences);
+
+    void putUserOnServer(User user);
 }
