@@ -22,7 +22,8 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
     private final List<String> permissionsNeeded;
     private boolean userMarkerPlaced;
     private final SimpleTimer timer;
-    private UserService userService;
+    private final UserService userService;
+    private final User user;
 
 
     public MapPresenterImpl(MapService mapService, PermissionHandler permissionHandler, UserService userService, SimpleTimer timer) {
@@ -34,12 +35,20 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
         userMarkerPlaced = false;
         this.userService = userService;
         this.timer = timer;
+        this.user = new User(userService.getToken());
     }
 
 
     @Override
     public boolean updateUserLocationAndDirection() {
-        return mapService.updateUserLocationAndDirection();
+        if (mapService.updateUserLocationAndDirection()) {
+            user.userLocation = getUserLatLng();
+            user.userAzimuth = getAzimuth();
+            userService.updateUserOnServer(user);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public float getAzimuth(){

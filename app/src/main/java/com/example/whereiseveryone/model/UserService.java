@@ -14,5 +14,5 @@ public interface UserService {
 
     void passSharedPreferences(SharedPreferences sharedPreferences);
 
-    void putUserOnServer(User user);
+    void updateUserOnServer(User user);
 }

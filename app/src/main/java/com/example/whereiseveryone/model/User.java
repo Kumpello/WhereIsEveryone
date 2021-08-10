@@ -17,6 +17,6 @@ public class User {
         this.email = email;
         this.userLocation = null;
         this.userAzimuth = 0;
-        this.nick = null;
+        this.nick = "NoName";
     }
 }

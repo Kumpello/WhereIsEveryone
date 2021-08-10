@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void putUserOnServer(User user) {
+    public void updateUserOnServer(User user) {
         mDatabase.child("users").child(user.email).setValue(user);
     }
 }
