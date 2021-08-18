@@ -5,5 +5,5 @@ import com.example.whereiseveryone.view.FriendsView;
 
 public interface FriendsPresenter extends Contract.Presenter<FriendsView> {
     void addFriend();
-    void removeFriend();
+    void removeFriend(String email);
 }

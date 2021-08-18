@@ -34,10 +34,11 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name="com.example.whereiseveryone.view.MapActivity"
-            android:label="@string/title_activity_map"></activity>
-        <activity
             android:name="com.example.whereiseveryone.view.LoginActivity"
+            android:theme="@style/Theme.Design.Light.NoActionBar">
+        </activity>
+        <activity
+            android:name="com.example.whereiseveryone.view.SignUpActivity"
             android:theme="@style/Theme.Design.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -46,9 +47,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.example.whereiseveryone.view.SignUpActivity"
-            android:theme="@style/Theme.Design.Light.NoActionBar"></activity>
-        <activity android:name="com.example.whereiseveryone.view.MainActivity" />
+            android:name="com.example.whereiseveryone.view.MainActivity"
+            android:theme="@style/Theme.Design.Light.NoActionBar">
+        </activity>
     </application>
 
 </manifest>

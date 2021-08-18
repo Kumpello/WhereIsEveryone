@@ -5,6 +5,7 @@ import static android.content.Context.MODE_PRIVATE;
 import android.app.Activity;
 import android.content.SharedPreferences;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.whereiseveryone.R;
@@ -18,21 +19,22 @@ public class UserServiceImpl implements UserService {
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor myEdit;
     private FirebaseDatabase database;
-    private DatabaseReference mDatabase;
+    // private DatabaseReference mDatabase;
 
     public UserServiceImpl(Activity activity) {
-        database = FirebaseDatabase.getInstance(String.valueOf(R.string.server_address));
-        mDatabase = FirebaseDatabase.getInstance().getReference();
+        // database = FirebaseDatabase.getInstance(String.valueOf(R.string.server_address));
+        // mDatabase = FirebaseDatabase.getInstance().getReference();
         sharedPreferences = activity.getSharedPreferences("WhereIsEveryone",MODE_PRIVATE);
+        myEdit = sharedPreferences.edit();
         this.userID = null;
     }
 
     @Override
-    public void saveToken(@Nullable String token) {
+    public void saveToken(@NonNull String token) {
         userID = token;
         myEdit.putString(userKey, userID);
         myEdit.commit();
-        myEdit.apply();
+        //myEdit.apply();
     }
 
     @Override
@@ -49,6 +51,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUserOnServer(User user) {
-        mDatabase.child("users").child(user.email).setValue(user);
+        // mDatabase.child("users").child(user.email).setValue(user);
     }
 }

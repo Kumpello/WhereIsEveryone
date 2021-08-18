@@ -10,10 +10,10 @@ import androidx.navigation.ui.NavigationUI;
 import com.example.whereiseveryone.R;
 import com.example.whereiseveryone.databinding.ActivityMainBinding;
 import com.example.whereiseveryone.mvp.BaseActivity;
+import com.example.whereiseveryone.presenter.MainPresenter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-//What to do with this error?
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity<MainPresenter> implements MainView {
 
     private NavController navController;
     private ActivityMainBinding binding;
@@ -27,11 +27,12 @@ public class MainActivity extends BaseActivity {
         setContentView(view);
 
         NavHostFragment navHostFragment =
-                (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_container);
+                (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentContainer);
 
         navController = navHostFragment.getNavController();
 
         BottomNavigationView bottomNav = binding.bottomNavigation;
+        bottomNav.bringToFront();
         NavigationUI.setupWithNavController(bottomNav, navController);
 
     }

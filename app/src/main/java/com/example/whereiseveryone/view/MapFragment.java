@@ -5,13 +5,12 @@ import static com.example.whereiseveryone.utils.GraphicalUtils.getBitmapFromVect
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 import com.example.whereiseveryone.R;
 import com.example.whereiseveryone.databinding.FragmentMapBinding;
@@ -54,15 +53,12 @@ public class MapFragment extends BaseFragment<MapPresenter> implements OnMapRead
         super.onCreate(savedInstanceState);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getActivity().getSupportFragmentManager()
+/*        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map_fragment);
         assert mapFragment != null;
-        mapFragment.getMapAsync(this);
-
+        mapFragment.getMapAsync(this);*/
 
         resources = getResources();
-
-        binding.getLocation.setOnClickListener(v -> centerCamera());
 
         presenter.startLocationUpdates();
     }
@@ -71,6 +67,12 @@ public class MapFragment extends BaseFragment<MapPresenter> implements OnMapRead
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentMapBinding.inflate(inflater, container, false);
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
+                .findFragmentById(R.id.map_fragment);
+        mapFragment.getMapAsync(this);
+
+        binding.getLocation.setOnClickListener(v -> centerCamera());
 
         return binding.getRoot();
     }
