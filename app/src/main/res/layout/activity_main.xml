@@ -24,6 +24,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/fragmentContainer"
         android:layout_marginTop="-55dp"
+        app:backgroundTint="@color/colorSecondary"
+        app:itemIconTint="@drawable/bottom_navigation_color_selector"
+        app:itemTextColor="@drawable/bottom_navigation_color_selector"
         app:menu="@menu/bottom_navigation_menu"
         app:theme="@style/Theme.MaterialComponents.Light.NoActionBar.Bridge" />
 </RelativeLayout>

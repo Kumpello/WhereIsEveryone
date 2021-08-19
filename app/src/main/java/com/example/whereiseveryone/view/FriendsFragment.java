@@ -25,6 +25,7 @@ public class FriendsFragment extends BaseFragment<FriendsPresenter> implements F
 
     private FragmentFriendsBinding binding;
     private FriendsAdapter friendsAdapter;
+    private LinearLayoutManager layoutManager;
 
     public FriendsFragment() {
         // Required empty public constructor
@@ -48,7 +49,15 @@ public class FriendsFragment extends BaseFragment<FriendsPresenter> implements F
         friends.add(new User("szok@szok.com"));
 
         friendsAdapter = new FriendsAdapter(friends, presenter);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(requireContext());
+        layoutManager = new LinearLayoutManager(requireContext());
+
+
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        binding = FragmentFriendsBinding.inflate(inflater, container, false);
 
         binding.recyclerView.setLayoutManager(layoutManager);
         binding.recyclerView.setAdapter(friendsAdapter);
@@ -56,12 +65,6 @@ public class FriendsFragment extends BaseFragment<FriendsPresenter> implements F
         binding.addFriend.setOnClickListener(v -> {
             addFriend();
         });
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        binding = FragmentFriendsBinding.inflate(inflater, container, false);
 
         return binding.getRoot();
     }

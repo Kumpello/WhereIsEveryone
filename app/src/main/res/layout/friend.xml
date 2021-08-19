@@ -4,7 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:paddingVertical="10dp"
+    android:paddingHorizontal="10dp">
 
     <TextView
         android:id="@+id/friendTextView"
@@ -19,7 +21,7 @@
         android:id="@+id/removeFriend"
         android:layout_width="54dp"
         android:layout_height="54dp"
-        app:layout_constraintStart_toEndOf="@+id/friendTextView"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/remove_friend" />
 

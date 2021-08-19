@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.whereiseveryone.R;
@@ -26,7 +27,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendVi
         private final FriendsPresenter presenter;
 
         private final TextView userEmail;
-        private final Button remove;
+        private final AppCompatImageButton remove;
 
         public FriendViewHolder(View v, FriendsPresenter friendsPresenter) {
             super(v);
