@@ -36,10 +36,8 @@ public class LoginPresenterImpl extends BasePresenter<LoginView> implements Logi
                 view.showError(R.string.signup_failed);
                 return;
             }
-            //Switched to email for easier searching
-            //userService.saveToken(value.getToken());
+            userService.saveToken(value.getToken());
 
-            userService.saveToken(login);
             view.showSuccess();
         });
 

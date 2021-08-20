@@ -19,11 +19,11 @@ public class UserServiceImpl implements UserService {
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor myEdit;
     private FirebaseDatabase database;
-    // private DatabaseReference mDatabase;
+    private DatabaseReference mDatabase;
 
     public UserServiceImpl(Activity activity) {
-        // database = FirebaseDatabase.getInstance(String.valueOf(R.string.server_address));
-        // mDatabase = FirebaseDatabase.getInstance().getReference();
+        database = FirebaseDatabase.getInstance(activity.getString(R.string.server_address));
+        mDatabase = FirebaseDatabase.getInstance().getReference();
         sharedPreferences = activity.getSharedPreferences("WhereIsEveryone",MODE_PRIVATE);
         myEdit = sharedPreferences.edit();
         this.userID = null;
@@ -51,6 +51,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUserOnServer(User user) {
-        // mDatabase.child("users").child(user.email).setValue(user);
+        mDatabase.child("users").child(getToken()).setValue(user);
     }
 }

@@ -93,6 +93,11 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
         mapService.onResume();
     }
 
+    @Override
+    public String getToken() {
+        return userService.getToken();
+    }
+
     public void updateLastLocation(){
         mapService.updateLastLocation();
     }
@@ -110,6 +115,7 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
             }
         }
     }
+
 
 
 }
