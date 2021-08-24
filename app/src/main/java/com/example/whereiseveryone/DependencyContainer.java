@@ -6,6 +6,7 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.example.whereiseveryone.model.FriendsServiceImpl;
 import com.example.whereiseveryone.model.LoginService;
 import com.example.whereiseveryone.model.LoginServiceImpl;
 import com.example.whereiseveryone.model.MapService;
@@ -92,8 +93,8 @@ public class DependencyContainer {
     }
 
     @NonNull
-    public FriendsPresenter getFriendsPresenter() {
-        return new FriendsPresenterImpl();
+    public FriendsPresenter getFriendsPresenter(Activity activity) {
+        return new FriendsPresenterImpl(new FriendsServiceImpl(activity));
     }
 
     @NonNull
@@ -128,7 +129,7 @@ public class DependencyContainer {
         } else if (injector instanceof MapView) {
             return (BasePresenter<V>) getMapPresenter(activity);
         } else if (injector instanceof FriendsView) {
-            return (BasePresenter<V>) getFriendsPresenter();
+            return (BasePresenter<V>) getFriendsPresenter(activity);
         } else if (injector instanceof MainView) {
             return (BasePresenter<V>) getMainPresenter();
         }

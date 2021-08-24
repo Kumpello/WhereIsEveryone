@@ -1,18 +1,23 @@
 package com.example.whereiseveryone.view;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.whereiseveryone.databinding.FragmentFriendsBinding;
 import com.example.whereiseveryone.model.User;
 import com.example.whereiseveryone.mvp.BaseFragment;
 import com.example.whereiseveryone.presenter.FriendsPresenter;
+import com.example.whereiseveryone.utils.TextUtils;
 
 import java.util.ArrayList;
 
@@ -62,9 +67,7 @@ public class FriendsFragment extends BaseFragment<FriendsPresenter> implements F
         binding.recyclerView.setLayoutManager(layoutManager);
         binding.recyclerView.setAdapter(friendsAdapter);
 
-        binding.addFriend.setOnClickListener(v -> {
-            addFriend();
-        });
+        binding.addFriend.setOnClickListener(v -> addFriend());
 
         return binding.getRoot();
     }
@@ -77,13 +80,61 @@ public class FriendsFragment extends BaseFragment<FriendsPresenter> implements F
 
     @Override
     public void addFriend() {
-        presenter.addFriend();
+        String email = makeAlertWindow("Add friend");
+        if (!TextUtils.isNullOrEmpty(email)) {
+            presenter.addFriend(email);
+        }
     }
 
     @Override
-    public void removeFriend() {
-
+    public void changeNick() {
+        String nick = makeAlertWindow("Change nick");
+        if (!TextUtils.isNullOrEmpty(nick)) {
+            presenter.changeNick(nick);
+        }
     }
 
+    @Override
+    public void removeFriend(String email) {
+        boolean removed = friendsAdapter.removeUser(email);
+        assert(removed);
+    }
+
+    @Nullable
+    private String makeAlertWindow(String title) {
+        final String[] friendsEmail = new String[1];
+        String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+
+        AlertDialog.Builder friendsAlert = new AlertDialog.Builder(getActivity());
+        EditText friendsEmailEditText = new EditText(getContext());
+        friendsEmailEditText.setHint("Enter Email");
+
+        friendsAlert.setTitle(title);
+        friendsAlert.setView(friendsEmailEditText);
+
+        LinearLayout friendsAlertLayout = new LinearLayout(getContext());
+        friendsAlertLayout.setOrientation(LinearLayout.VERTICAL);
+        friendsAlertLayout.addView(friendsEmailEditText);
+        friendsAlert.setView(friendsAlertLayout);
+
+        friendsAlert.setPositiveButton("Continue", (dialog, whichButton) -> {
+            friendsEmail[0] = friendsEmailEditText.getText().toString();
+            if (friendsEmailEditText.getText().toString().isEmpty()) {
+                Toast.makeText(getContext(), "enter email address", Toast.LENGTH_SHORT).show();
+            } else {
+                if (friendsEmailEditText.getText().toString().trim().matches(emailPattern)) {
+                    Toast.makeText(getContext(), "valid email address", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), "Invalid email address", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        friendsAlert.setNegativeButton("Cancel", (dialog, whichButton) -> dialog.cancel());
+
+        friendsAlert.create().show();
+
+        return friendsEmail[0];
+    }
 
 }

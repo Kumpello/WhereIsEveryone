@@ -1,20 +1,30 @@
 package com.example.whereiseveryone.presenter;
 
+import com.example.whereiseveryone.model.FriendsService;
 import com.example.whereiseveryone.mvp.BasePresenter;
 import com.example.whereiseveryone.view.FriendsView;
 
 public class FriendsPresenterImpl extends BasePresenter<FriendsView> implements FriendsPresenter{
 
-    public FriendsPresenterImpl() {
+    FriendsService friendsService;
+
+    public FriendsPresenterImpl(FriendsService friendsService) {
+        this.friendsService = friendsService;
     }
 
     @Override
-    public void addFriend() {
-
+    public boolean addFriend(String email) {
+        return friendsService.addFriend(email);
     }
 
     @Override
     public void removeFriend(String email) {
+        friendsService.removeFriend(email);
+        view.removeFriend(email);
+    }
 
+    @Override
+    public void changeNick(String nick) {
+        friendsService.changeNick(nick);
     }
 }

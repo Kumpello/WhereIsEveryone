@@ -4,6 +4,7 @@ import com.example.whereiseveryone.mvp.Contract;
 import com.example.whereiseveryone.view.FriendsView;
 
 public interface FriendsPresenter extends Contract.Presenter<FriendsView> {
-    void addFriend();
+    boolean addFriend(String email);
     void removeFriend(String email);
+    void changeNick(String nick);
 }

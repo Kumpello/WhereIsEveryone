@@ -68,8 +68,16 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendVi
         return friendList.size();
     }
 
-    public boolean removeUser(final User user) {
-        int position = friendList.indexOf(user);
+    public boolean removeUser(final String user) {
+        // TODO: verify concurrency is safe (removing two users at once)
+        // find index of user with email
+        int position = -1;
+        for (int i = 0; i < friendList.size(); i++) {
+            if (friendList.get(i).email.equals(user)) {
+                position = i;
+            }
+        }
+
         if (position != -1) {
             friendList.remove(position);
             notifyItemRemoved(position);

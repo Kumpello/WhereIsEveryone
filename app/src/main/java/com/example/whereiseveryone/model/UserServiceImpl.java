@@ -2,6 +2,8 @@ package com.example.whereiseveryone.model;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import static com.example.whereiseveryone.utils.TextUtils.cutSpecialSigns;
+
 import android.app.Activity;
 import android.content.SharedPreferences;
 
@@ -26,7 +28,7 @@ public class UserServiceImpl implements UserService {
         mDatabase = FirebaseDatabase.getInstance().getReference();
         sharedPreferences = activity.getSharedPreferences("WhereIsEveryone",MODE_PRIVATE);
         myEdit = sharedPreferences.edit();
-        this.userID = null;
+        this.userID = getToken();
     }
 
     @Override
@@ -52,5 +54,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateUserOnServer(User user) {
         mDatabase.child("users").child(getToken()).setValue(user);
+        String userEmailWithoutSpecialSigns = cutSpecialSigns(user.email);
+        //ToDO
+        //Add checkup if email exists
+        mDatabase.child("userEmails").child(userEmailWithoutSpecialSigns).child(userKey).setValue(userID);
     }
 }
