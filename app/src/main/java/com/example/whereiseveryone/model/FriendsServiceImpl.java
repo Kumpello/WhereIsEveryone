@@ -15,21 +15,20 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class FriendsServiceImpl implements FriendsService {
 
-    private FirebaseDatabase database;
-    private DatabaseReference mDatabase;
+    private final FirebaseDatabase database;
+    private final DatabaseReference mDatabase;
     private final String userKey = "userid";
-    private String userID;
+    private final String userID;
     private SharedPreferences sharedPreferences;
-    private SharedPreferences.Editor myEdit;
-    private Activity activity;
-    private User user;
+    private final SharedPreferences.Editor myEdit;
+    private final Activity activity;
+    private final User user;
 
     public FriendsServiceImpl(Activity activity) {
         this.activity = activity;
@@ -89,9 +88,10 @@ public class FriendsServiceImpl implements FriendsService {
             }
         });
 
-        ArrayList<User> userList = new ArrayList<User>();
+        ArrayList<User> userList = new ArrayList<>();
+        friendsList.forEach(currentUserID -> userList.add(getUser(currentUserID)));
 
-        return Collections.emptyList();
+        return userList;
     }
 
     private String getToken() {

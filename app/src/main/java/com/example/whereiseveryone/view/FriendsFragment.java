@@ -49,9 +49,7 @@ public class FriendsFragment extends BaseFragment<FriendsPresenter> implements F
         // show progress ...
 
         // fetch list of friends ...
-        ArrayList<User> friends = new ArrayList<>();
-        friends.add(new User("abc@abc.com"));
-        friends.add(new User("szok@szok.com"));
+        ArrayList<User> friends = (ArrayList<User>) presenter.getFriendsList();
 
         friendsAdapter = new FriendsAdapter(friends, presenter);
         layoutManager = new LinearLayoutManager(requireContext());

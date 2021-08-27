@@ -1,8 +1,11 @@
 package com.example.whereiseveryone.presenter;
 
 import com.example.whereiseveryone.model.FriendsService;
+import com.example.whereiseveryone.model.User;
 import com.example.whereiseveryone.mvp.BasePresenter;
 import com.example.whereiseveryone.view.FriendsView;
+
+import java.util.List;
 
 public class FriendsPresenterImpl extends BasePresenter<FriendsView> implements FriendsPresenter{
 
@@ -26,5 +29,10 @@ public class FriendsPresenterImpl extends BasePresenter<FriendsView> implements 
     @Override
     public void changeNick(String nick) {
         friendsService.changeNick(nick);
+    }
+
+    @Override
+    public List<User> getFriendsList() {
+        return friendsService.getFriendsList();
     }
 }
