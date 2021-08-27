@@ -71,6 +71,7 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
                 if(!userMarkerPlaced){
                     view.addUserMarker();
                     userMarkerPlaced = true;
+                    view.centerCamera();
                 }
                 view.updateUserLocation();
             }

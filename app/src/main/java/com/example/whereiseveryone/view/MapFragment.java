@@ -135,12 +135,6 @@ public class MapFragment extends BaseFragment<MapPresenter> implements OnMapRead
         mMap.getUiSettings().setAllGesturesEnabled(true);
 
         presenter.updateLastLocation();
-
-
-        if (presenter.updateUserLocationAndDirection()) {
-            LatLng userLocationLatLng = presenter.getUserLatLng();
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(userLocationLatLng));
-        }
     }
 
     public void showPermissionDialog(String permission) {
