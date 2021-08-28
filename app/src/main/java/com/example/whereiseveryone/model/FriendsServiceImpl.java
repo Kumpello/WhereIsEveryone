@@ -33,7 +33,7 @@ public class FriendsServiceImpl implements FriendsService {
     public FriendsServiceImpl(Activity activity) {
         this.activity = activity;
         database = FirebaseDatabase.getInstance(activity.getString(R.string.server_address));
-        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase = database.getReference();
         sharedPreferences = activity.getSharedPreferences("WhereIsEveryone", MODE_PRIVATE);
         myEdit = sharedPreferences.edit();
         userID = getToken();
@@ -80,11 +80,14 @@ public class FriendsServiceImpl implements FriendsService {
             if (!task.isSuccessful()) {
                 Log.e("firebase", "Error getting data", task.getException());
             } else {
-                //Log.d("firebase", String.valueOf(task.getResult().getValue()));
-                HashMap<String, Boolean> tempMap = (HashMap<String, Boolean>) task.getResult().getValue();
-                for (Map.Entry<String, Boolean> p : tempMap.entrySet()) {
-                    friendsList.add(p.getKey());
+                if (task.getResult().getValue() != null) {
+                    HashMap<String, Boolean> tempMap = (HashMap<String, Boolean>) task.getResult().getValue();
+                    for (Map.Entry<String, Boolean> p : tempMap.entrySet()) {
+                        friendsList.add(p.getKey());
+                    }
                 }
+                //Log.d("firebase", String.valueOf(task.getResult().getValue()));
+
             }
         });
 

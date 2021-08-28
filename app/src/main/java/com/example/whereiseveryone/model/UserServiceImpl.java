@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
 
     public UserServiceImpl(Activity activity) {
         database = FirebaseDatabase.getInstance(activity.getString(R.string.server_address));
-        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase = database.getReference();
         sharedPreferences = activity.getSharedPreferences("WhereIsEveryone",MODE_PRIVATE);
         myEdit = sharedPreferences.edit();
         this.userID = getToken();
