@@ -17,12 +17,23 @@ public class User {
     public float userAzimuth;
     @NonNull
     public String nick;
+    @Nullable
+    public String userID;
 
     public User() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
-    public User(String email) {
+    public User(String userID) {
+        this.userID = userID;
+        this.email = null;
+        this.userLocation = null;
+        this.userAzimuth = 0;
+        this.nick = "NoName";
+    }
+
+    public User(String userID, String email) {
+        this.userID = userID;
         this.email = email;
         this.userLocation = null;
         this.userAzimuth = 0;

@@ -24,6 +24,7 @@ public class FriendsServiceImpl implements FriendsService {
     private final FirebaseDatabase database;
     private final DatabaseReference mDatabase;
     private final String userKey = "userid";
+    private final String emailKey = "email";
     private final String userID;
     private SharedPreferences sharedPreferences;
     private final SharedPreferences.Editor myEdit;
@@ -42,20 +43,15 @@ public class FriendsServiceImpl implements FriendsService {
 
     @Override
     public boolean addFriend(String email) {
-        String token = getToken();
-        String userEmail = user.email;
+        String userEmailWithoutSpecialSigns = cutSpecialSigns(user.email);
         String friendsID = findFriendsID(email);
 
-        if (isNullOrEmpty(friendsID)){
+        if (isNullOrEmpty(friendsID)) {
             return false;
         } else {
-            mDatabase.child("userFriends").child(token).child("email").setValue(userEmail);
-            mDatabase.child("userFriends").child(token).child("contacts").child(friendsID).setValue(true);
-
+            mDatabase.child("userFriends").child(userEmailWithoutSpecialSigns).child("contacts").child(friendsID).setValue(true);
             return true;
         }
-
-
     }
 
     @Override
@@ -105,11 +101,10 @@ public class FriendsServiceImpl implements FriendsService {
         String userEmailWithoutSpecialSigns = cutSpecialSigns(email);
         final String[] friendsID = new String[1];
 
-        mDatabase.child("userEmails").child(userEmailWithoutSpecialSigns).child(userKey).get().addOnCompleteListener(task -> {
+        mDatabase.child("userFriends").child(userEmailWithoutSpecialSigns).child(userKey).get().addOnCompleteListener(task -> {
             if (!task.isSuccessful()) {
                 Log.e("firebase", "Error getting data", task.getException());
-            }
-            else {
+            } else {
                 Log.d("firebase", String.valueOf(task.getResult().getValue()));
                 friendsID[0] = String.valueOf(task.getResult().getValue());
             }
@@ -119,17 +114,28 @@ public class FriendsServiceImpl implements FriendsService {
     }
 
     private User getUser(String token) {
+        final boolean[] firstRun = {true};
         final User[] tempUser = new User[1];
         mDatabase.child("users").child(token).get().addOnCompleteListener((OnCompleteListener<DataSnapshot>) task -> {
             if (!task.isSuccessful()) {
                 Log.e("firebase", "Error getting data", task.getException());
             } else {
-                //Log.d("firebase", String.valueOf(task.getResult().getValue()));
                 Map<String, String> tempMap = (HashMap<String, String>) task.getResult().getValue();
-                tempUser[0] = new User(tempMap.get("email"));
+                tempUser[0] = new User(tempMap.get(userKey), tempMap.get(emailKey));
                 tempUser[0].nick = tempMap.get("nick");
+                firstRun[0] = false;
+                Log.d("firebase", String.valueOf(tempUser[0].userID + " " + tempUser[0].email));
+                if (firstRun[0]) {
+                    addUserToFriendsDataBase(tempUser[0]);
+                }
             }
         });
         return tempUser[0];
+    }
+
+    private void addUserToFriendsDataBase(User user) {
+        String userEmailWithoutSpecialSigns = cutSpecialSigns(user.email);
+        mDatabase.child("userFriends").child(userEmailWithoutSpecialSigns).child("email").setValue(user.email);
+        mDatabase.child("userFriends").child(userEmailWithoutSpecialSigns).child(userKey).setValue(user.userID);
     }
 }

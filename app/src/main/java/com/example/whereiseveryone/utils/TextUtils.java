@@ -15,6 +15,6 @@ public class TextUtils {
             }
             stringBuilder.append(c);
         }
-        return stringBuilder.toString();
+        return stringBuilder.toString().toLowerCase();
     }
 }

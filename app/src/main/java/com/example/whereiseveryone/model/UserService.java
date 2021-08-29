@@ -1,18 +1,22 @@
 package com.example.whereiseveryone.model;
 
-import android.content.SharedPreferences;
-
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import org.jetbrains.annotations.NotNull;
 
 public interface UserService {
     // null for log out
     void saveToken(@Nullable String token);
 
-    // returns user-token or null if there is no user logged in
-    @Nullable
-    String getToken();
+    void saveEmail(@NonNull String email);
 
-    void passSharedPreferences(SharedPreferences sharedPreferences);
+    @NotNull
+    String getEmail();
+
+    // returns user-token or null if there is no user logged in
+    @NotNull
+    String getToken();
 
     void updateUserOnServer(User user);
 }

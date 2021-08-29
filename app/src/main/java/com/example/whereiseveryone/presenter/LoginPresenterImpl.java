@@ -37,6 +37,7 @@ public class LoginPresenterImpl extends BasePresenter<LoginView> implements Logi
                 return;
             }
             userService.saveToken(value.getToken());
+            userService.saveEmail(login);
 
             view.showSuccess();
         });

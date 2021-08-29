@@ -2,13 +2,11 @@ package com.example.whereiseveryone.model;
 
 import static android.content.Context.MODE_PRIVATE;
 
-import static com.example.whereiseveryone.utils.TextUtils.cutSpecialSigns;
-
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.example.whereiseveryone.R;
 import com.google.firebase.database.DatabaseReference;
@@ -17,7 +15,9 @@ import com.google.firebase.database.FirebaseDatabase;
 public class UserServiceImpl implements UserService {
 
     private final String userKey = "userid";
+    private final String emailKey = "email";
     private String userID;
+    private String email;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor myEdit;
     private FirebaseDatabase database;
@@ -28,7 +28,8 @@ public class UserServiceImpl implements UserService {
         mDatabase = database.getReference();
         sharedPreferences = activity.getSharedPreferences("WhereIsEveryone",MODE_PRIVATE);
         myEdit = sharedPreferences.edit();
-        this.userID = getToken();
+        userID = getToken();
+        email = getEmail();
     }
 
     @Override
@@ -36,27 +37,34 @@ public class UserServiceImpl implements UserService {
         userID = token;
         myEdit.putString(userKey, userID);
         myEdit.commit();
-        //myEdit.apply();
     }
 
     @Override
-    @Nullable
+    public void saveEmail(@NonNull String email) {
+        this.email = email;
+        myEdit.putString(emailKey, email);
+        myEdit.commit();
+        Log.d("UserService", "Email saved: " + email);
+    }
+
+    @Override
+    @NonNull
     public String getToken() {
         return sharedPreferences.getString(userKey, "");
     }
 
-    @Override
-    public void passSharedPreferences(SharedPreferences sharedPreferences) {
-        this.sharedPreferences = sharedPreferences;
-        myEdit = sharedPreferences.edit();
+    @NonNull
+    public String getEmail() {
+        String email = sharedPreferences.getString(emailKey, "");
+        Log.d("UserService", "Got email: " + email);
+        return email;
     }
+
 
     @Override
     public void updateUserOnServer(User user) {
         mDatabase.child("users").child(getToken()).setValue(user);
-        String userEmailWithoutSpecialSigns = cutSpecialSigns(user.email);
-        //ToDO
-        //Add checkup if email exists
-        mDatabase.child("userEmails").child(userEmailWithoutSpecialSigns).child(userKey).setValue(userID);
+        //String userEmailWithoutSpecialSigns = cutSpecialSigns(user.email);
+        //mDatabase.child("userEmails").child(userEmailWithoutSpecialSigns).child(userKey).setValue(userID);
     }
 }
