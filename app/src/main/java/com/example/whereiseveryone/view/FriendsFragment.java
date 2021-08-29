@@ -66,6 +66,7 @@ public class FriendsFragment extends BaseFragment<FriendsPresenter> implements F
         binding.recyclerView.setAdapter(friendsAdapter);
 
         binding.addFriend.setOnClickListener(v -> addFriend());
+        binding.changeNick.setOnClickListener(v -> changeNick());
 
         return binding.getRoot();
     }
