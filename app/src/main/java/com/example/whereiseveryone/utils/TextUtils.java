@@ -17,4 +17,8 @@ public class TextUtils {
         }
         return stringBuilder.toString().toLowerCase();
     }
+
+    public static String getHash(String text) {
+        return String.valueOf(text.hashCode());
+    }
 }
