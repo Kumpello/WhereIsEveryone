@@ -7,6 +7,7 @@ import static com.example.whereiseveryone.utils.TextUtils.isNullOrEmpty;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.whereiseveryone.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class FriendsServiceImpl implements FriendsService {
 
@@ -46,6 +48,17 @@ public class FriendsServiceImpl implements FriendsService {
         String userEmailWithoutSpecialSigns = cutSpecialSigns(user.email);
         String friendsID = findFriendsID(email);
 
+        String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+        if (email.isEmpty()) {
+            Toast.makeText(activity.getApplicationContext(), "enter email address", Toast.LENGTH_SHORT).show();
+        } else {
+            if (email.trim().matches(emailPattern)) {
+                Toast.makeText(activity.getApplicationContext(), "valid email address", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(activity.getApplicationContext(), "Invalid email address", Toast.LENGTH_SHORT).show();
+            }
+        }
+
         if (isNullOrEmpty(friendsID)) {
             return false;
         } else {
@@ -64,7 +77,8 @@ public class FriendsServiceImpl implements FriendsService {
 
     @Override
     public void changeNick(String nick) {
-        mDatabase.child("users").child(getToken()).child("nick").setValue(nick);
+        Log.d("FriendsService", "Nick set to " + nick);
+        mDatabase.child("users").child(userID).child("nick").setValue(nick);
     }
 
     @Override
@@ -122,9 +136,9 @@ public class FriendsServiceImpl implements FriendsService {
             } else {
                 Map<String, String> tempMap = (HashMap<String, String>) task.getResult().getValue();
                 tempUser[0] = new User(tempMap.get(userKey), tempMap.get(emailKey));
-                tempUser[0].nick = tempMap.get("nick");
+                tempUser[0].nick = Objects.requireNonNull(tempMap.get("nick"));
                 firstRun[0] = false;
-                Log.d("firebase", String.valueOf(tempUser[0].userID + " " + tempUser[0].email));
+                Log.d("firebase", tempUser[0].userID + " " + tempUser[0].email);
                 if (firstRun[0]) {
                     addUserToFriendsDataBase(tempUser[0]);
                 }
@@ -135,6 +149,7 @@ public class FriendsServiceImpl implements FriendsService {
 
     private void addUserToFriendsDataBase(User user) {
         String userEmailWithoutSpecialSigns = cutSpecialSigns(user.email);
+        Log.d("FriendsService", "userEmailWithoutSpecialSigns: " + userEmailWithoutSpecialSigns);
         mDatabase.child("userFriends").child(userEmailWithoutSpecialSigns).child("email").setValue(user.email);
         mDatabase.child("userFriends").child(userEmailWithoutSpecialSigns).child(userKey).setValue(user.userID);
     }

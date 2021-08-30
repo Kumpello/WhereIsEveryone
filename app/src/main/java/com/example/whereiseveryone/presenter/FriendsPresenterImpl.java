@@ -1,5 +1,8 @@
 package com.example.whereiseveryone.presenter;
 
+import android.util.Log;
+import android.widget.Toast;
+
 import com.example.whereiseveryone.model.FriendsService;
 import com.example.whereiseveryone.model.User;
 import com.example.whereiseveryone.mvp.BasePresenter;
@@ -17,7 +20,7 @@ public class FriendsPresenterImpl extends BasePresenter<FriendsView> implements 
 
     @Override
     public boolean addFriend(String email) {
-        return friendsService.addFriend(email);
+        return friendsService.addFriend(email.trim());
     }
 
     @Override
@@ -28,6 +31,7 @@ public class FriendsPresenterImpl extends BasePresenter<FriendsView> implements 
 
     @Override
     public void changeNick(String nick) {
+        Log.d("FriendsPresenter", "Nick set to " + nick);
         friendsService.changeNick(nick);
     }
 

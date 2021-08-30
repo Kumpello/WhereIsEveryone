@@ -25,4 +25,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="add_friend">Add friend</string>
     <string name="change_nick">Change nick</string>
+    <string name="enter_email">Enter Email</string>
+    <string name="enter_nick">Enter your nick</string>
+    <string name="enter_value">Enter value</string>
 </resources>
