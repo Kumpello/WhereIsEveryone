@@ -24,6 +24,7 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
     private final SimpleTimer timer;
     private final UserService userService;
     private final User user;
+    private boolean userExists;
 
 
     public MapPresenterImpl(MapService mapService, PermissionHandler permissionHandler, UserService userService, SimpleTimer timer) {
@@ -36,6 +37,7 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
         this.userService = userService;
         this.timer = timer;
         user = new User(userService.getToken(), userService.getEmail());
+        userExists = userService.userExists();
     }
 
 
@@ -44,14 +46,18 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
         if (mapService.updateUserLocationAndDirection()) {
             user.userLocation = getUserLatLng();
             user.userAzimuth = getAzimuth();
-            userService.updateUserOnServer(user);
+            if (userExists) {
+                userService.updateUserLocationAndDirection(user);
+            } else {
+                userService.updateUserOnServer(user);
+            }
             return true;
         } else {
             return false;
         }
     }
 
-    public float getAzimuth(){
+    public float getAzimuth() {
         return mapService.getAzimuth();
     }
 
@@ -68,7 +74,7 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
 
         timer.start(() -> {
             if (mapService.locationCallbackReady()) {
-                if(!userMarkerPlaced){
+                if (!userMarkerPlaced) {
                     view.addUserMarker();
                     userMarkerPlaced = true;
                     view.centerCamera();
@@ -99,16 +105,16 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
         return userService.getToken();
     }
 
-    public void updateLastLocation(){
+    public void updateLastLocation() {
         mapService.updateLastLocation();
     }
 
     @Override
     public void checkPermissions(List<String> permissions) {
         List<String> notGrantedPermissions = permissionHandler.arePermissionGranted(permissions);
-        if(notGrantedPermissions != null) {
+        if (notGrantedPermissions != null) {
             for (String permission : permissions) {
-                if(permissionHandler.askForPermission(permission)) {
+                if (permissionHandler.askForPermission(permission)) {
                     view.showPermissionDialog(permission);
                 } else {
                     view.requestPermission(permission);
@@ -116,7 +122,6 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
             }
         }
     }
-
 
 
 }

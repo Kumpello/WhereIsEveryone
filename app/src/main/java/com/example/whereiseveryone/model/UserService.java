@@ -19,4 +19,8 @@ public interface UserService {
     String getToken();
 
     void updateUserOnServer(User user);
+
+    void updateUserLocationAndDirection(User user);
+
+    boolean userExists();
 }

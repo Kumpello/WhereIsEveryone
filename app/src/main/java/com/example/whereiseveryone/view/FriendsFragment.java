@@ -83,13 +83,17 @@ public class FriendsFragment extends BaseFragment<FriendsPresenter> implements F
     public void addFriend() {
         makeAlertWindow(getString(R.string.add_friend));
         if (!TextUtils.isNullOrEmpty(friendsEmail)) {
+            Log.d("FriendsFragment", "Added friend " + friendsEmail);
             presenter.addFriend(friendsEmail);
+        }  else {
+            Log.d("FriendsFragment", "email is null or empty");
         }
     }
 
     @Override
     public void changeNick() {
         makeAlertWindow(getString(R.string.change_nick));
+        //Todo fix bug with false true
         if (!TextUtils.isNullOrEmpty(nick)) {
             Log.d("FriendsFragment", "Nick set to " + nick);
             presenter.changeNick(nick);
