@@ -14,7 +14,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class UserServiceImpl implements UserService {
 
-    private final String userKey = "userid";
+    private final String userKeySharedPreferences = "userid";
     private final String emailKey = "email";
     private String userID;
     private String email;
@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void saveToken(@NonNull String token) {
         userID = token;
-        myEdit.putString(userKey, userID);
+        myEdit.putString(userKeySharedPreferences, userID);
         myEdit.commit();
     }
 
@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @NonNull
     public String getToken() {
-        return sharedPreferences.getString(userKey, "");
+        return sharedPreferences.getString(userKeySharedPreferences, "");
     }
 
     @NonNull

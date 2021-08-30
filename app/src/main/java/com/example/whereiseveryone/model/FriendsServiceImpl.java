@@ -23,7 +23,8 @@ public class FriendsServiceImpl implements FriendsService {
 
     private final FirebaseDatabase database;
     private final DatabaseReference mDatabase;
-    private final String userKey = "userid";
+    private final String userKey = "userID";
+    private final String userKeySharedPreferences = "userid";
     private final String emailKey = "email";
     private final String userID;
     private SharedPreferences sharedPreferences;
@@ -111,7 +112,7 @@ public class FriendsServiceImpl implements FriendsService {
     }
 
     private String getToken() {
-        return sharedPreferences.getString(userKey, "");
+        return sharedPreferences.getString(userKeySharedPreferences, "");
     }
 
     private String getEmail() { return sharedPreferences.getString(emailKey, ""); }
@@ -142,10 +143,10 @@ public class FriendsServiceImpl implements FriendsService {
                 Map<String, String> tempMap = (HashMap<String, String>) task.getResult().getValue();
                 tempUser[0] = new User(tempMap.get(userKey), tempMap.get(emailKey));
                 tempUser[0].nick = Objects.requireNonNull(tempMap.get("nick"));
-                firstRun[0] = false;
                 Log.d("firebase", tempUser[0].userID + " " + tempUser[0].email);
                 if (firstRun[0]) {
                     addUserToFriendsDataBase(tempUser[0]);
+                    firstRun[0] = false;
                 }
             }
         });
