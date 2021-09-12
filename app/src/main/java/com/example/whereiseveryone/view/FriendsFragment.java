@@ -17,6 +17,7 @@ import com.example.whereiseveryone.databinding.FragmentFriendsBinding;
 import com.example.whereiseveryone.model.User;
 import com.example.whereiseveryone.mvp.BaseFragment;
 import com.example.whereiseveryone.presenter.FriendsPresenter;
+import com.example.whereiseveryone.utils.OnResult;
 import com.example.whereiseveryone.utils.TextUtils;
 
 import java.util.ArrayList;
@@ -31,17 +32,14 @@ public class FriendsFragment extends BaseFragment<FriendsPresenter> implements F
     private FragmentFriendsBinding binding;
     private FriendsAdapter friendsAdapter;
     private LinearLayoutManager layoutManager;
-    private String nick;
-    private String friendsEmail;
 
     public FriendsFragment() {
         // Required empty public constructor
     }
 
     public static FriendsFragment newInstance() {
-        FriendsFragment fragment = new FriendsFragment();
 
-        return fragment;
+        return new FriendsFragment();
     }
 
     @Override
@@ -81,36 +79,51 @@ public class FriendsFragment extends BaseFragment<FriendsPresenter> implements F
 
     @Override
     public void addFriend() {
-        makeAlertWindow(getString(R.string.add_friend));
-        if (!TextUtils.isNullOrEmpty(friendsEmail)) {
-            Log.d("FriendsFragment", "Added friend " + friendsEmail);
-            presenter.addFriend(friendsEmail);
-        }  else {
-            Log.d("FriendsFragment", "email is null or empty");
-        }
+        makeAlertWindow(getString(R.string.add_friend), new OnResult<String>() {
+            @Override
+            public void onSuccess(String result) {
+                if (!TextUtils.isNullOrEmpty(result)) {
+                    Log.d("FriendsFragment", "Email set to " + result);
+                    presenter.addFriend(result);
+                } else {
+                    Log.d("FriendsFragment", "Friend email is null or empty");
+                }
+            }
+
+            @Override
+            public void onError(Throwable error) {
+                Log.e("FriendsFragment", error.getMessage());
+            }
+        });
     }
 
     @Override
     public void changeNick() {
-        makeAlertWindow(getString(R.string.change_nick));
-        //Todo fix bug with false true
-        if (!TextUtils.isNullOrEmpty(nick)) {
-            Log.d("FriendsFragment", "Nick set to " + nick);
-            presenter.changeNick(nick);
-        } else {
-            Log.d("FriendsFragment", "Nick is null or empty");
-        }
+        makeAlertWindow(getString(R.string.change_nick), new OnResult<String>() {
+            @Override
+            public void onSuccess(String result) {
+                if (!TextUtils.isNullOrEmpty(result)) {
+                    Log.d("FriendsFragment", "Nick set to " + result);
+                    presenter.changeNick(result);
+                } else {
+                    Log.d("FriendsFragment", "Nick is null or empty");
+                }
+            }
+
+            @Override
+            public void onError(Throwable error) {
+                Log.e("FriendsFragment", error.getMessage());
+            }
+        });
     }
 
     @Override
     public void removeFriend(String email) {
         boolean removed = friendsAdapter.removeUser(email);
-        assert(removed);
+        assert (removed);
     }
 
-    private void makeAlertWindow(String title) {
-        final String[] value = new String[1];
-
+    private void makeAlertWindow(String title, OnResult<String> handler) {
         AlertDialog.Builder friendsAlert = new AlertDialog.Builder(getActivity());
         EditText friendsEmailEditText = new EditText(getContext());
         String addFriend = getString(R.string.add_friend);
@@ -134,26 +147,13 @@ public class FriendsFragment extends BaseFragment<FriendsPresenter> implements F
         friendsAlert.setView(friendsAlertLayout);
 
         friendsAlert.setPositiveButton("Continue", (dialog, whichButton) -> {
-            value[0] = friendsEmailEditText.getText().toString();
-            Log.d("FriendsFragment", "value: " + value[0]);
-            if (title.equals(addFriend)) {
-                setFriendsEmail(value[0]);
-            } else if (title.equals(changeNick)) {
-                setNick(value[0]);
-            }
+            Log.d("FriendsFragment", "value: " + friendsEmailEditText.getText().toString());
+            handler.onSuccess(friendsEmailEditText.getText().toString());
         });
 
         friendsAlert.setNegativeButton("Cancel", (dialog, whichButton) -> dialog.cancel());
 
         friendsAlert.create().show();
-    }
-
-    private void setNick(String nick) {
-        this.nick = nick;
-    }
-
-    private void setFriendsEmail(String email) {
-        this.friendsEmail = email;
     }
 
 }

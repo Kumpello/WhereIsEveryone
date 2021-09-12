@@ -1,7 +1,11 @@
 package com.example.whereiseveryone;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.app.Activity;
 import android.app.Application;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -32,9 +36,12 @@ import com.example.whereiseveryone.view.LoginView;
 import com.example.whereiseveryone.view.MainView;
 import com.example.whereiseveryone.view.MapView;
 import com.example.whereiseveryone.view.SignUpView;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.jetbrains.annotations.NotNull;
 
+// TODO(P2): Use one of popular DependencyContainers for Android to get rid of this.
 
 public class DependencyContainer {
 
@@ -43,6 +50,7 @@ public class DependencyContainer {
     private LoginService loginService;
     private UserService userService;
 
+    private DatabaseReference databaseReference;
 
 
     // TODO: We should have a lock for initializing.
@@ -62,22 +70,35 @@ public class DependencyContainer {
     }
 
     @NonNull
-    public UserService getUserService(Activity activity) {
+    public UserService getUserService(DatabaseReference ref, SharedPreferences prefs) {
         if (userService == null) {
-            userService = new UserServiceImpl(activity);
+            userService = new UserServiceImpl(ref, prefs);
         }
 
         return userService;
     }
 
+    @NonNull
+    public DatabaseReference getDatabaseReference(Activity activity) {
+        if (databaseReference == null) {
+            this.databaseReference = FirebaseDatabase.getInstance(
+                    activity.getString(R.string.server_address)).getReference();
+        }
+        return databaseReference;
+    }
+
+    @NonNull
+    public Resources getResources() {
+        return application.getResources();
+    }
 
     // We want to create presenters every time,
     // so we shouldn't keep any references to them
     @NonNull
-    public LoginPresenter getLoginPresenter(Activity activity) {
+    public LoginPresenter getLoginPresenter(DatabaseReference ref, SharedPreferences preferences) {
         return new LoginPresenterImpl(
                 getLoginService(),
-                getUserService(activity)
+                getUserService(ref, preferences)
         );
     }
 
@@ -89,19 +110,35 @@ public class DependencyContainer {
 
     @NotNull
     public MapPresenter getMapPresenter(Activity activity) {
-        return new MapPresenterImpl(getMapService(activity), getPermissionHandler(activity), getUserService(activity), new SimpleTimer());
+        return new MapPresenterImpl(
+                getMapService(activity),
+                getPermissionHandler(activity),
+                getUserService(
+                        getDatabaseReference(activity),
+                        getSharedPreferences(activity)
+                ),
+                new SimpleTimer());
     }
 
     @NonNull
-    public FriendsPresenter getFriendsPresenter(Activity activity) {
-        return new FriendsPresenterImpl(new FriendsServiceImpl(activity));
+    public FriendsPresenter getFriendsPresenter(DatabaseReference databaseRef, SharedPreferences prefs, Resources resources) {
+        return new FriendsPresenterImpl(new FriendsServiceImpl(databaseRef, prefs, resources));
     }
 
     @NonNull
-    public MainPresenter getMainPresenter() { return new MainPresenter(); }
+    public MainPresenter getMainPresenter() {
+        return new MainPresenter();
+    }
+
+    // Services etc.
     @NotNull
     public MapService getMapService(Activity activity) {
         return new MapServiceImpl(activity);
+    }
+
+    @NonNull
+    public SharedPreferences getSharedPreferences(Activity activity) {
+        return activity.getSharedPreferences("WhereIsEveryone", MODE_PRIVATE);
     }
 
     @NotNull
@@ -113,11 +150,11 @@ public class DependencyContainer {
     public <V extends Contract.View> BasePresenter<V> getPresenter(V injector) throws IllegalArgumentException {
         Activity activity;
 
-        if(injector instanceof Activity) {
+        if (injector instanceof Activity) {
             activity = (Activity) injector;
-        }else if(injector instanceof Fragment) {
+        } else if (injector instanceof Fragment) {
             activity = (Activity) ((Fragment) injector).getActivity();
-        }else {
+        } else {
             throw new IllegalArgumentException("Injector must be Activity object");
         }
 
@@ -125,11 +162,18 @@ public class DependencyContainer {
             // ugly, but it'll work
             return (BasePresenter<V>) getSingUpPresenter();
         } else if (injector instanceof LoginView) {
-            return (BasePresenter<V>) getLoginPresenter(activity);
+            return (BasePresenter<V>) getLoginPresenter(
+                    getDatabaseReference(activity),
+                    getSharedPreferences(activity)
+            );
         } else if (injector instanceof MapView) {
             return (BasePresenter<V>) getMapPresenter(activity);
         } else if (injector instanceof FriendsView) {
-            return (BasePresenter<V>) getFriendsPresenter(activity);
+            return (BasePresenter<V>) getFriendsPresenter(
+                    getDatabaseReference(activity),
+                    getSharedPreferences(activity),
+                    getResources()
+            );
         } else if (injector instanceof MainView) {
             return (BasePresenter<V>) getMainPresenter();
         }

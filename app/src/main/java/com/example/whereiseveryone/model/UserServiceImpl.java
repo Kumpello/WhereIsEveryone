@@ -22,15 +22,13 @@ public class UserServiceImpl implements UserService {
     private final String emailKey = "email";
     private String userID;
     private String email;
-    private SharedPreferences sharedPreferences;
+    private final SharedPreferences sharedPreferences;
     private SharedPreferences.Editor myEdit;
-    private FirebaseDatabase database;
-    private DatabaseReference mDatabase;
+    private DatabaseReference database;
 
-    public UserServiceImpl(Activity activity) {
-        database = FirebaseDatabase.getInstance(activity.getString(R.string.server_address));
-        mDatabase = database.getReference();
-        sharedPreferences = activity.getSharedPreferences("WhereIsEveryone",MODE_PRIVATE);
+    public UserServiceImpl(DatabaseReference reference, SharedPreferences preferences) {
+        database = reference;
+        sharedPreferences = preferences;
         myEdit = sharedPreferences.edit();
         userID = getToken();
         email = getEmail();
@@ -66,19 +64,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUserOnServer(User user) {
-        mDatabase.child("users").child(userID).setValue(user);
+        database.child("users").child(userID).setValue(user);
     }
 
     @Override
     public void updateUserLocationAndDirection(User user) {
-        mDatabase.child("users").child(userID).child("userAzimuth").setValue(user.userAzimuth);
-        mDatabase.child("users").child(userID).child("userLocation").setValue(user.userLocation);
+        database.child("users").child(userID).child("userAzimuth").setValue(user.userAzimuth);
+        database.child("users").child(userID).child("userLocation").setValue(user.userLocation);
     }
 
     @Override
     public boolean userExists() {
         AtomicBoolean userExists = new AtomicBoolean(false);
-        mDatabase.child("users").child(userID).get().addOnCompleteListener(task -> {
+        database.child("users").child(userID).get().addOnCompleteListener(task -> {
             if (!task.isSuccessful()) {
                 Log.e("firebase", "Error getting data", task.getException());
             } else {

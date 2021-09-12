@@ -1,11 +1,11 @@
 package com.example.whereiseveryone.presenter;
 
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.whereiseveryone.model.FriendsService;
 import com.example.whereiseveryone.model.User;
 import com.example.whereiseveryone.mvp.BasePresenter;
+import com.example.whereiseveryone.utils.OnResult;
 import com.example.whereiseveryone.view.FriendsView;
 
 import java.util.List;
@@ -20,7 +20,17 @@ public class FriendsPresenterImpl extends BasePresenter<FriendsView> implements 
 
     @Override
     public boolean addFriend(String email) {
-        return friendsService.addFriend(email.trim());
+        return friendsService.addFriend(email.trim(), new OnResult<String>() {
+            @Override
+            public void onSuccess(String result) {
+                // notify the view - friend added
+            }
+
+            @Override
+            public void onError(Throwable error) {
+                // notify the view - error
+            }
+        });
     }
 
     @Override

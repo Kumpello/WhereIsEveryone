@@ -1,17 +1,16 @@
 package com.example.whereiseveryone.model;
 
-import static android.content.Context.MODE_PRIVATE;
 import static com.example.whereiseveryone.utils.TextUtils.getHash;
-import static com.example.whereiseveryone.utils.TextUtils.isNullOrEmpty;
 
-import android.app.Activity;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.util.Log;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import com.example.whereiseveryone.R;
+import com.example.whereiseveryone.utils.OnResult;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,51 +20,57 @@ import java.util.Objects;
 
 public class FriendsServiceImpl implements FriendsService {
 
-    private final FirebaseDatabase database;
-    private final DatabaseReference mDatabase;
+    private final DatabaseReference database;
     private final String userKey = "userID";
     private final String userKeySharedPreferences = "userid";
     private final String emailKey = "email";
     private final String userID;
     private SharedPreferences sharedPreferences;
-    private final SharedPreferences.Editor myEdit;
-    private final Activity activity;
+    private final SharedPreferences.Editor sharedPreferencesEdit;
     private final User user;
+    private final Resources resources;
 
-    public FriendsServiceImpl(Activity activity) {
-        this.activity = activity;
-        database = FirebaseDatabase.getInstance(activity.getString(R.string.server_address));
-        mDatabase = database.getReference();
-        sharedPreferences = activity.getSharedPreferences("WhereIsEveryone", MODE_PRIVATE);
-        myEdit = sharedPreferences.edit();
+    public FriendsServiceImpl(DatabaseReference databaseRef, SharedPreferences prefs, Resources resources) {
+        database = databaseRef;
+        sharedPreferences = prefs;
+        sharedPreferencesEdit = sharedPreferences.edit();
+        this.resources = resources;
         userID = getToken();
         user = getUser(userID);
     }
 
+    // async method - return true/false just basing on a validation
     @Override
-    public boolean addFriend(String friendsEmail) {
+    public boolean addFriend(String friendsEmail, OnResult<String> onResult) {
+        String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+        if (friendsEmail.isEmpty()) {
+            onResult.onError(new Throwable(resources.getString(R.string.text_is_empty)));
+            return false;
+        }
+        if (!friendsEmail.matches(emailPattern)) {
+            onResult.onError(new Throwable(resources.getString(R.string.text_is_not_email)));
+            return false;
+        }
+
         String email = getEmail();
         String userHash = getHash(email);
 
-        String friendsID = findFriendsID(email);
-
-        String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
-        if (email.isEmpty()) {
-            Toast.makeText(activity.getApplicationContext(), "enter email address", Toast.LENGTH_SHORT).show();
-        } else {
-            if (email.trim().matches(emailPattern)) {
-                Toast.makeText(activity.getApplicationContext(), "valid email address", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(activity.getApplicationContext(), "Invalid email address", Toast.LENGTH_SHORT).show();
+        findFriendID(friendsEmail, new OnResult<String>() {
+            @Override
+            public void onSuccess(String result) {
+                Log.d("FriendsService", "friendsID is " + result);
+                if (result != null) {
+                    database.child("userFriends").child(userHash).child("contacts").child(result).setValue(true);
+                }
+                onResult.onSuccess(result);
             }
-        }
 
-        if (isNullOrEmpty(friendsID)) {
-            return false;
-        } else {
-            mDatabase.child("userFriends").child(userHash).child("contacts").child(friendsID).setValue(true);
-            return true;
-        }
+            @Override
+            public void onError(Throwable error) {
+                onResult.onError(new Throwable(resources.getString(R.string.friends_id_not_found)));
+            }
+        });
+        return true;
     }
 
     @Override
@@ -73,15 +78,16 @@ public class FriendsServiceImpl implements FriendsService {
         String email = getEmail();
         String userHash = getHash(email);
 
-        String friendsID = findFriendsID(friendsEmail);
+        findFriendID(friendsEmail, null);
 
-        mDatabase.child("userFriends").child(userHash).child("contacts").child(friendsID).setValue(false);
+        // TODO
+        // database.child("userFriends").child(userHash).child("contacts").child(friendsID).setValue(false);
     }
 
     @Override
     public void changeNick(String nick) {
         Log.d("FriendsService", "Nick set to " + nick);
-        mDatabase.child("users").child(userID).child("nick").setValue(nick);
+        database.child("users").child(userID).child("nick").setValue(nick);
     }
 
     @Override
@@ -90,7 +96,7 @@ public class FriendsServiceImpl implements FriendsService {
         String email = getEmail();
         String userHash = getHash(email);
 
-        mDatabase.child("userFriends").child(userHash).child("contacts").get().addOnCompleteListener(task -> {
+        database.child("userFriends").child(userHash).child("contacts").get().addOnCompleteListener(task -> {
             if (!task.isSuccessful()) {
                 Log.e("firebase", "Error getting data", task.getException());
             } else {
@@ -115,28 +121,27 @@ public class FriendsServiceImpl implements FriendsService {
         return sharedPreferences.getString(userKeySharedPreferences, "");
     }
 
-    private String getEmail() { return sharedPreferences.getString(emailKey, ""); }
+    private String getEmail() {
+        return sharedPreferences.getString(emailKey, "");
+    }
 
-    private String findFriendsID(String email) {
-        String userHash = getHash(email);
-        final String[] friendsID = new String[1];
+    private void findFriendID(@NonNull String friendsEmail, @NonNull OnResult<String> handler) {
+        String friendsHash = getHash(friendsEmail);
 
-        mDatabase.child("userFriends").child(userHash).child(userKey).get().addOnCompleteListener(task -> {
+        database.child("userFriends").child(friendsHash).child(userKey).get().addOnCompleteListener(task -> {
             if (!task.isSuccessful()) {
                 Log.e("firebase", "Error getting data", task.getException());
+                handler.onError(task.getException());
             } else {
-                Log.d("firebase", String.valueOf(task.getResult().getValue()));
-                friendsID[0] = String.valueOf(task.getResult().getValue());
+                handler.onSuccess(String.valueOf(task.getResult().getValue()));
             }
         });
-
-        return friendsID[0];
     }
 
     private User getUser(String token) {
         final boolean[] firstRun = {true};
         final User[] tempUser = new User[1];
-        mDatabase.child("users").child(token).get().addOnCompleteListener(task -> {
+        database.child("users").child(token).get().addOnCompleteListener(task -> {
             if (!task.isSuccessful()) {
                 Log.e("firebase", "Error getting data", task.getException());
             } else {
@@ -156,7 +161,7 @@ public class FriendsServiceImpl implements FriendsService {
     private void addUserToFriendsDataBase(User user) {
         String userHash = getHash(user.email);
         Log.d("FriendsService", "userHash: " + userHash);
-        mDatabase.child("userFriends").child(userHash).child("email").setValue(user.email);
-        mDatabase.child("userFriends").child(userHash).child(userKey).setValue(user.userID);
+        database.child("userFriends").child(userHash).child(emailKey).setValue(user.email);
+        database.child("userFriends").child(userHash).child(userKey).setValue(user.userID);
     }
 }
