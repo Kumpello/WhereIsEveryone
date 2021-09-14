@@ -12,5 +12,9 @@ public interface FriendsService {
 
     void changeNick(String nick);
 
-    List<User> getFriendsList();
+    void getFriendsList(OnResult<List<User>> userList);
+
+    void getUser(String token, OnResult<User> handler);
+
+    void getUserIDbyEmail(String email, OnResult<String> handler);
 }

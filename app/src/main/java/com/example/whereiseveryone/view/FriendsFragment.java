@@ -1,5 +1,6 @@
 package com.example.whereiseveryone.view;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,6 +22,7 @@ import com.example.whereiseveryone.utils.OnResult;
 import com.example.whereiseveryone.utils.TextUtils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -49,10 +51,13 @@ public class FriendsFragment extends BaseFragment<FriendsPresenter> implements F
         // show progress ...
 
         // fetch list of friends ...
-        ArrayList<User> friends = (ArrayList<User>) presenter.getFriendsList();
 
-        friendsAdapter = new FriendsAdapter(friends, presenter);
+        ArrayList<User> userFriends = new ArrayList<>();
+
+        friendsAdapter = new FriendsAdapter((ArrayList<User>) userFriends, presenter);
         layoutManager = new LinearLayoutManager(requireContext());
+
+        presenter.getFriendsList();
 
 
     }
@@ -95,6 +100,12 @@ public class FriendsFragment extends BaseFragment<FriendsPresenter> implements F
                 Log.e("FriendsFragment", error.getMessage());
             }
         });
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void addFriendToAdapter(User user) {
+        friendsAdapter.addUser(user);
+        friendsAdapter.notifyDataSetChanged();
     }
 
     @Override

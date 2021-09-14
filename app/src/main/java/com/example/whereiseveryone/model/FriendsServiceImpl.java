@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class FriendsServiceImpl implements FriendsService {
 
@@ -27,7 +26,7 @@ public class FriendsServiceImpl implements FriendsService {
     private final String userID;
     private SharedPreferences sharedPreferences;
     private final SharedPreferences.Editor sharedPreferencesEdit;
-    private final User user;
+    private User user;
     private final Resources resources;
 
     public FriendsServiceImpl(DatabaseReference databaseRef, SharedPreferences prefs, Resources resources) {
@@ -36,7 +35,19 @@ public class FriendsServiceImpl implements FriendsService {
         sharedPreferencesEdit = sharedPreferences.edit();
         this.resources = resources;
         userID = getToken();
-        user = getUser(userID);
+        getUser(userID, new OnResult<User>() {
+
+            @Override
+            public void onSuccess(User result) {
+                user = result;
+                addUserToFriendsDataBase(user);
+            }
+
+            @Override
+            public void onError(Throwable error) {
+
+            }
+        });
     }
 
     // async method - return true/false just basing on a validation
@@ -91,8 +102,8 @@ public class FriendsServiceImpl implements FriendsService {
     }
 
     @Override
-    public List<User> getFriendsList() {
-        ArrayList<String> friendsList = new ArrayList<>();
+    public void getFriendsList(@NonNull OnResult<List<User>> handler) {
+        ArrayList<User> userList = new ArrayList<>();
         String email = getEmail();
         String userHash = getHash(email);
 
@@ -103,18 +114,26 @@ public class FriendsServiceImpl implements FriendsService {
                 if (task.getResult().getValue() != null) {
                     HashMap<String, Boolean> tempMap = (HashMap<String, Boolean>) task.getResult().getValue();
                     for (Map.Entry<String, Boolean> p : tempMap.entrySet()) {
-                        friendsList.add(p.getKey());
+                        Log.d("Getting friend list, friend key", p.getKey());
+                        getUser(p.getKey(), new OnResult<User>() {
+                            @Override
+                            public void onSuccess(User result) {
+                                Log.d("Adding friend ", result.email);
+                                userList.add(result);
+                            }
+
+                            @Override
+                            public void onError(Throwable error) {
+                                //ToDO
+                            }
+                        });
+                        handler.onSuccess(userList);
                     }
                 }
                 //Log.d("firebase", String.valueOf(task.getResult().getValue()));
 
             }
         });
-
-        ArrayList<User> userList = new ArrayList<>();
-        friendsList.forEach(currentUserID -> userList.add(getUser(currentUserID)));
-
-        return userList;
     }
 
     private String getToken() {
@@ -138,24 +157,32 @@ public class FriendsServiceImpl implements FriendsService {
         });
     }
 
-    private User getUser(String token) {
-        final boolean[] firstRun = {true};
-        final User[] tempUser = new User[1];
+    public void getUserIDbyEmail(String email, OnResult<String> handler) {
+        String emailHash = getHash(email);
+        database.child("userFriends").child(emailHash).child(userKey).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Log.d("Adding friend, hash:", emailHash);
+                handler.onSuccess((String) task.getResult().getValue());
+            } else {
+                handler.onError(task.getException());
+            }
+        });
+
+    }
+
+    public void getUser(String token, OnResult<User> handler) {
+        Log.d("getUser ", token);
         database.child("users").child(token).get().addOnCompleteListener(task -> {
             if (!task.isSuccessful()) {
                 Log.e("firebase", "Error getting data", task.getException());
+                handler.onError(new Throwable(resources.getString(R.string.error_getting_friend_from_database)));
             } else {
                 Map<String, String> tempMap = (HashMap<String, String>) task.getResult().getValue();
-                tempUser[0] = new User(tempMap.get(userKey), tempMap.get(emailKey));
-                tempUser[0].nick = Objects.requireNonNull(tempMap.get("nick"));
-                Log.d("firebase", tempUser[0].userID + " " + tempUser[0].email);
-                if (firstRun[0]) {
-                    addUserToFriendsDataBase(tempUser[0]);
-                    firstRun[0] = false;
-                }
+                User user = new User(tempMap.get(userKey), tempMap.get(emailKey));
+                Log.d("User added ", user.email + " " + user.userID);
+                handler.onSuccess(user);
             }
         });
-        return tempUser[0];
     }
 
     private void addUserToFriendsDataBase(User user) {

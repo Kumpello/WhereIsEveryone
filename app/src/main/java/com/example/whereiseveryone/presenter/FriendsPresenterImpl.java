@@ -20,10 +20,31 @@ public class FriendsPresenterImpl extends BasePresenter<FriendsView> implements 
 
     @Override
     public boolean addFriend(String email) {
+        email = email.toLowerCase();
         return friendsService.addFriend(email.trim(), new OnResult<String>() {
             @Override
             public void onSuccess(String result) {
-                // notify the view - friend added
+                friendsService.getUserIDbyEmail(result, new OnResult<String>() {
+                    @Override
+                    public void onSuccess(String result) {
+                        friendsService.getUser(result, new OnResult<User>() {
+                            @Override
+                            public void onSuccess(User result) {
+                                view.addFriendToAdapter(result);
+                            }
+
+                            @Override
+                            public void onError(Throwable error) {
+                                //TODO
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onError(Throwable error) {
+                        //TODO
+                    }
+                });
             }
 
             @Override
@@ -46,7 +67,20 @@ public class FriendsPresenterImpl extends BasePresenter<FriendsView> implements 
     }
 
     @Override
-    public List<User> getFriendsList() {
-        return friendsService.getFriendsList();
+    public void getFriendsList() {
+        friendsService.getFriendsList(new OnResult<List<User>>() {
+            @Override
+            public void onSuccess(List<User> result) {
+                Log.d("Presenter - getFriendsList - onSucces", result.toString());
+                for (User user : result ) {
+                    view.addFriendToAdapter(user);
+                }
+            }
+
+            @Override
+            public void onError(Throwable error) {
+                //TODO
+            }
+        });
     }
 }

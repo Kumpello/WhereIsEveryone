@@ -37,7 +37,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendVi
         }
 
         public void bind(final User u) {
-            userEmail.setText(u.nick);
+            userEmail.setText(u.email);
             remove.setOnClickListener(v -> {
                 presenter.removeFriend(u.email);
             });
@@ -66,6 +66,10 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendVi
     @Override
     public int getItemCount() {
         return friendList.size();
+    }
+
+    public void addUser(User user) {
+        friendList.add(user);
     }
 
     public boolean removeUser(final String user) {
