@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class FriendsServiceImpl implements FriendsService {
 
@@ -127,11 +128,10 @@ public class FriendsServiceImpl implements FriendsService {
                                 //ToDO
                             }
                         });
-                        handler.onSuccess(userList);
                     }
+                    //Here we need to wait
+                    handler.onSuccess(userList);
                 }
-                //Log.d("firebase", String.valueOf(task.getResult().getValue()));
-
             }
         });
     }

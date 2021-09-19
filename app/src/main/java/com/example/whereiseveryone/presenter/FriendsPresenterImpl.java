@@ -71,7 +71,7 @@ public class FriendsPresenterImpl extends BasePresenter<FriendsView> implements 
         friendsService.getFriendsList(new OnResult<List<User>>() {
             @Override
             public void onSuccess(List<User> result) {
-                Log.d("Presenter - getFriendsList - onSucces", result.toString());
+                Log.d("Presenter - getFriendsList - onSuccess", result.toString());
                 for (User user : result ) {
                     view.addFriendToAdapter(user);
                 }

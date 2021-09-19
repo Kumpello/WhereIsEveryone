@@ -57,6 +57,7 @@ public class FriendsFragment extends BaseFragment<FriendsPresenter> implements F
         friendsAdapter = new FriendsAdapter((ArrayList<User>) userFriends, presenter);
         layoutManager = new LinearLayoutManager(requireContext());
 
+        //TODO Get this working
         presenter.getFriendsList();
 
 
