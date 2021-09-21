@@ -1,5 +1,6 @@
 package com.example.whereiseveryone.model;
 
+import com.example.whereiseveryone.utils.CallbackIterator;
 import com.example.whereiseveryone.utils.OnResult;
 
 import java.util.List;
@@ -12,9 +13,11 @@ public interface FriendsService {
 
     void changeNick(String nick);
 
-    void getFriendsList(OnResult<List<User>> userList);
+    void getFriendsList(CallbackIterator<User> userList);
 
     void getUser(String token, OnResult<User> handler);
 
     void getUserIDbyEmail(String email, OnResult<String> handler);
+
+    void getSize(OnResult<Integer> handler);
 }

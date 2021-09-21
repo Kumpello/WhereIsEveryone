@@ -5,9 +5,12 @@ import android.util.Log;
 import com.example.whereiseveryone.model.FriendsService;
 import com.example.whereiseveryone.model.User;
 import com.example.whereiseveryone.mvp.BasePresenter;
+import com.example.whereiseveryone.utils.CallbackIterator;
 import com.example.whereiseveryone.utils.OnResult;
 import com.example.whereiseveryone.view.FriendsView;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class FriendsPresenterImpl extends BasePresenter<FriendsView> implements FriendsPresenter{
@@ -68,18 +71,29 @@ public class FriendsPresenterImpl extends BasePresenter<FriendsView> implements 
 
     @Override
     public void getFriendsList() {
-        friendsService.getFriendsList(new OnResult<List<User>>() {
+        friendsService.getSize(new OnResult<Integer>() {
             @Override
-            public void onSuccess(List<User> result) {
-                Log.d("Presenter - getFriendsList - onSuccess", result.toString());
-                for (User user : result ) {
-                    view.addFriendToAdapter(user);
-                }
+            public void onSuccess(Integer result) {
+                List<User> allUsers = new ArrayList<>(result);
+                allUsers = Collections.synchronizedList(allUsers);
+
+                friendsService.getFriendsList(new CallbackIterator<User>() {
+                    @Override
+                    public void onNext(User result) {
+                        view.addFriendToAdapter(result);
+                        Log.d("Presenter - getFriendsList - onSuccess", result.toString());
+                    }
+
+                    @Override
+                    public void onError(Throwable error) {
+                        //TODO
+                    }
+                });
             }
 
             @Override
             public void onError(Throwable error) {
-                //TODO
+                //Todo
             }
         });
     }

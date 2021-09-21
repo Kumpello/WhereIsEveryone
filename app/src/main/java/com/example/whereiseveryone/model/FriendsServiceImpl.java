@@ -9,6 +9,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.example.whereiseveryone.R;
+import com.example.whereiseveryone.utils.CallbackIterator;
 import com.example.whereiseveryone.utils.OnResult;
 import com.google.firebase.database.DatabaseReference;
 
@@ -103,15 +104,12 @@ public class FriendsServiceImpl implements FriendsService {
     }
 
     @Override
-    public void getFriendsList(@NonNull OnResult<List<User>> handler) {
-        ArrayList<User> userList = new ArrayList<>();
+    public void getFriendsList(@NonNull CallbackIterator<User> handler) {
         String email = getEmail();
         String userHash = getHash(email);
 
         database.child("userFriends").child(userHash).child("contacts").get().addOnCompleteListener(task -> {
-            if (!task.isSuccessful()) {
-                Log.e("firebase", "Error getting data", task.getException());
-            } else {
+            if (task.isSuccessful()) {
                 if (task.getResult().getValue() != null) {
                     HashMap<String, Boolean> tempMap = (HashMap<String, Boolean>) task.getResult().getValue();
                     for (Map.Entry<String, Boolean> p : tempMap.entrySet()) {
@@ -120,7 +118,7 @@ public class FriendsServiceImpl implements FriendsService {
                             @Override
                             public void onSuccess(User result) {
                                 Log.d("Adding friend ", result.email);
-                                userList.add(result);
+                                handler.onNext(result);
                             }
 
                             @Override
@@ -129,10 +127,11 @@ public class FriendsServiceImpl implements FriendsService {
                             }
                         });
                     }
-                    //Here we need to wait
-                    handler.onSuccess(userList);
                 }
+            } else {
+                Log.e("firebase", "Error getting data", task.getException());
             }
+
         });
     }
 
@@ -168,6 +167,19 @@ public class FriendsServiceImpl implements FriendsService {
             }
         });
 
+    }
+
+    @Override
+    public void getSize(OnResult<Integer> handler) {
+        String email = getEmail();
+        String userHash = getHash(email);
+
+        database.child("userFriends").child(userHash).child("contacts").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                HashMap<String, Boolean> tempMap = (HashMap<String, Boolean>) task.getResult().getValue();
+                handler.onSuccess(tempMap.size());
+            }
+        });
     }
 
     public void getUser(String token, OnResult<User> handler) {
