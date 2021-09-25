@@ -4,6 +4,7 @@ import static com.example.whereiseveryone.utils.GraphicalUtils.getBitmapFromVect
 
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -98,13 +99,14 @@ public class MapFragment extends BaseFragment<MapPresenter> implements OnMapRead
     @Override
     public void addFriendsMarker(User user) {
         Log.d("adding friends marker", user.toString());
+        Bitmap smallMarker = Bitmap.createScaledBitmap(getBitmapFromVectorDrawable(getActivity().getApplicationContext(),
+                R.drawable.ic_friends_map_icon), 30, 30, false);
         getActivity().runOnUiThread(() -> friendsMarkers.put(user.userID, mMap.addMarker(new MarkerOptions().position(user.userLocation)
                 .flat(true)
                 .anchor(0.5f, 0.5f)
                 .title(user.nick)
                 .rotation(user.userAzimuth).visible(true)
-                .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(getActivity().getApplicationContext(),
-                        R.drawable.ic_friends_map_icon))))));
+                .icon(BitmapDescriptorFactory.fromBitmap(smallMarker)))));
     }
 
     @Override
