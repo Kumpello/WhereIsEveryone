@@ -9,6 +9,8 @@ import com.example.whereiseveryone.model.PermissionHandler;
 import com.example.whereiseveryone.model.User;
 import com.example.whereiseveryone.model.UserService;
 import com.example.whereiseveryone.mvp.BasePresenter;
+import com.example.whereiseveryone.utils.CallbackIterator;
+import com.example.whereiseveryone.utils.OnResult;
 import com.example.whereiseveryone.utils.SimpleTimer;
 import com.example.whereiseveryone.view.MapView;
 import com.google.android.gms.maps.model.LatLng;
@@ -24,7 +26,8 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
     private final SimpleTimer timer;
     private final UserService userService;
     private final User user;
-    private boolean userExists;
+    private final boolean userExists;
+    private final ArrayList<User> friends;
 
 
     public MapPresenterImpl(MapService mapService, PermissionHandler permissionHandler, UserService userService, SimpleTimer timer) {
@@ -38,8 +41,36 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
         this.timer = timer;
         user = new User(userService.getToken(), userService.getEmail());
         userExists = userService.userExists();
+        friends = new ArrayList<>();
+        getFriendList();
     }
 
+    @Override
+    public void getFriendList() {
+        userService.getFriendsList(new CallbackIterator<User>() {
+            @Override
+            public void onNext(User result) {
+                userService.checkFriendship(result, new OnResult<Boolean>() {
+                    @Override
+                    public void onSuccess(Boolean friendShipResult) {
+                        if (friendShipResult) {
+                            friends.add(result);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable error) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onError(Throwable error) {
+
+            }
+        });
+    }
 
     @Override
     public boolean updateUserLocationAndDirection() {
@@ -71,6 +102,7 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
     public void startLocationUpdates() {
         checkPermissions(permissionsNeeded);
         mapService.startLocationUpdates();
+        ArrayList<String> friendsMarkersPlaced = new ArrayList<>();
 
         timer.start(() -> {
             if (mapService.locationCallbackReady()) {
@@ -79,7 +111,16 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
                     userMarkerPlaced = true;
                     view.centerCamera();
                 }
+                for (User user : friends) {
+                    if (!friendsMarkersPlaced.contains(user.userID)) {
+                        friendsMarkersPlaced.add(user.userID);
+                        view.addFriendsMarker(user);
+                    }
+                }
                 view.updateUserLocation();
+                for (User user : friends) {
+                    view.updateFriendsLocation(user);
+                }
             }
         }, 1000);
     }
@@ -98,11 +139,6 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
     @Override
     public void onResume() {
         mapService.onResume();
-    }
-
-    @Override
-    public String getToken() {
-        return userService.getToken();
     }
 
     public void updateLastLocation() {

@@ -70,9 +70,9 @@ public class DependencyContainer {
     }
 
     @NonNull
-    public UserService getUserService(DatabaseReference ref, SharedPreferences prefs) {
+    public UserService getUserService(DatabaseReference ref, SharedPreferences prefs, Resources resources) {
         if (userService == null) {
-            userService = new UserServiceImpl(ref, prefs);
+            userService = new UserServiceImpl(ref, prefs, resources);
         }
 
         return userService;
@@ -98,7 +98,7 @@ public class DependencyContainer {
     public LoginPresenter getLoginPresenter(DatabaseReference ref, SharedPreferences preferences) {
         return new LoginPresenterImpl(
                 getLoginService(),
-                getUserService(ref, preferences)
+                getUserService(ref, preferences, getResources())
         );
     }
 
@@ -115,7 +115,8 @@ public class DependencyContainer {
                 getPermissionHandler(activity),
                 getUserService(
                         getDatabaseReference(activity),
-                        getSharedPreferences(activity)
+                        getSharedPreferences(activity),
+                        getResources()
                 ),
                 new SimpleTimer());
     }

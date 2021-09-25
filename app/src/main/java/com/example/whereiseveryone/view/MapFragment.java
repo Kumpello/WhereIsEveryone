@@ -5,16 +5,17 @@ import static com.example.whereiseveryone.utils.GraphicalUtils.getBitmapFromVect
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.whereiseveryone.R;
 import com.example.whereiseveryone.databinding.FragmentMapBinding;
+import com.example.whereiseveryone.model.User;
 import com.example.whereiseveryone.mvp.BaseFragment;
 import com.example.whereiseveryone.presenter.MapPresenter;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -23,21 +24,23 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link MapFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MapFragment extends BaseFragment<MapPresenter> implements OnMapReadyCallback, MapView{
+public class MapFragment extends BaseFragment<MapPresenter> implements OnMapReadyCallback, MapView {
 
     private GoogleMap mMap;
     private Resources resources;
     private Marker userMarker;
+    private Map<String, Marker> friendsMarkers;
     private FragmentMapBinding binding;
 
 
@@ -79,15 +82,40 @@ public class MapFragment extends BaseFragment<MapPresenter> implements OnMapRead
         binding = null;
     }
 
-    public void addUserMarker(){
+    @Override
+    public void addUserMarker() {
         getActivity().runOnUiThread(() -> userMarker = mMap.addMarker(new MarkerOptions().position(presenter.getUserLatLng())
                 .flat(true)
-                .anchor(0.5f,0.5f)
+                .anchor(0.5f, 0.5f)
                 .rotation(presenter.getAzimuth()).visible(true)
                 .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(getActivity().getApplicationContext(),
                         R.drawable.ic_round_navigation_24)))));
     }
 
+    @Override
+    public void addFriendsMarker(User user) {
+        Log.d("adding friends marker", user.email);
+        getActivity().runOnUiThread(() -> friendsMarkers.put(user.userID, mMap.addMarker(new MarkerOptions().position(user.userLocation)
+                .flat(true)
+                .anchor(0.5f, 0.5f)
+                .rotation(user.userAzimuth).visible(true)
+                .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(getActivity().getApplicationContext(),
+                        R.drawable.ic_friends_map_icon)))))
+        .setTitle(user.nick));
+    }
+
+    @Override
+    public void updateFriendsLocation(User user) {
+        getActivity().runOnUiThread(() -> {
+            Log.d("updating friends marker", user.email);
+            Marker friendMarker = friendsMarkers.get(user.userID);
+            friendMarker.setPosition(user.userLocation);
+            friendMarker.setRotation(user.userAzimuth);
+        });
+    }
+
+
+    @Override
     public void centerCamera() {
         if (presenter.updateUserLocationAndDirection()) {
             CameraPosition cameraPosition = new CameraPosition.Builder()

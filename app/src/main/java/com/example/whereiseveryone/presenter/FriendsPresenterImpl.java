@@ -71,6 +71,7 @@ public class FriendsPresenterImpl extends BasePresenter<FriendsView> implements 
 
     @Override
     public void getFriendsList() {
+        //Todo make local list and check if it is up to date
         friendsService.getSize(new OnResult<Integer>() {
             @Override
             public void onSuccess(Integer result) {

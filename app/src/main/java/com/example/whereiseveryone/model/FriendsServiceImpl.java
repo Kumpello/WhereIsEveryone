@@ -23,8 +23,8 @@ public class FriendsServiceImpl implements FriendsService {
 
     private final DatabaseReference database;
     private final String userKey = "userID";
-    private final String userKeySharedPreferences = "userid";
     private final String emailKey = "email";
+    private final String userKeySharedPreferences = "userid";
     private final String userID;
     private SharedPreferences sharedPreferences;
     private final SharedPreferences.Editor sharedPreferencesEdit;

@@ -15,7 +15,7 @@ public interface MapPresenter extends Contract.Presenter<MapView> {
     LatLng getUserLatLng();
     void startLocationUpdates();
     void stopLocationUpdates();
+    void getFriendList();
     void onPause();
     void onResume();
-    String getToken();
 }

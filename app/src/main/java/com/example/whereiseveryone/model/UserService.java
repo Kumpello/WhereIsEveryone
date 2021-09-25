@@ -3,6 +3,9 @@ package com.example.whereiseveryone.model;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.whereiseveryone.utils.CallbackIterator;
+import com.example.whereiseveryone.utils.OnResult;
+
 import org.jetbrains.annotations.NotNull;
 
 public interface UserService {
@@ -23,4 +26,8 @@ public interface UserService {
     void updateUserLocationAndDirection(User user);
 
     boolean userExists();
+
+    void getFriendsList(CallbackIterator<User> userList);
+
+    void checkFriendship(User user, OnResult<Boolean> result);
 }
