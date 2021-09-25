@@ -28,6 +28,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -57,6 +58,8 @@ public class MapFragment extends BaseFragment<MapPresenter> implements OnMapRead
         super.onCreate(savedInstanceState);
 
         resources = getResources();
+
+        friendsMarkers = new HashMap<>();
 
         presenter.startLocationUpdates();
     }
@@ -94,14 +97,14 @@ public class MapFragment extends BaseFragment<MapPresenter> implements OnMapRead
 
     @Override
     public void addFriendsMarker(User user) {
-        Log.d("adding friends marker", user.email);
+        Log.d("adding friends marker", user.toString());
         getActivity().runOnUiThread(() -> friendsMarkers.put(user.userID, mMap.addMarker(new MarkerOptions().position(user.userLocation)
                 .flat(true)
                 .anchor(0.5f, 0.5f)
+                .title(user.nick)
                 .rotation(user.userAzimuth).visible(true)
                 .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(getActivity().getApplicationContext(),
-                        R.drawable.ic_friends_map_icon)))))
-        .setTitle(user.nick));
+                        R.drawable.ic_friends_map_icon))))));
     }
 
     @Override

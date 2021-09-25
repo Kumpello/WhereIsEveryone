@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import com.example.whereiseveryone.R;
 import com.example.whereiseveryone.utils.CallbackIterator;
 import com.example.whereiseveryone.utils.OnResult;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DatabaseReference;
 
 import java.util.HashMap;
@@ -24,8 +25,8 @@ public class UserServiceImpl implements UserService {
     private final String userKey = "userID";
     private final String nickKey = "nick";
     private final String locationKey = "userLocation";
-    private final String latitude = "latitude";
-    private final String longitude = "longitude";
+    private final String latitudeKey = "latitude";
+    private final String longitudeKey = "longitude";
     private final String azimuthKey = "userAzimuth";
     private String userID;
     private String email;
@@ -84,9 +85,9 @@ public class UserServiceImpl implements UserService {
 
     public void checkFriendship(User user, OnResult<Boolean> result) {
         String hashedMail = getHash(user.email);
-        String friendID = user.userID;
 
-        database.child("userFriends").child(hashedMail).child("contacts").child(friendID).get().addOnCompleteListener(task -> {
+        database.child("userFriends").child(hashedMail).child("contacts").child(userID).get().addOnCompleteListener(task -> {
+            Log.d("Checking friendship", String.valueOf(task.getResult().getValue()));
             result.onSuccess((Boolean) task.getResult().getValue());
         });
     }
@@ -129,12 +130,15 @@ public class UserServiceImpl implements UserService {
                 Log.e("firebase", "Error getting data", task.getException());
                 handler.onError(new Throwable(resources.getString(R.string.error_getting_friend_from_database)));
             } else {
-                Map<String, String> tempMap = (HashMap<String, String>) task.getResult().getValue();
-                User user = new User(tempMap.get(userKey), tempMap.get(emailKey));
+                //Todo add try catch
+                Map<String, Object> tempMap = (HashMap<String, Object>) task.getResult().getValue();
+                User user = new User((String) tempMap.get(userKey), (String) tempMap.get(emailKey));
                 Log.d("User added ", user.email + " " + user.userID);
-                user.nick = tempMap.get(nickKey);
-                //user.userLocation = tempMap.get(locationKey);
-                user.userAzimuth = Float.valueOf(tempMap.get(azimuthKey));
+                user.nick = (String) tempMap.get(nickKey);
+                HashMap<String, Double> latLng = (HashMap<String, Double>) tempMap.get(locationKey);
+                user.userLocation = new LatLng(latLng.get(latitudeKey), latLng.get(longitudeKey));
+                Double userAzimuth = (Double) tempMap.get(azimuthKey);
+                user.userAzimuth =  userAzimuth.floatValue();
                 handler.onSuccess(user);
             }
         });
