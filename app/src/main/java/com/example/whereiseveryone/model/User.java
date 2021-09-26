@@ -7,7 +7,11 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.util.Objects;
 
+@SuppressWarnings("all")
+
 public class User {
+
+
 
     @NonNull
     public String email;

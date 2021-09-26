@@ -3,8 +3,6 @@ package com.example.whereiseveryone.model;
 import com.example.whereiseveryone.utils.CallbackIterator;
 import com.example.whereiseveryone.utils.OnResult;
 
-import java.util.List;
-
 public interface FriendsService {
     boolean addFriend(String email, OnResult<String> handler);
 

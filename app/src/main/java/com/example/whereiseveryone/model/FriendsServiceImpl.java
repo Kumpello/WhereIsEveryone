@@ -21,17 +21,14 @@ public class FriendsServiceImpl implements FriendsService {
     private final DatabaseReference database;
     private final String userKey = "userID";
     private final String emailKey = "email";
-    private final String userKeySharedPreferences = "userid";
     private final String userID;
-    private SharedPreferences sharedPreferences;
-    private final SharedPreferences.Editor sharedPreferencesEdit;
+    private final SharedPreferences sharedPreferences;
     private User user;
     private final Resources resources;
 
     public FriendsServiceImpl(DatabaseReference databaseRef, SharedPreferences prefs, Resources resources) {
         database = databaseRef;
         sharedPreferences = prefs;
-        sharedPreferencesEdit = sharedPreferences.edit();
         this.resources = resources;
         userID = getToken();
         getUser(userID, new OnResult<User>() {
@@ -115,6 +112,7 @@ public class FriendsServiceImpl implements FriendsService {
         database.child("userFriends").child(userHash).child("contacts").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 if (task.getResult().getValue() != null) {
+                    @SuppressWarnings("unchecked")
                     HashMap<String, Boolean> tempMap = (HashMap<String, Boolean>) task.getResult().getValue();
                     for (Map.Entry<String, Boolean> p : tempMap.entrySet()) {
                         Log.d("Getting friend list, friend key", p.getKey());
@@ -140,6 +138,7 @@ public class FriendsServiceImpl implements FriendsService {
     }
 
     private String getToken() {
+        String userKeySharedPreferences = "userid";
         return sharedPreferences.getString(userKeySharedPreferences, "");
     }
 
@@ -180,8 +179,13 @@ public class FriendsServiceImpl implements FriendsService {
 
         database.child("userFriends").child(userHash).child("contacts").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
+                @SuppressWarnings("unchecked")
                 HashMap<String, Boolean> tempMap = (HashMap<String, Boolean>) task.getResult().getValue();
-                handler.onSuccess(tempMap.size());
+                if (tempMap != null) {
+                    handler.onSuccess(tempMap.size());
+                } else {
+                    handler.onError(new Throwable("User has no friends"));
+                }
             }
         });
     }
@@ -193,10 +197,20 @@ public class FriendsServiceImpl implements FriendsService {
                 Log.e("firebase", "Error getting data", task.getException());
                 handler.onError(new Throwable(resources.getString(R.string.error_getting_friend_from_database)));
             } else {
+                @SuppressWarnings("unchecked")
                 Map<String, String> tempMap = (HashMap<String, String>) task.getResult().getValue();
-                User user = new User(tempMap.get(userKey), tempMap.get(emailKey));
-                Log.d("User added ", user.email + " " + user.userID);
-                handler.onSuccess(user);
+                User user = null;
+                if (tempMap != null) {
+                    user = new User(tempMap.get(userKey), tempMap.get(emailKey));
+                }  else {
+                    handler.onError(new Throwable("User has no friends"));
+                }
+                if (user != null) {
+                    Log.d("User added ", user.email + " " + user.userID);
+                    handler.onSuccess(user);
+                } else {
+                    handler.onError(new Throwable("Error getting user!"));
+                }
             }
         });
     }

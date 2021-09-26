@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void saveToken(@NonNull String token) {
+    public void saveToken(String token) {
         userID = token;
         myEdit.putString(userKeySharedPreferences, token);
         myEdit.commit();
@@ -100,6 +100,7 @@ public class UserServiceImpl implements UserService {
         database.child("userFriends").child(userHash).child("contacts").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 if (task.getResult().getValue() != null) {
+                    @SuppressWarnings("unchecked")
                     HashMap<String, Boolean> tempMap = (HashMap<String, Boolean>) task.getResult().getValue();
                     for (Map.Entry<String, Boolean> p : tempMap.entrySet()) {
                         Log.d("Getting friend list, friend key", p.getKey());
@@ -140,6 +141,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public void getUser(String token, OnResult<User> handler) {
         Log.d("getUser ", token);
         database.child("users").child(token).get().addOnCompleteListener(task -> {
@@ -147,16 +149,19 @@ public class UserServiceImpl implements UserService {
                 Log.e("firebase", "Error getting data", task.getException());
                 handler.onError(new Throwable(resources.getString(R.string.error_getting_friend_from_database)));
             } else {
-                //Todo add try catch
-                Map<String, Object> tempMap = (HashMap<String, Object>) task.getResult().getValue();
-                User user = new User((String) tempMap.get(userKey), (String) tempMap.get(emailKey));
-                Log.d("User added ", user.email + " " + user.userID);
-                user.nick = (String) tempMap.get(nickKey);
-                HashMap<String, Double> latLng = (HashMap<String, Double>) tempMap.get(locationKey);
-                user.userLocation = new LatLng(latLng.get(latitudeKey), latLng.get(longitudeKey));
-                Double userAzimuth = (Double) tempMap.get(azimuthKey);
-                user.userAzimuth =  userAzimuth.floatValue();
-                handler.onSuccess(user);
+                try {
+                    Map<String, Object> tempMap = (HashMap<String, Object>) task.getResult().getValue();
+                    User user = new User((String) tempMap.get(userKey), (String) tempMap.get(emailKey));
+                    Log.d("User added ", user.email + " " + user.userID);
+                    user.nick = (String) tempMap.get(nickKey);
+                    HashMap<String, Double> latLng = (HashMap<String, Double>) tempMap.get(locationKey);
+                    user.userLocation = new LatLng(latLng.get(latitudeKey), latLng.get(longitudeKey));
+                    Double userAzimuth = (Double) tempMap.get(azimuthKey);
+                    user.userAzimuth =  userAzimuth.floatValue();
+                    handler.onSuccess(user);
+                } catch (Exception e) {
+                    handler.onError(e);
+                }
             }
         });
     }
