@@ -34,6 +34,10 @@ public class SignUpPresenterImpl extends BasePresenter<SignUpView> implements Si
             view.showSuccess();
         });
 
+    }
 
+    @Override
+    public boolean checkIfLogged() {
+        return loginService.checkIfLogged();
     }
 }

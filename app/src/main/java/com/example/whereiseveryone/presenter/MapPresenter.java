@@ -1,5 +1,6 @@
 package com.example.whereiseveryone.presenter;
 
+import com.example.whereiseveryone.model.User;
 import com.example.whereiseveryone.mvp.Contract;
 import com.example.whereiseveryone.view.MapView;
 import com.google.android.gms.maps.model.LatLng;
@@ -14,6 +15,8 @@ public interface MapPresenter extends Contract.Presenter<MapView> {
     LatLng getUserLatLng();
     void startLocationUpdates();
     void stopLocationUpdates();
+    void getFriendList();
     void onPause();
     void onResume();
+    void onStop();
 }

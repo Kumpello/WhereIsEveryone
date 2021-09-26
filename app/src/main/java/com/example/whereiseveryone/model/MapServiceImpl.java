@@ -52,9 +52,6 @@ public class MapServiceImpl implements MapService, SensorEventListener {
         locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(@NonNull @org.jetbrains.annotations.NotNull LocationResult locationResult) {
-//                if (locationResult == null) {
-//                    return;
-//                }
                 userLocation = locationResult.getLastLocation();
                 locationCallbackReady = true;
             }

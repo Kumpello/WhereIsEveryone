@@ -9,4 +9,6 @@ public interface LoginService {
 
     void getEmailAndPassword(String email, String password);
 
+    boolean checkIfLogged();
+
 }

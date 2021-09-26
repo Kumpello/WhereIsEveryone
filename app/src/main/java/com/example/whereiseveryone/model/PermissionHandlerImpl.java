@@ -26,15 +26,14 @@ public class PermissionHandlerImpl implements PermissionHandler {
         return shouldShowRequestPermissionRationale(activity, permission);
     }
 
-    //Returns not granted permissions
     @Nullable
     @org.jetbrains.annotations.Nullable
     @Override
+    @SuppressWarnings("all")
     public List<String> arePermissionGranted(List<String> required) {
         for (int i = 0; i < required.size(); i++) {
             if (ContextCompat.checkSelfPermission(activity,
                     required.get(i)) == PackageManager.PERMISSION_GRANTED) {
-                //What to do with this warning?
                 required.remove(i);
             }
         }

@@ -1,13 +1,13 @@
 package com.example.whereiseveryone.presenter;
 
 
+import static com.example.whereiseveryone.utils.TextUtils.isNullOrEmpty;
+
 import com.example.whereiseveryone.R;
 import com.example.whereiseveryone.model.LoginService;
 import com.example.whereiseveryone.model.UserService;
 import com.example.whereiseveryone.mvp.BasePresenter;
 import com.example.whereiseveryone.view.LoginView;
-
-import static com.example.whereiseveryone.utils.TextUtils.isNullOrEmpty;
 
 public class LoginPresenterImpl extends BasePresenter<LoginView> implements LoginPresenter {
 
@@ -37,10 +37,10 @@ public class LoginPresenterImpl extends BasePresenter<LoginView> implements Logi
                 return;
             }
             userService.saveToken(value.getToken());
+            userService.saveEmail(login);
+
             view.showSuccess();
         });
-
-
 
     }
 }
