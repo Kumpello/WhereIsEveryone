@@ -8,6 +8,8 @@ import com.example.whereiseveryone.utils.OnResult;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public interface UserService {
     // null for log out
     void saveToken(@Nullable String token);
@@ -28,6 +30,8 @@ public interface UserService {
     boolean userExists();
 
     void getFriendsList(CallbackIterator<User> userList);
+
+    void updateFriendsList(List<User> friends, CallbackIterator<User> userList);
 
     void checkFriendship(User user, OnResult<Boolean> result);
 }

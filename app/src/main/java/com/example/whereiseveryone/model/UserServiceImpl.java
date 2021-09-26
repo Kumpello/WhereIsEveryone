@@ -15,6 +15,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DatabaseReference;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -121,6 +122,22 @@ public class UserServiceImpl implements UserService {
             }
 
         });
+    }
+
+    public void updateFriendsList(List<User> friends, @NonNull CallbackIterator<User> handler) {
+        for (User user : friends) {
+            getUser(user.userID, new OnResult<User>() {
+                @Override
+                public void onSuccess(User result) {
+                    handler.onNext(result);
+                }
+
+                @Override
+                public void onError(Throwable error) {
+                    //Todo
+                }
+            });
+        }
     }
 
     public void getUser(String token, OnResult<User> handler) {

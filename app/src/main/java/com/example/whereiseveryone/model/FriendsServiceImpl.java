@@ -88,10 +88,17 @@ public class FriendsServiceImpl implements FriendsService {
         String email = getEmail();
         String userHash = getHash(email);
 
-        findFriendID(friendsEmail, null);
+        findFriendID(friendsEmail, new OnResult<String>() {
+            @Override
+            public void onSuccess(String result) {
+                database.child("userFriends").child(userHash).child("contacts").child(result).setValue(false);
+            }
 
-        // TODO
-        // database.child("userFriends").child(userHash).child("contacts").child(friendsID).setValue(false);
+            @Override
+            public void onError(Throwable error) {
+
+            }
+        });
     }
 
     @Override

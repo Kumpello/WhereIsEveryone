@@ -16,7 +16,9 @@ import com.example.whereiseveryone.view.MapView;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MapPresenterImpl extends BasePresenter<MapView> implements MapPresenter {
     private final MapService mapService;
@@ -27,7 +29,7 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
     private final UserService userService;
     private final User user;
     private final boolean userExists;
-    private final ArrayList<User> friends;
+    private final Map<String, User> friends;
 
 
     public MapPresenterImpl(MapService mapService, PermissionHandler permissionHandler, UserService userService, SimpleTimer timer) {
@@ -41,7 +43,7 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
         this.timer = timer;
         user = new User(userService.getToken(), userService.getEmail());
         userExists = userService.userExists();
-        friends = new ArrayList<>();
+        friends = new HashMap<>();
         getFriendList();
     }
 
@@ -54,7 +56,7 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
                     @Override
                     public void onSuccess(Boolean friendShipResult) {
                         if (friendShipResult) {
-                            friends.add(result);
+                            friends.put(result.userID, result);
                         }
                     }
 
@@ -70,6 +72,10 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
 
             }
         });
+    }
+
+    private void updateFriendList() {
+
     }
 
     @Override
@@ -111,16 +117,24 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
                     userMarkerPlaced = true;
                     view.centerCamera();
                 }
-                for (User user : friends) {
+                for (User user : friends.values()) {
                     if (!friendsMarkersPlaced.contains(user.userID)) {
                         friendsMarkersPlaced.add(user.userID);
                         view.addFriendsMarker(user);
                     }
                 }
                 view.updateUserLocation();
-                for (User user : friends) {
-                    view.updateFriendsLocation(user);
-                }
+                userService.updateFriendsList((List<User>) friends.values(), new CallbackIterator<User>() {
+                    @Override
+                    public void onNext(User result) {
+                        view.updateFriendsLocation(result);
+                    }
+
+                    @Override
+                    public void onError(Throwable error) {
+
+                    }
+                });
             }
         }, 1000);
     }
