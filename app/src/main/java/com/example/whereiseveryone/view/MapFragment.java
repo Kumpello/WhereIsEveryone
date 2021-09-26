@@ -157,6 +157,12 @@ public class MapFragment extends BaseFragment<MapPresenter> implements OnMapRead
     @Override
     public void onStop() {
         super.onStop();
+        presenter.onStop();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
         presenter.stopLocationUpdates();
     }
 

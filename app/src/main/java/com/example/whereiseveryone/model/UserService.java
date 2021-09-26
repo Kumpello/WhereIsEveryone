@@ -30,8 +30,6 @@ public interface UserService {
     boolean userExists();
 
     void getFriendsList(CallbackIterator<User> userList);
-
     void updateFriendsList(List<User> friends, CallbackIterator<User> userList);
-
     void checkFriendship(User user, OnResult<Boolean> result);
 }

@@ -140,12 +140,19 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
     }
 
     @Override
+    public void onStop() {
+        timer.changeInterval(60000);
+    }
+
+    @Override
     public void onPause() {
+        timer.changeInterval(5000);
         mapService.onPause();
     }
 
     @Override
     public void onResume() {
+        timer.changeInterval(1000);
         mapService.onResume();
     }
 

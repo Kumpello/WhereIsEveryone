@@ -29,6 +29,11 @@ public class SimpleTimer {
         handler.postDelayed(run, intervalMS);
     }
 
+
+    public void changeInterval(final int intervalMS) {
+        this.intervalMS = intervalMS;
+    }
+
     public void stop() {
         handler.removeCallbacks(run);
         handler.removeCallbacks(runnable);

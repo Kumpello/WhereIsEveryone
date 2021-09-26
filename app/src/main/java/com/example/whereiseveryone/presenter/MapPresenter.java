@@ -18,4 +18,5 @@ public interface MapPresenter extends Contract.Presenter<MapView> {
     void getFriendList();
     void onPause();
     void onResume();
+    void onStop();
 }
