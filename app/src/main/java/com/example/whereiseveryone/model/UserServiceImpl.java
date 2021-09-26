@@ -17,14 +17,18 @@ import com.google.firebase.database.DatabaseReference;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class UserServiceImpl implements UserService {
 
     private final String userKeySharedPreferences = "userid";
     private final String emailKey = "email";
-    private final String userKey = "userID";
+    private final String userIDKey = "userID";
     private final String nickKey = "nick";
+    private final String usersKey = "users";
+    private final String userFriendsKey = "userFriends";
+    private final String contactsKey = "contacts";
     private final String locationKey = "userLocation";
     private final String latitudeKey = "latitude";
     private final String longitudeKey = "longitude";
@@ -75,19 +79,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUserOnServer(User user) {
-        database.child("users").child(userID).setValue(user);
+        database.child(usersKey).child(userID).setValue(user);
     }
 
     @Override
     public void updateUserLocationAndDirection(User user) {
-        database.child("users").child(userID).child("userAzimuth").setValue(user.userAzimuth);
-        database.child("users").child(userID).child("userLocation").setValue(user.userLocation);
+        database.child(usersKey).child(userID).child("userAzimuth").setValue(user.userAzimuth);
+        database.child(usersKey).child(userID).child("userLocation").setValue(user.userLocation);
     }
 
     public void checkFriendship(User user, OnResult<Boolean> result) {
         String hashedMail = getHash(user.email);
 
-        database.child("userFriends").child(hashedMail).child("contacts").child(userID).get().addOnCompleteListener(task -> {
+        database.child(userFriendsKey).child(hashedMail).child(contactsKey).child(userID).get().addOnCompleteListener(task -> {
             Log.d("Checking friendship", String.valueOf(task.getResult().getValue()));
             result.onSuccess((Boolean) task.getResult().getValue());
         });
@@ -97,7 +101,7 @@ public class UserServiceImpl implements UserService {
     public void getFriendsList(@NonNull CallbackIterator<User> handler) {
         String userHash = getHash(email);
 
-        database.child("userFriends").child(userHash).child("contacts").get().addOnCompleteListener(task -> {
+        database.child(userFriendsKey).child(userHash).child(contactsKey).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 if (task.getResult().getValue() != null) {
                     @SuppressWarnings("unchecked")
@@ -141,24 +145,28 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("all")
     public void getUser(String token, OnResult<User> handler) {
         Log.d("getUser ", token);
-        database.child("users").child(token).get().addOnCompleteListener(task -> {
+        database.child(usersKey).child(token).get().addOnCompleteListener(task -> {
             if (!task.isSuccessful()) {
                 Log.e("firebase", "Error getting data", task.getException());
                 handler.onError(new Throwable(resources.getString(R.string.error_getting_friend_from_database)));
             } else {
                 try {
                     Map<String, Object> tempMap = (HashMap<String, Object>) task.getResult().getValue();
-                    User user = new User((String) tempMap.get(userKey), (String) tempMap.get(emailKey));
-                    Log.d("User added ", user.email + " " + user.userID);
-                    user.nick = (String) tempMap.get(nickKey);
-                    HashMap<String, Double> latLng = (HashMap<String, Double>) tempMap.get(locationKey);
-                    user.userLocation = new LatLng(latLng.get(latitudeKey), latLng.get(longitudeKey));
-                    Double userAzimuth = (Double) tempMap.get(azimuthKey);
-                    user.userAzimuth =  userAzimuth.floatValue();
-                    handler.onSuccess(user);
+                    if (tempMap != null) {
+                        User user = new User((String) tempMap.get(userIDKey), (String) tempMap.get(emailKey));
+                        Log.d("User added ", user.email + " " + user.userID);
+                        user.nick = (String) Objects.requireNonNull(tempMap.get(nickKey));
+                        HashMap<String, Double> latLng = (HashMap<String, Double>) tempMap.get(locationKey);
+                        user.userLocation = new LatLng(latLng.get(latitudeKey), latLng.get(longitudeKey));
+                        Double userAzimuth = (Double) tempMap.get(azimuthKey);
+                        user.userAzimuth =  userAzimuth.floatValue();
+                        handler.onSuccess(user);
+                    } else {
+                        handler.onError(new Exception("Error getting user!"));
+                    }
                 } catch (Exception e) {
                     handler.onError(e);
                 }
@@ -166,10 +174,11 @@ public class UserServiceImpl implements UserService {
         });
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public boolean userExists() {
         AtomicBoolean userExists = new AtomicBoolean(false);
-        database.child("users").child(userID).get().addOnCompleteListener(task -> {
+        database.child(usersKey).child(userID).get().addOnCompleteListener(task -> {
             if (!task.isSuccessful()) {
                 Log.e("firebase", "Error getting data", task.getException());
             } else {

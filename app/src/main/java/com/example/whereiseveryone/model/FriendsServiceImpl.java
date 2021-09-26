@@ -19,8 +19,11 @@ import java.util.Map;
 public class FriendsServiceImpl implements FriendsService {
 
     private final DatabaseReference database;
-    private final String userKey = "userID";
+    private final String userIDKey = "userID";
     private final String emailKey = "email";
+    private final String usersKey = "users";
+    private final String userFriendsKey = "userFriends";
+    private final String contactsKey = "contacts";
     private final String userID;
     private final SharedPreferences sharedPreferences;
     private User user;
@@ -67,7 +70,7 @@ public class FriendsServiceImpl implements FriendsService {
             public void onSuccess(String result) {
                 Log.d("FriendsService", "friendsID is " + result);
                 if (result != null) {
-                    database.child("userFriends").child(userHash).child("contacts").child(result).setValue(true);
+                    database.child(userFriendsKey).child(userHash).child(contactsKey).child(result).setValue(true);
                 }
                 onResult.onSuccess(result);
             }
@@ -88,7 +91,7 @@ public class FriendsServiceImpl implements FriendsService {
         findFriendID(friendsEmail, new OnResult<String>() {
             @Override
             public void onSuccess(String result) {
-                database.child("userFriends").child(userHash).child("contacts").child(result).setValue(false);
+                database.child(userFriendsKey).child(userHash).child(contactsKey).child(result).setValue(false);
             }
 
             @Override
@@ -101,7 +104,7 @@ public class FriendsServiceImpl implements FriendsService {
     @Override
     public void changeNick(String nick) {
         Log.d("FriendsService", "Nick set to " + nick);
-        database.child("users").child(userID).child("nick").setValue(nick);
+        database.child(usersKey).child(userID).child("nick").setValue(nick);
     }
 
     @Override
@@ -109,7 +112,7 @@ public class FriendsServiceImpl implements FriendsService {
         String email = getEmail();
         String userHash = getHash(email);
 
-        database.child("userFriends").child(userHash).child("contacts").get().addOnCompleteListener(task -> {
+        database.child(userFriendsKey).child(userHash).child(contactsKey).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 if (task.getResult().getValue() != null) {
                     @SuppressWarnings("unchecked")
@@ -149,7 +152,7 @@ public class FriendsServiceImpl implements FriendsService {
     private void findFriendID(@NonNull String friendsEmail, @NonNull OnResult<String> handler) {
         String friendsHash = getHash(friendsEmail);
 
-        database.child("userFriends").child(friendsHash).child(userKey).get().addOnCompleteListener(task -> {
+        database.child(userFriendsKey).child(friendsHash).child(userIDKey).get().addOnCompleteListener(task -> {
             if (!task.isSuccessful()) {
                 Log.e("firebase", "Error getting data", task.getException());
                 handler.onError(task.getException());
@@ -161,7 +164,7 @@ public class FriendsServiceImpl implements FriendsService {
 
     public void getUserIDbyEmail(String email, OnResult<String> handler) {
         String emailHash = getHash(email);
-        database.child("userFriends").child(emailHash).child(userKey).get().addOnCompleteListener(task -> {
+        database.child(userFriendsKey).child(emailHash).child(userIDKey).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Log.d("Adding friend, hash:", emailHash);
                 handler.onSuccess((String) task.getResult().getValue());
@@ -177,7 +180,7 @@ public class FriendsServiceImpl implements FriendsService {
         String email = getEmail();
         String userHash = getHash(email);
 
-        database.child("userFriends").child(userHash).child("contacts").get().addOnCompleteListener(task -> {
+        database.child(userFriendsKey).child(userHash).child(contactsKey).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 @SuppressWarnings("unchecked")
                 HashMap<String, Boolean> tempMap = (HashMap<String, Boolean>) task.getResult().getValue();
@@ -192,7 +195,7 @@ public class FriendsServiceImpl implements FriendsService {
 
     public void getUser(String token, OnResult<User> handler) {
         Log.d("getUser ", token);
-        database.child("users").child(token).get().addOnCompleteListener(task -> {
+        database.child(usersKey).child(token).get().addOnCompleteListener(task -> {
             if (!task.isSuccessful()) {
                 Log.e("firebase", "Error getting data", task.getException());
                 handler.onError(new Throwable(resources.getString(R.string.error_getting_friend_from_database)));
@@ -201,7 +204,7 @@ public class FriendsServiceImpl implements FriendsService {
                 Map<String, String> tempMap = (HashMap<String, String>) task.getResult().getValue();
                 User user = null;
                 if (tempMap != null) {
-                    user = new User(tempMap.get(userKey), tempMap.get(emailKey));
+                    user = new User(tempMap.get(userIDKey), tempMap.get(emailKey));
                 }  else {
                     handler.onError(new Throwable("User has no friends"));
                 }
@@ -218,7 +221,7 @@ public class FriendsServiceImpl implements FriendsService {
     private void addUserToFriendsDataBase(User user) {
         String userHash = getHash(user.email);
         Log.d("FriendsService", "userHash: " + userHash);
-        database.child("userFriends").child(userHash).child(emailKey).setValue(user.email);
-        database.child("userFriends").child(userHash).child(userKey).setValue(user.userID);
+        database.child(userFriendsKey).child(userHash).child(emailKey).setValue(user.email);
+        database.child(userFriendsKey).child(userHash).child(userIDKey).setValue(user.userID);
     }
 }
