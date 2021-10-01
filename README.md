@@ -3,7 +3,7 @@ Android application for finding where your friends are
 
 How to run application
 
-To get this application working you will need to setup Firebase and get Google Api key
+To get this application working you will need to setup Firebase and get Google Api key, in Firebase you need Authentication and Realtime database.
 https://cloud.google.com/firestore/docs/client/get-firebase
 https://cloud.google.com/maps-platform
 After doing so add following files:
