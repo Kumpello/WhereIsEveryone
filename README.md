@@ -34,6 +34,36 @@ After clicking on Add Friend button you get to window where you need to type ema
 After clicking on Change Nick button you get to window where you can change your nick. <br />
 ![ChangeNickDialog](https://i.imgur.com/7CPWVnOm.png) 
 
+## Architecture
+
+Application is made by Model-View-Presenter pattern, and uses manually made Dependency Injection. <br />
+<br />
+examples:
+SignUpPresenterImpl.java <br />
+```java
+    public void signUpButtonClicked(String email, String password) {
+        if (isNullOrEmpty(password) || isNullOrEmpty(email)) {
+            return;
+        }
+
+        view.showProgress(); // Call to view
+
+        loginService.getEmailAndPassword(email, password); //Call to model
+
+        loginService.signUp(value -> {
+            if (value.getError() != null) {
+                view.showError(R.string.signup_failed);
+                return;
+            }
+
+            view.showSuccess();
+        });
+
+    }
+```    
+
+
+
 ## Tech stack
  
 * Java
