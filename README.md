@@ -36,9 +36,8 @@ After clicking on Change Nick button you get to window where you can change your
 
 ## Architecture
 
-Application is made by Model-View-Presenter pattern, and uses manually made Dependency Injection. <br />
+Application is made by Model-View-Presenter pattern <br />
 <br />
-examples:
 SignUpPresenterImpl.java <br />
 ```java
     public void signUpButtonClicked(String email, String password) {
@@ -60,8 +59,33 @@ SignUpPresenterImpl.java <br />
         });
 
     }
-```    
+```
+<br />
+Each Activity, Fragment and Presenter uses their base class and uses manually made Dependency Injection. <br />
+```java
+    public class BaseActivity<P extends Contract.Presenter> extends AppCompatActivity implements Contract.View {
 
+        protected P presenter;
+
+        @SuppressWarnings("unchecked")
+        @Override
+        protected void onCreate(@Nullable Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            this.presenter = (P) getContainer().getPresenter(this);
+            presenter.attachView(this);
+        }
+
+        @Override
+        protected void onDestroy() {
+            super.onDestroy();
+            presenter.detachView();
+        }
+
+        protected DependencyContainer getContainer() {
+            return ((MyApplication) this.getApplication()).getContainer();
+        }
+    }
+```
 
 
 ## Tech stack
