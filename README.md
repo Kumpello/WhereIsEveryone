@@ -61,7 +61,7 @@ SignUpPresenterImpl.java <br />
     }
 ```
 <br />
-Each Activity, Fragment and Presenter uses their base class and uses manually made Dependency Injection. <br />
+Each Activity, Fragment and Presenter uses their base class and uses manually made Dependency Injection. (TBD: Migrate to DI framework) <br />
 
     public class BaseActivity<P extends Contract.Presenter> extends AppCompatActivity implements Contract.View {
 
@@ -85,6 +85,82 @@ Each Activity, Fragment and Presenter uses their base class and uses manually ma
             return ((MyApplication) this.getApplication()).getContainer();
         }
     }
+    
+To add new app screen we need to: <br />
+1. Create the contract (View+Presenter). 
+
+```java
+import com.example.whereiseveryone.mvp.Contract;
+
+// must extends Contract.View
+interface GDPRView extends Contract.View {  
+    void showFullGDPR();
+    void nextScreen();
+}
+
+// must extends Presenter with generic type
+interface GDPRPresenter extends Contract.Presenter<GDPRView> { 
+    void showMoreClicked();
+    void okClicked(boolean agreed);
+}
+```
+2. Create presenter implementation:
+
+```java
+import androidx.annotation.NonNull;
+import com.example.whereiseveryone.mvp.BasePresenter;
+
+class GDPRPresenterImpl extends BasePresenter<GDPRView> implements GDPRPresenter {
+    // implementation here
+
+    // We can access proper view just using `view` (it's protected property in BasePresenter)
+}
+
+// In dependency container we must add:
+class DependencyContainer {
+
+    // presenter definition
+    @NonNull
+    public GDPRPresenter getGDPRPresenter() {
+        return new GDPRPresenter();
+    }
+
+    // another entry in the method...
+    @SuppressWarnings("unchecked")
+    public <V extends Contract.View> BasePresenter<V> getPresenter(V injector) {
+        if (injector instanceof SignUpView) {
+            // ugly, but it'll work
+            return (BasePresenter<V>) getSingUpPresenter();
+        } else if (injector instanceof LoginView) {
+            return (BasePresenter<V>) getLoginPresenter();
+        } 
+        // NEW CODE
+        else if (injector instanceof GDPRView) {
+            return (BasePresenter<V>) getGDPRPresenter();
+        }
+        // --NEW CODE
+
+        throw new IllegalArgumentException("no presenter for such a view");
+    }    
+}
+```
+
+3. Create a new Activity (view implementation)
+
+```java
+import com.example.whereiseveryone.mvp.BaseActivity;
+
+class GDPRActivity extends BaseActivity<GDPRPresenter> implements GDPRView {
+    // Implementation here
+
+    // We can obtain our presenter just by doing `presenter` as it's a protected property
+    // in BaseActivity
+
+    // Thanks to the BaseActivity and DependencyContainer we don't need to remember about
+    // initializing the Presenter. 
+}
+```
+
 
 
 ## Tech stack
