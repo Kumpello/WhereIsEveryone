@@ -62,7 +62,7 @@ SignUpPresenterImpl.java <br />
 ```
 <br />
 Each Activity, Fragment and Presenter uses their base class and uses manually made Dependency Injection. <br />
-```java
+
     public class BaseActivity<P extends Contract.Presenter> extends AppCompatActivity implements Contract.View {
 
         protected P presenter;
@@ -85,7 +85,6 @@ Each Activity, Fragment and Presenter uses their base class and uses manually ma
             return ((MyApplication) this.getApplication()).getContainer();
         }
     }
-```
 
 
 ## Tech stack
