@@ -13,7 +13,7 @@
     <string name="decline">No!</string>
     <string name="all_strings_required">All fields required</string>
     <string name="login_failed">Wrong login or password</string>
-    <string name="signup_failed">Login or email occupied</string>
+    <string name="signup_failed">Signup failed</string>
     <string name="connection_error">Connection error</string>
     <string name="empty_fields">All fields required!</string>
     <string name="password_too_short">Password needs to be 6 characters minimum</string>
