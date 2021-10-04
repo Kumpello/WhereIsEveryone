@@ -71,8 +71,8 @@ public class FriendsServiceImpl implements FriendsService {
                 Log.d("FriendsService", "friendsID is " + result);
                 if (result != null) {
                     database.child(userFriendsKey).child(userHash).child(contactsKey).child(result).setValue(true);
+                    onResult.onSuccess(result);
                 }
-                onResult.onSuccess(result);
             }
 
             @Override

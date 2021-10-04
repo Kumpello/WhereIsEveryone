@@ -90,7 +90,7 @@ public class FriendsFragment extends BaseFragment<FriendsPresenter> implements F
             public void onSuccess(String result) {
                 if (!TextUtils.isNullOrEmpty(result)) {
                     Log.d("FriendsFragment", "Email set to " + result);
-                    presenter.addFriend(result);
+                    presenter.addFriend(result.trim());
                 } else {
                     Log.d("FriendsFragment", "Friend email is null or empty");
                 }
