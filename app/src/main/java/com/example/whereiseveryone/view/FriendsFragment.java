@@ -22,7 +22,6 @@ import com.example.whereiseveryone.utils.OnResult;
 import com.example.whereiseveryone.utils.TextUtils;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -90,7 +89,7 @@ public class FriendsFragment extends BaseFragment<FriendsPresenter> implements F
             public void onSuccess(String result) {
                 if (!TextUtils.isNullOrEmpty(result)) {
                     Log.d("FriendsFragment", "Email set to " + result);
-                    presenter.addFriend(result);
+                    presenter.addFriend(result.trim());
                 } else {
                     Log.d("FriendsFragment", "Friend email is null or empty");
                 }
@@ -116,7 +115,7 @@ public class FriendsFragment extends BaseFragment<FriendsPresenter> implements F
             public void onSuccess(String result) {
                 if (!TextUtils.isNullOrEmpty(result)) {
                     Log.d("FriendsFragment", "Nick set to " + result);
-                    presenter.changeNick(result);
+                    presenter.changeNick(result.trim());
                 } else {
                     Log.d("FriendsFragment", "Nick is null or empty");
                 }
