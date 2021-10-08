@@ -161,6 +161,28 @@ class GDPRActivity extends BaseActivity<GDPRPresenter> implements GDPRView {
 }
 ```
 
+**Using this solution was a stub for fast development. It will be migrated to a DI Framework like [Hilt](https://developer.android.com/training/dependency-injection/hilt-android).**
+ 
+## Firebase Database Scheme
+
+ ![DatabaseScheme](https://i.imgur.com/myrCPRY.png) 
+ 
+## TODO
+ 
+There are a few features that will be implemented/added in the future.
+ 
+#### Features
+- [ ] Screen for navigation by azimuth to find individual friends
+- [ ] Add settings for map screen
+ 
+#### Code:
+- [ ] Migrate to DI Framework
+- [ ] Extract interactions with the database to own class
+- [ ] Add CI (via GitHub actions)
+- [ ] **Greater test coverage**
+- [ ] Stable (production ready) configuration for Google Cloud Services
+- [ ] Deploy config (key-chain, proguard rules etc.)
+
 
 
 ## Tech stack
