@@ -174,6 +174,9 @@ There are a few features that will be implemented/added in the future.
 #### Features
 - [ ] Screen for navigation by azimuth to find individual friends
 - [ ] Add settings for map screen
+- [ ] Personal avatars for friends on map screen
+- [ ] Marking place on map where you will be in near future
+- [ ] And many more!
  
 #### Code:
 - [ ] Migrate to DI Framework
@@ -182,7 +185,6 @@ There are a few features that will be implemented/added in the future.
 - [ ] **Greater test coverage**
 - [ ] Stable (production ready) configuration for Google Cloud Services
 - [ ] Deploy config (key-chain, proguard rules etc.)
-
 
 
 ## Tech stack
