@@ -36,128 +36,50 @@ After clicking on Change Nick button you get to window where you can change your
 
 ## Architecture
 
-Application is made by Model-View-Presenter pattern <br />
-<br />
-SignUpPresenterImpl.java <br />
+### MVP
+ 
+The app is made by Model-View-Presenter pattern. 
+Using base classes, like `BasePresenter`, `BaseActivity`, `BaseFragment` allows managing attaching/detaching view automatically (basing on Component Life Cycle).
+ 
+[//]: # (reference to another md, realtive path)
+For more details please see: [MVP Readme File](app/src/main/java/com/example/whereiseveryone/mvp/README.md)
+ 
+### Dependency Injection
+ 
+All classes follows DI pattern. For now, a simple container is defined:
 ```java
-    public void signUpButtonClicked(String email, String password) {
-        if (isNullOrEmpty(password) || isNullOrEmpty(email)) {
-            return;
+public class DependencyContainer {
+    private final Application application;
+ 
+    // example singleton definition
+    private LoginService loginService;
+ 
+    // example singleton creation
+    public synchronized getLoginService() {
+        if (loginService == null) {
+            loginService = new LoginServiceImpl();
         }
-
-        view.showProgress(); // Call to view
-
-        loginService.getEmailAndPassword(email, password); //Call to model
-
-        loginService.signUp(value -> {
-            if (value.getError() != null) {
-                view.showError(R.string.signup_failed);
-                return;
-            }
-
-            view.showSuccess();
-        });
-
+ 
+        return loginService;
     }
-```
-<br />
-Each Activity, Fragment and Presenter uses their base class and uses manually made Dependency Injection. (TBD: Migrate to DI framework) <br />
-
-    public class BaseActivity<P extends Contract.Presenter> extends AppCompatActivity implements Contract.View {
-
-        protected P presenter;
-
-        @SuppressWarnings("unchecked")
-        @Override
-        protected void onCreate(@Nullable Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            this.presenter = (P) getContainer().getPresenter(this);
-            presenter.attachView(this);
-        }
-
-        @Override
-        protected void onDestroy() {
-            super.onDestroy();
-            presenter.detachView();
-        }
-
-        protected DependencyContainer getContainer() {
-            return ((MyApplication) this.getApplication()).getContainer();
-        }
-    }
-    
-To add new app screen we need to: <br />
-1. Create the contract (View+Presenter). 
-
-```java
-import com.example.whereiseveryone.mvp.Contract;
-
-// must extends Contract.View
-interface GDPRView extends Contract.View {  
-    void showFullGDPR();
-    void nextScreen();
-}
-
-// must extends Presenter with generic type
-interface GDPRPresenter extends Contract.Presenter<GDPRView> { 
-    void showMoreClicked();
-    void okClicked(boolean agreed);
-}
-```
-2. Create presenter implementation:
-
-```java
-import androidx.annotation.NonNull;
-import com.example.whereiseveryone.mvp.BasePresenter;
-
-class GDPRPresenterImpl extends BasePresenter<GDPRView> implements GDPRPresenter {
-    // implementation here
-
-    // We can access proper view just using `view` (it's protected property in BasePresenter)
-}
-
-// In dependency container we must add:
-class DependencyContainer {
-
-    // presenter definition
-    @NonNull
-    public GDPRPresenter getGDPRPresenter() {
-        return new GDPRPresenter();
-    }
-
-    // another entry in the method...
-    @SuppressWarnings("unchecked")
-    public <V extends Contract.View> BasePresenter<V> getPresenter(V injector) {
+ 
+    // factory-method:
+    public MainPreenter getMainPresenter() {
+        return new MainPresenter();
+    } 
+ 
+    // generic factory method for presenter - ugly;
+    // will be removed on migration to DI Framework
+    public <V extends Contract.View> BasePresenter<V> getPresenter(V injector) throw IllegalArgumentException {
+        Context context;
+        // obtain context...
+ 
         if (injector instanceof SignUpView) {
-            // ugly, but it'll work
-            return (BasePresenter<V>) getSingUpPresenter();
-        } else if (injector instanceof LoginView) {
-            return (BasePresenter<V>) getLoginPresenter();
-        } 
-        // NEW CODE
-        else if (injector instanceof GDPRView) {
-            return (BasePresenter<V>) getGDPRPresenter();
+            return (BasePresenter<V>) getSingUpPresenter(
+                getDatabaseReference(context);
+            );
         }
-        // --NEW CODE
-
-        throw new IllegalArgumentException("no presenter for such a view");
-    }    
-}
-```
-
-3. Create a new Activity (view implementation)
-
-```java
-import com.example.whereiseveryone.mvp.BaseActivity;
-
-class GDPRActivity extends BaseActivity<GDPRPresenter> implements GDPRView {
-    // Implementation here
-
-    // We can obtain our presenter just by doing `presenter` as it's a protected property
-    // in BaseActivity
-
-    // Thanks to the BaseActivity and DependencyContainer we don't need to remember about
-    // initializing the Presenter. 
+    }
 }
 ```
 
