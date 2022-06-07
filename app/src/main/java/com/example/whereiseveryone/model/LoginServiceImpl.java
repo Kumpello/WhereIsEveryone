@@ -1,9 +1,17 @@
 package com.example.whereiseveryone.model;
 
+import static android.provider.Settings.System.getString;
+
+import android.app.Activity;
+import android.content.res.Resources;
 import android.util.Log;
 
 
+import com.example.whereiseveryone.R;
 import com.example.whereiseveryone.utils.Consumer;
+import com.google.android.gms.auth.api.identity.BeginSignInRequest;
+import com.google.android.gms.auth.api.identity.Identity;
+import com.google.android.gms.auth.api.identity.SignInClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -14,8 +22,10 @@ public class LoginServiceImpl implements LoginService {
     private static final String TAG = "EmailPassword";
     private final FirebaseAuth mAuth;
     private String[] emailAndPassword;
+    private SignInClient oneTapClient;
+    private BeginSignInRequest signInRequest;
 
-    public LoginServiceImpl() {
+    public LoginServiceImpl(Resources resources, Activity activity) {
         mAuth = FirebaseAuth.getInstance();
     }
 

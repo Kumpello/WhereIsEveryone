@@ -61,9 +61,9 @@ public class DependencyContainer {
     }
 
     @NonNull
-    public LoginService getLoginService() {
+    public LoginService getLoginService(Activity activity) {
         if (loginService == null) {
-            loginService = new LoginServiceImpl();
+            loginService = new LoginServiceImpl(getResources(), activity);
         }
 
         return loginService;
@@ -95,16 +95,16 @@ public class DependencyContainer {
     // We want to create presenters every time,
     // so we shouldn't keep any references to them
     @NonNull
-    public LoginPresenter getLoginPresenter(DatabaseReference ref, SharedPreferences preferences) {
+    public LoginPresenter getLoginPresenter(DatabaseReference ref, SharedPreferences preferences, Activity activity) {
         return new LoginPresenterImpl(
-                getLoginService(),
+                getLoginService(activity),
                 getUserService(ref, preferences, getResources())
         );
     }
 
     @NonNull
-    public SignUpPresenter getSingUpPresenter() {
-        return new SignUpPresenterImpl(getLoginService()
+    public SignUpPresenter getSingUpPresenter(Activity activity) {
+        return new SignUpPresenterImpl(getLoginService(activity)
         );
     }
 
@@ -161,11 +161,11 @@ public class DependencyContainer {
 
         if (injector instanceof SignUpView) {
             // ugly, but it'll work
-            return (BasePresenter<V>) getSingUpPresenter();
+            return (BasePresenter<V>) getSingUpPresenter(activity);
         } else if (injector instanceof LoginView) {
             return (BasePresenter<V>) getLoginPresenter(
                     getDatabaseReference(activity),
-                    getSharedPreferences(activity)
+                    getSharedPreferences(activity), activity
             );
         } else if (injector instanceof MapView) {
             return (BasePresenter<V>) getMapPresenter(activity);
