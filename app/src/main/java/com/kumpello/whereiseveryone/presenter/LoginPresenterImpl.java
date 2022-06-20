@@ -57,6 +57,8 @@ public class LoginPresenterImpl extends BasePresenter<LoginView> implements Logi
         GoogleSignInClient googleSignInClient = loginService.getGoogleSignInClient();
         Intent signInIntent = googleSignInClient.getSignInIntent();
         view.loginByGoogle(signInIntent);
+        userService.saveToken(loginService.getGoogleAccount().getIdToken());
+        userService.saveEmail(loginService.getGoogleAccount().getEmail());
         userService.saveLoginType(UserType.GOOGLE);
     }
 }

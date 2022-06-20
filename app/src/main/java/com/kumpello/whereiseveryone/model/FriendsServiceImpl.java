@@ -24,6 +24,7 @@ public class FriendsServiceImpl implements FriendsService {
     private final String usersKey = "users";
     private final String userFriendsKey = "userFriends";
     private final String contactsKey = "contacts";
+    private final String userTypeKey = "type";
     private final String userID;
     private final SharedPreferences sharedPreferences;
     private User user;
@@ -221,7 +222,9 @@ public class FriendsServiceImpl implements FriendsService {
     private void addUserToFriendsDataBase(User user) {
         String userHash = getHash(user.email);
         Log.d("FriendsService", "userHash: " + userHash);
-        database.child(userFriendsKey).child(userHash).child(emailKey).setValue(user.email);
-        database.child(userFriendsKey).child(userHash).child(userIDKey).setValue(user.userID);
+        String userType = sharedPreferences.getString(userTypeKey, "");
+
+        database.child(userFriendsKey).child(userType).child(userHash).child(emailKey).setValue(user.email);
+        database.child(userFriendsKey).child(userType).child(userHash).child(userIDKey).setValue(user.userID);
     }
 }

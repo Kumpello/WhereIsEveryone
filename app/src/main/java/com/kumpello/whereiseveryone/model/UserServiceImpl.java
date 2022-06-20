@@ -9,6 +9,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.example.whereiseveryone.R;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.kumpello.whereiseveryone.utils.CallbackIterator;
 import com.kumpello.whereiseveryone.utils.OnResult;
 import com.google.android.gms.maps.model.LatLng;
@@ -87,7 +88,6 @@ public class UserServiceImpl implements UserService {
     public void updateUserOnServer(User user) {
         database.child(usersKey).child(userID).setValue(user);
     }
-
     @Override
     public void updateUserLocationAndDirection(User user) {
         database.child(usersKey).child(userID).child("userAzimuth").setValue(user.userAzimuth);

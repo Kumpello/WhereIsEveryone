@@ -1,5 +1,6 @@
 package com.kumpello.whereiseveryone.model;
 
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.kumpello.whereiseveryone.utils.Consumer;
 
@@ -15,5 +16,7 @@ public interface LoginService {
     boolean checkIfLoggedByGoogle();
 
     GoogleSignInClient getGoogleSignInClient();
+
+    GoogleSignInAccount getGoogleAccount();
 
 }

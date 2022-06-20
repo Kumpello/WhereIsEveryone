@@ -102,4 +102,9 @@ public class LoginServiceImpl implements LoginService {
     public GoogleSignInClient getGoogleSignInClient() {
         return googleSignInClient;
     }
+
+    @Override
+    public GoogleSignInAccount getGoogleAccount() {
+        return GoogleSignIn.getLastSignedInAccount(activity);
+    }
 }
