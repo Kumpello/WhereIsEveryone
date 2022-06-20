@@ -7,9 +7,14 @@ import android.os.Looper;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 
 import com.example.whereiseveryone.databinding.ActivityLoginBinding;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
 import com.kumpello.whereiseveryone.mvp.BaseActivity;
 import com.kumpello.whereiseveryone.presenter.LoginPresenter;
 
@@ -19,6 +24,7 @@ import static android.view.View.GONE;
 public class LoginActivity extends BaseActivity<LoginPresenter> implements LoginView {
 
     private ActivityLoginBinding binding;
+    private static int GOOGLE_CODE = 420;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +44,8 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
         });
 
         binding.btnLogin.setOnClickListener(v -> getLoginFields());
+
+        binding.btnGoogleSignIn.setOnClickListener(v -> googleButtonClicked());
     }
 
 
@@ -69,5 +77,30 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
 
         Handler handler = new Handler(Looper.getMainLooper());
         handler.post(() -> presenter.loginButtonClicked(username, password));
+    }
+
+    private void googleButtonClicked() {
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(() -> presenter.googleButtonClicked());
+    }
+
+    public void loginByGoogle(Intent intent) {
+        startActivityForResult(intent, GOOGLE_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode,Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 420){
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+
+            try {
+                task.getResult(ApiException.class);
+                showSuccess();
+            } catch (ApiException e) {
+                Toast.makeText(getApplicationContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
+            }
+        }
+
     }
 }

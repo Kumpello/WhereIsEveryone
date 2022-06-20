@@ -3,7 +3,10 @@ package com.kumpello.whereiseveryone.presenter;
 
 import static com.kumpello.whereiseveryone.utils.TextUtils.isNullOrEmpty;
 
+import android.content.Intent;
+
 import com.example.whereiseveryone.R;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.kumpello.whereiseveryone.model.LoginService;
 import com.kumpello.whereiseveryone.model.UserService;
 import com.kumpello.whereiseveryone.mvp.BasePresenter;
@@ -17,6 +20,9 @@ public class LoginPresenterImpl extends BasePresenter<LoginView> implements Logi
     public LoginPresenterImpl(LoginService loginService, UserService userService) {
         this.loginService = loginService;
         this.userService = userService;
+        if (loginService.checkIfLoggedByGoogle()) {
+            view.showSuccess();
+        }
     }
 
     @Override
@@ -42,5 +48,12 @@ public class LoginPresenterImpl extends BasePresenter<LoginView> implements Logi
             view.showSuccess();
         });
 
+    }
+
+    @Override
+    public void googleButtonClicked() {
+        GoogleSignInClient googleSignInClient = loginService.getGoogleSignInClient();
+        Intent signInIntent = googleSignInClient.getSignInIntent();
+        view.loginByGoogle(signInIntent);
     }
 }

@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.content.res.Resources;
 import android.util.Log;
 
-import com.google.android.gms.auth.api.identity.BeginSignInRequest;
-import com.google.android.gms.auth.api.identity.SignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.kumpello.whereiseveryone.utils.Consumer;
@@ -17,28 +19,24 @@ public class LoginServiceImpl implements LoginService {
     private static final String TAG = "EmailPassword";
     private final FirebaseAuth mAuth;
     private String[] emailAndPassword;
-    private SignInClient oneTapClient;
-    private BeginSignInRequest signInRequest;
+    private final Activity activity;
+    private GoogleSignInOptions googleSignInOptions;
+    private GoogleSignInClient googleSignInClient;
+    private boolean userSignedIn;
+    private GoogleSignInAccount account;
 
     public LoginServiceImpl(Resources resources, Activity activity) {
+        this.activity = activity;
         mAuth = FirebaseAuth.getInstance();
-/*
-        oneTapClient = Identity.getSignInClient(activity);
-        signInRequest = BeginSignInRequest.builder()
-                .setPasswordRequestOptions(BeginSignInRequest.PasswordRequestOptions.builder()
-                        .setSupported(true)
-                        .build())
-                .setGoogleIdTokenRequestOptions(BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
-                        .setSupported(true)
-                        // Your server's client ID, not your Android client ID.
-                        .setServerClientId(getString(R.string.default_web_client_id))
-                        // Only show accounts previously used to sign in.
-                        .setFilterByAuthorizedAccounts(true)
-                        .build())
-                // Automatically sign in when exactly one credential is retrieved.
-                .setAutoSelectEnabled(true)
-                .build();
-*/
+        userSignedIn = false;
+        googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
+        googleSignInClient = GoogleSignIn.getClient(activity, googleSignInOptions);
+
+        account = GoogleSignIn.getLastSignedInAccount(activity);
+        if (account != null) {
+            userSignedIn = true;
+        }
+
 
     }
 
@@ -93,5 +91,15 @@ public class LoginServiceImpl implements LoginService {
     @Override
     public boolean checkIfLogged() {
         return mAuth.getCurrentUser() != null;
+    }
+
+    @Override
+    public boolean checkIfLoggedByGoogle(){
+        return userSignedIn;
+    }
+
+    @Override
+    public GoogleSignInClient getGoogleSignInClient() {
+        return googleSignInClient;
     }
 }

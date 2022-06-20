@@ -15,8 +15,13 @@
         <entry key="..\:/Users/bleid/AndroidStudioProjects/WhereIsEveryone_Fix/app/src/main/res/drawable/ic_friends_map_icon.xml" value="0.22135416666666666" />
         <entry key="..\:/Users/bleid/AndroidStudioProjects/WhereIsEveryone_Fix/app/src/main/res/drawable/ic_round_navigation_24.xml" value="0.22135416666666666" />
         <entry key="..\:/Users/bleid/AndroidStudioProjects/WhereIsEveryone_Fix/app/src/main/res/layout/fragment_friends.xml" value="0.36666666666666664" />
-        <entry key="app/src/main/res/layout/activity_login.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_login.xml" value="0.67" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.19270833333333334" />
+        <entry key="app/src/main/res/layout/activity_map.xml" value="0.19270833333333334" />
         <entry key="app/src/main/res/layout/activity_sign_up.xml" value="0.11141304347826086" />
+        <entry key="app/src/main/res/layout/fragment_friends.xml" value="0.19270833333333334" />
+        <entry key="app/src/main/res/layout/fragment_map.xml" value="0.19270833333333334" />
+        <entry key="app/src/main/res/layout/friend.xml" value="0.19270833333333334" />
       </map>
     </option>
   </component>
