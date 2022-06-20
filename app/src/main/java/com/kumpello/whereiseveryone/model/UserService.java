@@ -32,4 +32,5 @@ public interface UserService {
     void getFriendsList(CallbackIterator<User> userList);
     void updateFriendsList(List<User> friends, CallbackIterator<User> userList);
     void checkFriendship(User user, OnResult<Boolean> result);
+    void saveLoginType(UserType type);
 }

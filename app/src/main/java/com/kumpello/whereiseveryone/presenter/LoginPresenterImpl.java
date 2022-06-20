@@ -9,6 +9,7 @@ import com.example.whereiseveryone.R;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.kumpello.whereiseveryone.model.LoginService;
 import com.kumpello.whereiseveryone.model.UserService;
+import com.kumpello.whereiseveryone.model.UserType;
 import com.kumpello.whereiseveryone.mvp.BasePresenter;
 import com.kumpello.whereiseveryone.view.LoginView;
 
@@ -44,6 +45,7 @@ public class LoginPresenterImpl extends BasePresenter<LoginView> implements Logi
             }
             userService.saveToken(value.getToken());
             userService.saveEmail(login);
+            userService.saveLoginType(UserType.EMAIL);
 
             view.showSuccess();
         });
@@ -55,5 +57,6 @@ public class LoginPresenterImpl extends BasePresenter<LoginView> implements Logi
         GoogleSignInClient googleSignInClient = loginService.getGoogleSignInClient();
         Intent signInIntent = googleSignInClient.getSignInIntent();
         view.loginByGoogle(signInIntent);
+        userService.saveLoginType(UserType.GOOGLE);
     }
 }

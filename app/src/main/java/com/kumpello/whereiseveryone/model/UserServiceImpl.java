@@ -23,6 +23,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class UserServiceImpl implements UserService {
 
     private final String userKeySharedPreferences = "userid";
+    private final String userTypeKey = "type";
     private final String emailKey = "email";
     private final String userIDKey = "userID";
     private final String nickKey = "nick";
@@ -62,6 +63,11 @@ public class UserServiceImpl implements UserService {
         myEdit.putString(emailKey, email);
         myEdit.commit();
         Log.d("UserService", "Email saved: " + email);
+    }
+
+    @Override
+    public void saveLoginType(UserType type) {
+        myEdit.putString(userTypeKey, String.valueOf(type));
     }
 
     @Override
