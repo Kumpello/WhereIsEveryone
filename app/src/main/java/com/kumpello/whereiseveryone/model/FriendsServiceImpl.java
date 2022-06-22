@@ -8,7 +8,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.example.whereiseveryone.R;
+import com.kumpello.whereiseveryone.R;
 import com.google.firebase.database.DatabaseReference;
 import com.kumpello.whereiseveryone.utils.CallbackIterator;
 import com.kumpello.whereiseveryone.utils.OnResult;

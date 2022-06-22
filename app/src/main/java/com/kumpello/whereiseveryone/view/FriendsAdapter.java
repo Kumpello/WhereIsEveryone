@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.whereiseveryone.R;
+import com.kumpello.whereiseveryone.R;
 import com.kumpello.whereiseveryone.model.User;
 import com.kumpello.whereiseveryone.presenter.FriendsPresenter;
 

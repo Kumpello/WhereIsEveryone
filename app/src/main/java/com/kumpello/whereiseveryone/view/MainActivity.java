@@ -7,8 +7,8 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
-import com.example.whereiseveryone.R;
-import com.example.whereiseveryone.databinding.ActivityMainBinding;
+import com.kumpello.whereiseveryone.R;
+import com.kumpello.whereiseveryone.databinding.ActivityMainBinding;
 import com.kumpello.whereiseveryone.mvp.BaseActivity;
 import com.kumpello.whereiseveryone.presenter.MainPresenter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;

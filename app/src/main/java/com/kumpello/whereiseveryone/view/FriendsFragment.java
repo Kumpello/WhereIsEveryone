@@ -13,8 +13,8 @@ import android.widget.LinearLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.example.whereiseveryone.R;
-import com.example.whereiseveryone.databinding.FragmentFriendsBinding;
+import com.kumpello.whereiseveryone.R;
+import com.kumpello.whereiseveryone.databinding.FragmentFriendsBinding;
 import com.kumpello.whereiseveryone.model.User;
 import com.kumpello.whereiseveryone.mvp.BaseFragment;
 import com.kumpello.whereiseveryone.presenter.FriendsPresenter;

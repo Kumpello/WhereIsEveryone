@@ -1,6 +1,6 @@
 package com.kumpello.whereiseveryone.presenter;
 
-import com.example.whereiseveryone.R;
+import com.kumpello.whereiseveryone.R;
 import com.kumpello.whereiseveryone.model.LoginService;
 import com.kumpello.whereiseveryone.mvp.BasePresenter;
 import com.kumpello.whereiseveryone.view.SignUpView;

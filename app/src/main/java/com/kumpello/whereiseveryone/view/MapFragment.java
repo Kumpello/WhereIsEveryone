@@ -14,8 +14,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.example.whereiseveryone.R;
-import com.example.whereiseveryone.databinding.FragmentMapBinding;
+import com.kumpello.whereiseveryone.R;
+import com.kumpello.whereiseveryone.databinding.FragmentMapBinding;
 import com.kumpello.whereiseveryone.model.User;
 import com.kumpello.whereiseveryone.mvp.BaseFragment;
 import com.kumpello.whereiseveryone.presenter.MapPresenter;

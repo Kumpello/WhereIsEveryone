@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/mapFragment"
-        android:name="com.example.whereiseveryone.view.MapFragment"
+        android:name="com.kumpello.whereiseveryone.view.MapFragment"
         android:label="MapFragment" >
         <action
             android:id="@+id/action_mapFragment_to_friendsFragment3"
@@ -15,7 +15,7 @@
     </fragment>
     <fragment
         android:id="@+id/friendsFragment"
-        android:name="com.example.whereiseveryone.view.FriendsFragment"
+        android:name="com.kumpello.whereiseveryone.view.FriendsFragment"
         android:label="fragment_friends"
         tools:layout="@layout/fragment_friends" >
         <action

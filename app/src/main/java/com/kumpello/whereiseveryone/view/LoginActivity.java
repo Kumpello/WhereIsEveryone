@@ -1,5 +1,7 @@
 package com.kumpello.whereiseveryone.view;
 
+import static android.view.View.GONE;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -7,18 +9,15 @@ import android.os.Looper;
 import android.view.View;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 
-import com.example.whereiseveryone.databinding.ActivityLoginBinding;
+import com.kumpello.whereiseveryone.databinding.ActivityLoginBinding;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.kumpello.whereiseveryone.mvp.BaseActivity;
 import com.kumpello.whereiseveryone.presenter.LoginPresenter;
-
-import static android.view.View.GONE;
 
 
 public class LoginActivity extends BaseActivity<LoginPresenter> implements LoginView {

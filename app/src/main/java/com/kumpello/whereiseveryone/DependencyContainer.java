@@ -10,7 +10,7 @@ import android.content.res.Resources;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.example.whereiseveryone.R;
+import com.kumpello.whereiseveryone.R;
 import com.kumpello.whereiseveryone.model.FriendsServiceImpl;
 import com.kumpello.whereiseveryone.model.LoginService;
 import com.kumpello.whereiseveryone.model.LoginServiceImpl;

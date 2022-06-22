@@ -9,8 +9,8 @@ import android.os.Looper;
 import android.view.View;
 import android.widget.Toast;
 
-import com.example.whereiseveryone.R;
-import com.example.whereiseveryone.databinding.ActivitySignUpBinding;
+import com.kumpello.whereiseveryone.R;
+import com.kumpello.whereiseveryone.databinding.ActivitySignUpBinding;
 import com.kumpello.whereiseveryone.mvp.BaseActivity;
 import com.kumpello.whereiseveryone.presenter.SignUpPresenter;
 

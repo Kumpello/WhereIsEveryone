@@ -5,7 +5,7 @@ import static com.kumpello.whereiseveryone.utils.TextUtils.isNullOrEmpty;
 
 import android.content.Intent;
 
-import com.example.whereiseveryone.R;
+import com.kumpello.whereiseveryone.R;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.kumpello.whereiseveryone.model.LoginService;
 import com.kumpello.whereiseveryone.model.UserService;
