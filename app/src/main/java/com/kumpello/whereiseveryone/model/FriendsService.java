@@ -4,10 +4,10 @@ import com.kumpello.whereiseveryone.utils.CallbackIterator;
 import com.kumpello.whereiseveryone.utils.OnResult;
 
 public interface FriendsService {
-    boolean addFriend(String email, OnResult<String> handler);
+    boolean addFriend(String email, UserType userType, OnResult<String> handler);
 
     // TODO: Do this asynchronous
-    void removeFriend(String email);
+    void removeFriend(String email, UserType userType);
 
     void changeNick(String nick);
 
@@ -15,7 +15,7 @@ public interface FriendsService {
 
     void getUser(String token, OnResult<User> handler);
 
-    void getUserIDbyEmail(String email, OnResult<String> handler);
+    void getUserIDbyEmail(String email, UserType userType, OnResult<String> handler);
 
     void getSize(OnResult<Integer> handler);
 }

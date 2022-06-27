@@ -39,7 +39,7 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
         userMarkerPlaced = false;
         this.userService = userService;
         this.timer = timer;
-        user = new User(userService.getToken(), userService.getEmail());
+        user = new User(userService.getToken(), userService.getEmail(), userService.getUserType());
         userExists = userService.userExists();
         friends = new ArrayList<>();
         getFriendList();

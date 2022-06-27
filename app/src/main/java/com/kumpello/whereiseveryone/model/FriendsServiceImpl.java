@@ -52,7 +52,7 @@ public class FriendsServiceImpl implements FriendsService {
 
     // async method - return true/false just basing on a validation
     @Override
-    public boolean addFriend(String friendsEmail, OnResult<String> onResult) {
+    public boolean addFriend(String friendsEmail, UserType userType, OnResult<String> onResult) {
         String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
         if (friendsEmail.isEmpty()) {
             onResult.onError(new Throwable(resources.getString(R.string.text_is_empty)));
@@ -66,12 +66,12 @@ public class FriendsServiceImpl implements FriendsService {
         String email = getEmail();
         String userHash = getHash(email);
 
-        findFriendID(friendsEmail, new OnResult<String>() {
+        findFriendID(friendsEmail, userType, new OnResult<String>() {
             @Override
             public void onSuccess(String result) {
                 Log.d("FriendsService", "friendsID is " + result);
                 if (result != null) {
-                    database.child(userFriendsKey).child(userHash).child(contactsKey).child(result).setValue(true);
+                    database.child(userFriendsKey).child(String.valueOf(userType)).child(userHash).child(contactsKey).child(result).setValue(true);
                     onResult.onSuccess(result);
                 }
             }
@@ -85,19 +85,19 @@ public class FriendsServiceImpl implements FriendsService {
     }
 
     @Override
-    public void removeFriend(String friendsEmail) {
+    public void removeFriend(String friendsEmail, UserType type) {
         String email = getEmail();
         String userHash = getHash(email);
 
-        findFriendID(friendsEmail, new OnResult<String>() {
+        findFriendID(friendsEmail, type, new OnResult<String>() {
             @Override
             public void onSuccess(String result) {
-                database.child(userFriendsKey).child(userHash).child(contactsKey).child(result).setValue(false);
+                database.child(userFriendsKey).child(String.valueOf(type)).child(userHash).child(contactsKey).child(result).setValue(false);
             }
 
             @Override
             public void onError(Throwable error) {
-
+                Log.d("Error removing friend", userHash + " " + type);
             }
         });
     }
@@ -150,10 +150,10 @@ public class FriendsServiceImpl implements FriendsService {
         return sharedPreferences.getString(emailKey, "");
     }
 
-    private void findFriendID(@NonNull String friendsEmail, @NonNull OnResult<String> handler) {
+    private void findFriendID(@NonNull String friendsEmail, @NonNull UserType userType,@NonNull OnResult<String> handler) {
         String friendsHash = getHash(friendsEmail);
 
-        database.child(userFriendsKey).child(friendsHash).child(userIDKey).get().addOnCompleteListener(task -> {
+        database.child(userFriendsKey).child(String.valueOf(userType)).child(friendsHash).child(userIDKey).get().addOnCompleteListener(task -> {
             if (!task.isSuccessful()) {
                 Log.e("firebase", "Error getting data", task.getException());
                 handler.onError(task.getException());
@@ -163,9 +163,10 @@ public class FriendsServiceImpl implements FriendsService {
         });
     }
 
-    public void getUserIDbyEmail(String email, OnResult<String> handler) {
+    @Override
+    public void getUserIDbyEmail(String email, UserType userType, OnResult<String> handler) {
         String emailHash = getHash(email);
-        database.child(userFriendsKey).child(emailHash).child(userIDKey).get().addOnCompleteListener(task -> {
+        database.child(userFriendsKey).child(String.valueOf(userType)).child(emailHash).child(userIDKey).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Log.d("Adding friend, hash:", emailHash);
                 handler.onSuccess((String) task.getResult().getValue());
@@ -180,8 +181,9 @@ public class FriendsServiceImpl implements FriendsService {
     public void getSize(OnResult<Integer> handler) {
         String email = getEmail();
         String userHash = getHash(email);
+        String userType = sharedPreferences.getString(userTypeKey, "");
 
-        database.child(userFriendsKey).child(userHash).child(contactsKey).get().addOnCompleteListener(task -> {
+        database.child(userFriendsKey).child(userType).child(userHash).child(contactsKey).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 @SuppressWarnings("unchecked")
                 HashMap<String, Boolean> tempMap = (HashMap<String, Boolean>) task.getResult().getValue();
@@ -205,7 +207,7 @@ public class FriendsServiceImpl implements FriendsService {
                 Map<String, String> tempMap = (HashMap<String, String>) task.getResult().getValue();
                 User user = null;
                 if (tempMap != null) {
-                    user = new User(tempMap.get(userIDKey), tempMap.get(emailKey));
+                    user = new User(tempMap.get(userIDKey), tempMap.get(emailKey), UserType.valueOf(tempMap.get(userTypeKey)));
                 }  else {
                     handler.onError(new Throwable("User has no friends"));
                 }

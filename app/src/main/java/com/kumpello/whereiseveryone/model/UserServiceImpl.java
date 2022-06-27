@@ -8,12 +8,11 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.kumpello.whereiseveryone.R;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.kumpello.whereiseveryone.utils.CallbackIterator;
-import com.kumpello.whereiseveryone.utils.OnResult;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DatabaseReference;
+import com.kumpello.whereiseveryone.R;
+import com.kumpello.whereiseveryone.utils.CallbackIterator;
+import com.kumpello.whereiseveryone.utils.OnResult;
 
 import java.util.HashMap;
 import java.util.List;
@@ -69,6 +68,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void saveLoginType(UserType type) {
         myEdit.putString(userTypeKey, String.valueOf(type));
+        database.child(usersKey).child(userID).child(userTypeKey).setValue(type);
     }
 
     @Override
@@ -82,6 +82,11 @@ public class UserServiceImpl implements UserService {
         String email = sharedPreferences.getString(emailKey, "");
         Log.d("UserService", "Got email: " + email);
         return email;
+    }
+
+    @Override
+    public UserType getUserType() {
+        return UserType.valueOf(sharedPreferences.getString(userTypeKey, ""));
     }
 
     @Override
@@ -162,7 +167,7 @@ public class UserServiceImpl implements UserService {
                 try {
                     Map<String, Object> tempMap = (HashMap<String, Object>) task.getResult().getValue();
                     if (tempMap != null) {
-                        User user = new User((String) tempMap.get(userIDKey), (String) tempMap.get(emailKey));
+                        User user = new User((String) tempMap.get(userIDKey), (String) tempMap.get(emailKey), (UserType) tempMap.get(userTypeKey));
                         Log.d("User added ", user.email + " " + user.userID);
                         user.nick = (String) Objects.requireNonNull(tempMap.get(nickKey));
                         HashMap<String, Double> latLng = (HashMap<String, Double>) tempMap.get(locationKey);

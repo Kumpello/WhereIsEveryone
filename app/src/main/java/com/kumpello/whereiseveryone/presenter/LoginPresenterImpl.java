@@ -56,6 +56,7 @@ public class LoginPresenterImpl extends BasePresenter<LoginView> implements Logi
     public void googleButtonClicked() {
         GoogleSignInClient googleSignInClient = loginService.getGoogleSignInClient();
         Intent signInIntent = googleSignInClient.getSignInIntent();
+        //ToDo Some kind of checkup if login was correct/proceeded
         view.loginByGoogle(signInIntent);
         userService.saveToken(loginService.getGoogleAccount().getIdToken());
         userService.saveEmail(loginService.getGoogleAccount().getEmail());

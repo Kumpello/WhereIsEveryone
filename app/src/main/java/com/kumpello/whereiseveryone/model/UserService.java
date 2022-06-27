@@ -23,6 +23,9 @@ public interface UserService {
     @NotNull
     String getToken();
 
+    @NonNull
+    UserType getUserType();
+
     void updateUserOnServer(User user);
 
     void updateUserLocationAndDirection(User user);

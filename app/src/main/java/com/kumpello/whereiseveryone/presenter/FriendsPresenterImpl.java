@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.kumpello.whereiseveryone.model.FriendsService;
 import com.kumpello.whereiseveryone.model.User;
+import com.kumpello.whereiseveryone.model.UserType;
 import com.kumpello.whereiseveryone.mvp.BasePresenter;
 import com.kumpello.whereiseveryone.utils.CallbackIterator;
 import com.kumpello.whereiseveryone.utils.OnResult;
@@ -24,32 +25,36 @@ public class FriendsPresenterImpl extends BasePresenter<FriendsView> implements 
     @Override
     public boolean addFriend(String email) {
         email = email.toLowerCase();
-        return friendsService.addFriend(email, new OnResult<String>() {
-            @Override
-            public void onSuccess(String result) {
-                friendsService.getUser(result, new OnResult<User>() {
-                    @Override
-                    public void onSuccess(User result) {
-                        view.addFriendToAdapter(result);
-                    }
+        List<Boolean> responses = new ArrayList<>();
+        for (UserType userType : UserType.values()) {
+            responses.add(friendsService.addFriend(email, userType, new OnResult<String>() {
+                @Override
+                public void onSuccess(String result) {
+                    friendsService.getUser(result, new OnResult<User>() {
+                        @Override
+                        public void onSuccess(User result) {
+                            view.addFriendToAdapter(result);
+                        }
 
-                    @Override
-                    public void onError(Throwable error) {
-                        //TODO
-                    }
-                });
-            }
+                        @Override
+                        public void onError(Throwable error) {
+                            //TODO
+                        }
+                    });
+                }
 
-            @Override
-            public void onError(Throwable error) {
-                //TODO
-            }
-        });
+                @Override
+                public void onError(Throwable error) {
+                    //TODO
+                }
+            }));
+        }
+        return responses.contains(Boolean.TRUE);
     }
 
     @Override
-    public void removeFriend(String email) {
-        friendsService.removeFriend(email);
+    public void removeFriend(String email, UserType userType) {
+        friendsService.removeFriend(email, userType);
         view.removeFriend(email);
     }
 
