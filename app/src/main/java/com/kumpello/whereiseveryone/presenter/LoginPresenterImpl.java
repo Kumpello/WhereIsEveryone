@@ -58,8 +58,16 @@ public class LoginPresenterImpl extends BasePresenter<LoginView> implements Logi
         Intent signInIntent = googleSignInClient.getSignInIntent();
         //ToDo Some kind of checkup if login was correct/proceeded
         view.loginByGoogle(signInIntent);
-        userService.saveToken(loginService.getGoogleAccount().getIdToken());
-        userService.saveEmail(loginService.getGoogleAccount().getEmail());
-        userService.saveLoginType(UserType.GOOGLE);
+    }
+
+    @Override
+    public void saveUserData(UserType userType) {
+        switch (userType) {
+            case GOOGLE:
+                userService.saveToken(loginService.getGoogleAccount().getIdToken());
+                userService.saveEmail(loginService.getGoogleAccount().getEmail());
+                userService.saveLoginType(UserType.GOOGLE);
+                break;
+        }
     }
 }

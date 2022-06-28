@@ -40,6 +40,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendVi
 
         public void bind(final User u) {
             userEmail.setText(u.email);
+            userEmail.setHint(u.email + "   " + u.nick);
             switch (u.accountType) {
                 case GOOGLE:
                     userType.setImageResource(R.drawable.googleg_standard_color_18);
