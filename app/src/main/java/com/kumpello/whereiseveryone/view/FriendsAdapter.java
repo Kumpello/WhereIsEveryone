@@ -3,6 +3,7 @@ package com.kumpello.whereiseveryone.view;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -27,18 +28,28 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendVi
 
         private final TextView userEmail;
         private final AppCompatImageButton remove;
+        private ImageView userType;
 
         public FriendViewHolder(View v, FriendsPresenter friendsPresenter) {
             super(v);
             userEmail = v.findViewById(R.id.friendTextView);
             remove = v.findViewById(R.id.removeFriend);
+            userType = v.findViewById(R.id.accountType);
             presenter = friendsPresenter;
         }
 
         public void bind(final User u) {
             userEmail.setText(u.email);
+            switch (u.accountType) {
+                case GOOGLE:
+                    userType.setImageResource(R.drawable.googleg_standard_color_18);
+                    break;
+                case EMAIL:
+                    userType.setImageResource(R.drawable.email_icon);
+            }
+
             remove.setOnClickListener(v -> {
-                presenter.removeFriend(u.email);
+                presenter.removeFriend(u.email, u.accountType);
             });
         }
 
