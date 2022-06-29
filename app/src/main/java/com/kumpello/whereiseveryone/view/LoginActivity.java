@@ -95,8 +95,8 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
                 task.getResult(ApiException.class);
-                showSuccess();
                 presenter.saveUserData(UserType.GOOGLE);
+                showSuccess();
             } catch (ApiException e) {
                 Toast.makeText(getApplicationContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
             }

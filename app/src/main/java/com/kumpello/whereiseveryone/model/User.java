@@ -24,7 +24,7 @@ public class User {
     @Nullable
     public String userID;
     @NonNull
-    public UserType accountType;
+    public UserType type;
 
     public User() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
@@ -43,7 +43,7 @@ public class User {
         this.email = email;
         this.userAzimuth = 0;
         this.nick = "NoName";
-        this.accountType = userType;
+        this.type = userType;
     }
 
 

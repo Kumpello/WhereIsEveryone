@@ -41,7 +41,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendVi
         public void bind(final User u) {
             userEmail.setText(u.email);
             userEmail.setHint(u.email + "   " + u.nick);
-            switch (u.accountType) {
+            switch (u.type) {
                 case GOOGLE:
                     userType.setImageResource(R.drawable.googleg_standard_color_18);
                     break;
@@ -50,7 +50,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.FriendVi
             }
 
             remove.setOnClickListener(v -> {
-                presenter.removeFriend(u.email, u.accountType);
+                presenter.removeFriend(u.email, u.type);
             });
         }
 

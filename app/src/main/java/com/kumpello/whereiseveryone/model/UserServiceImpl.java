@@ -68,6 +68,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void saveLoginType(UserType type) {
         myEdit.putString(userTypeKey, String.valueOf(type));
+        myEdit.commit();
         database.child(usersKey).child(userID).child(userTypeKey).setValue(type);
     }
 
@@ -86,7 +87,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserType getUserType() {
-        return UserType.valueOf(sharedPreferences.getString(userTypeKey, ""));
+        UserType userType = null;
+        try {
+            userType = UserType.valueOf(sharedPreferences.getString(userTypeKey, ""));    
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d("Error getting User Type", "sharedPreferences" + sharedPreferences.getString(userTypeKey, ""));
+        }
+        
+        return userType; 
     }
 
     @Override
