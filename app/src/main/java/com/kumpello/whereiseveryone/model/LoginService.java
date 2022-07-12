@@ -1,7 +1,10 @@
 package com.kumpello.whereiseveryone.model;
 
+import android.content.Intent;
+
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.tasks.Task;
 import com.kumpello.whereiseveryone.utils.Consumer;
 
 public interface LoginService {
@@ -17,6 +20,6 @@ public interface LoginService {
 
     GoogleSignInClient getGoogleSignInClient();
 
-    GoogleSignInAccount getGoogleAccount();
+    Task<GoogleSignInAccount> getGoogleAccount(Intent intent);
 
 }

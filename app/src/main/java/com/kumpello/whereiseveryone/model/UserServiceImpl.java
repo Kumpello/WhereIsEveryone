@@ -55,6 +55,7 @@ public class UserServiceImpl implements UserService {
         userID = token;
         myEdit.putString(userKeySharedPreferences, token);
         myEdit.commit();
+        Log.d("UserService", "Token saved " + token);
     }
 
     @Override
@@ -75,7 +76,9 @@ public class UserServiceImpl implements UserService {
     @Override
     @NonNull
     public String getToken() {
-        return sharedPreferences.getString(userKeySharedPreferences, "");
+        String token = sharedPreferences.getString(userKeySharedPreferences, "");
+        Log.d("Getting token", token);
+        return token;
     }
 
     @NonNull

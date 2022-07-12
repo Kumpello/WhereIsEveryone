@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.annotation.StringRes;
 
+import com.google.android.gms.common.ConnectionResult;
 import com.kumpello.whereiseveryone.databinding.ActivityLoginBinding;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -19,12 +20,15 @@ import com.google.android.gms.tasks.Task;
 import com.kumpello.whereiseveryone.model.UserType;
 import com.kumpello.whereiseveryone.mvp.BaseActivity;
 import com.kumpello.whereiseveryone.presenter.LoginPresenter;
+import com.kumpello.whereiseveryone.utils.OnResult;
+
+import java.io.FileNotFoundException;
 
 
 public class LoginActivity extends BaseActivity<LoginPresenter> implements LoginView {
 
     private ActivityLoginBinding binding;
-    private static int GOOGLE_CODE = 420;
+    private static final int GOOGLE_CODE = 420;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,8 +99,19 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
                 task.getResult(ApiException.class);
-                presenter.saveUserData(UserType.GOOGLE);
-                showSuccess();
+                //Show when done!
+                presenter.saveUserData(UserType.GOOGLE, data, new OnResult<ConnectionResult>() {
+                    @Override
+                    public void onSuccess(ConnectionResult result) {
+                        showSuccess();
+                    }
+
+                    @Override
+                    public void onError(Throwable error) {
+                        Toast.makeText(getApplicationContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
             } catch (ApiException e) {
                 Toast.makeText(getApplicationContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
             }

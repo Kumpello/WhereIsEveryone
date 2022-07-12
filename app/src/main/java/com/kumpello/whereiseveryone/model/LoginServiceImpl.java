@@ -1,6 +1,7 @@
 package com.kumpello.whereiseveryone.model;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.util.Log;
 
@@ -8,6 +9,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.kumpello.whereiseveryone.utils.Consumer;
@@ -104,7 +106,7 @@ public class LoginServiceImpl implements LoginService {
     }
 
     @Override
-    public GoogleSignInAccount getGoogleAccount() {
-        return GoogleSignIn.getLastSignedInAccount(activity);
+    public Task<GoogleSignInAccount> getGoogleAccount(Intent intent) {
+        return GoogleSignIn.getSignedInAccountFromIntent(intent);
     }
 }

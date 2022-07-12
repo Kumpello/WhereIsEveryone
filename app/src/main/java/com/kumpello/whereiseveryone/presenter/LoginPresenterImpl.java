@@ -5,12 +5,16 @@ import static com.kumpello.whereiseveryone.utils.TextUtils.isNullOrEmpty;
 
 import android.content.Intent;
 
-import com.kumpello.whereiseveryone.R;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.tasks.Task;
+import com.kumpello.whereiseveryone.R;
 import com.kumpello.whereiseveryone.model.LoginService;
 import com.kumpello.whereiseveryone.model.UserService;
 import com.kumpello.whereiseveryone.model.UserType;
 import com.kumpello.whereiseveryone.mvp.BasePresenter;
+import com.kumpello.whereiseveryone.utils.OnResult;
 import com.kumpello.whereiseveryone.view.LoginView;
 
 public class LoginPresenterImpl extends BasePresenter<LoginView> implements LoginPresenter {
@@ -61,12 +65,21 @@ public class LoginPresenterImpl extends BasePresenter<LoginView> implements Logi
     }
 
     @Override
-    public void saveUserData(UserType userType) {
+    public void saveUserData(UserType userType, Intent intent, OnResult<ConnectionResult> connectionResult) {
         switch (userType) {
             case GOOGLE:
-                userService.saveToken(loginService.getGoogleAccount().getIdToken());
-                userService.saveEmail(loginService.getGoogleAccount().getEmail());
-                userService.saveLoginType(UserType.GOOGLE);
+                Task<GoogleSignInAccount> task = loginService.getGoogleAccount(intent);
+                task.addOnCompleteListener((result) -> {
+                    if (task.isSuccessful()) {
+                        GoogleSignInAccount account = result.getResult();
+                        userService.saveToken(account.getId());
+                        userService.saveEmail(account.getEmail());
+                        userService.saveLoginType(UserType.GOOGLE);
+                        connectionResult.onSuccess(ConnectionResult.RESULT_SUCCESS);
+                    } else {
+                        connectionResult.onError(task.getException());
+                    }
+                });
                 break;
         }
     }
