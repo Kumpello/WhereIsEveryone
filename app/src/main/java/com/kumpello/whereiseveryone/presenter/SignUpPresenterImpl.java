@@ -37,7 +37,8 @@ public class SignUpPresenterImpl extends BasePresenter<SignUpView> implements Si
     }
 
     @Override
-    public boolean checkIfLogged() {
+    public boolean checkIfLogged()
+    {
         return loginService.checkIfLogged();
     }
 }

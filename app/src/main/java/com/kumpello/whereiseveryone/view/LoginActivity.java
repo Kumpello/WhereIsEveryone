@@ -52,14 +52,12 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
         binding.btnGoogleSignIn.setOnClickListener(v -> googleButtonClicked());
     }
 
-
     @Override
     public void showError(@StringRes int errorMessage) {
         String error = getString(errorMessage);
         Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
         binding.progressBar.setVisibility(GONE);
     }
-
 
     @Override
     public void showProgress() {
@@ -93,28 +91,22 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode,Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == GOOGLE_CODE) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            try {
-                task.getResult(ApiException.class);
-                //Show when done!
-                presenter.saveUserData(UserType.GOOGLE, data, new OnResult<ConnectionResult>() {
-                    @Override
-                    public void onSuccess(ConnectionResult result) {
-                        showSuccess();
-                    }
+        if (requestCode == GOOGLE_CODE) {
+            presenter.saveUserData(UserType.GOOGLE, data, new OnResult<ConnectionResult>() {
+                @Override
+                public void onSuccess(ConnectionResult result) {
+                    showSuccess();
+                }
 
-                    @Override
-                    public void onError(Throwable error) {
-                        Toast.makeText(getApplicationContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                @Override
+                public void onError(Throwable error) {
+                    Toast.makeText(getApplicationContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
+                    error.printStackTrace();
+                }
+            });
 
-            } catch (ApiException e) {
-                Toast.makeText(getApplicationContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
-            }
         }
 
     }

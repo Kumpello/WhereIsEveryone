@@ -25,9 +25,6 @@ public class LoginPresenterImpl extends BasePresenter<LoginView> implements Logi
     public LoginPresenterImpl(LoginService loginService, UserService userService) {
         this.loginService = loginService;
         this.userService = userService;
-        if (loginService.checkIfLoggedByGoogle()) {
-            view.showSuccess();
-        }
     }
 
     @Override
@@ -81,6 +78,7 @@ public class LoginPresenterImpl extends BasePresenter<LoginView> implements Logi
                     }
                 });
                 break;
+            //More to be added!
         }
     }
 }
