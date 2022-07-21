@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.kumpello.whereiseveryone">
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -11,7 +12,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <application
-        android:name="com.example.whereiseveryone.MyApplication"
+        android:name="com.kumpello.whereiseveryone.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -30,14 +31,18 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" />
+            android:value="@string/google_maps_key"
+            />
+        <meta-data
+            android:name="com.google.android.gms.wallet.api.enabled"
+            android:value="true" />
 
         <activity
-            android:name="com.example.whereiseveryone.view.LoginActivity"
+            android:name="com.kumpello.whereiseveryone.view.LoginActivity"
             android:theme="@style/Theme.Design.Light.NoActionBar">
         </activity>
         <activity
-            android:name="com.example.whereiseveryone.view.SignUpActivity"
+            android:name="com.kumpello.whereiseveryone.view.SignUpActivity"
             android:theme="@style/Theme.Design.Light.NoActionBar"
             android:exported="true">
             <intent-filter>
@@ -47,7 +52,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.example.whereiseveryone.view.MainActivity"
+            android:name="com.kumpello.whereiseveryone.view.MainActivity"
             android:theme="@style/Theme.Design.Light.NoActionBar">
         </activity>
     </application>
