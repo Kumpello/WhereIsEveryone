@@ -80,6 +80,7 @@ public class MapFragment extends BaseFragment<MapPresenter> implements OnMapRead
         binding.getLocation.setOnClickListener(v -> centerCamera());
         binding.zoomIn.setOnClickListener(v -> zoomIn());
         binding.zoomOut.setOnClickListener(v -> zoomOut());
+        binding.mapType.setOnClickListener(v -> changeMapType());
 
         return binding.getRoot();
     }
@@ -130,6 +131,14 @@ public class MapFragment extends BaseFragment<MapPresenter> implements OnMapRead
             cameraPosition = presenter.getBaseCameraPosition();
             getActivity().runOnUiThread(() -> mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition)));
         }
+    }
+
+    public void changeMapType() {
+        int mapType = mMap.getMapType() + 1;
+        if (mapType > 4) {
+            mapType = 1;
+        }
+        mMap.setMapType(mapType);
     }
 
     public void zoomIn() {
