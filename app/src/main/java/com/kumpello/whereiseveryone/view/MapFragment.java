@@ -44,6 +44,10 @@ public class MapFragment extends BaseFragment<MapPresenter> implements OnMapRead
     private Marker userMarker;
     private Map<String, Marker> friendsMarkers;
     private FragmentMapBinding binding;
+    private CameraPosition cameraPosition;
+    private Float currentZoom;
+    //Get this field to common settings file
+    private static final float INITIAL_ZOOM = 15;
 
 
     public MapFragment() {
@@ -58,10 +62,9 @@ public class MapFragment extends BaseFragment<MapPresenter> implements OnMapRead
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        currentZoom = INITIAL_ZOOM;
         resources = getResources();
-
         friendsMarkers = new HashMap<>();
-
         presenter.startLocationUpdates();
     }
 
@@ -75,6 +78,8 @@ public class MapFragment extends BaseFragment<MapPresenter> implements OnMapRead
         mapFragment.getMapAsync(this);
 
         binding.getLocation.setOnClickListener(v -> centerCamera());
+        binding.zoomIn.setOnClickListener(v -> zoomIn());
+        binding.zoomOut.setOnClickListener(v -> zoomOut());
 
         return binding.getRoot();
     }
@@ -119,17 +124,24 @@ public class MapFragment extends BaseFragment<MapPresenter> implements OnMapRead
         });
     }
 
-
     @Override
     public void centerCamera() {
         if (presenter.updateUserLocationAndDirection()) {
-            CameraPosition cameraPosition = new CameraPosition.Builder()
-                    .target(presenter.getUserLatLng())
-                    .zoom(15)
-                    .bearing(presenter.getAzimuth())
-                    .build();
+            cameraPosition = presenter.getBaseCameraPosition();
             getActivity().runOnUiThread(() -> mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition)));
         }
+    }
+
+    public void zoomIn() {
+        currentZoom += 1;
+        cameraPosition = CameraPosition.builder(cameraPosition).zoom(currentZoom).build();
+        getActivity().runOnUiThread(() -> mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition)));
+    }
+
+    public void zoomOut() {
+        currentZoom -= 1;
+        cameraPosition = CameraPosition.builder(cameraPosition).zoom(currentZoom).build();
+        getActivity().runOnUiThread(() -> mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition)));
     }
 
     @Override

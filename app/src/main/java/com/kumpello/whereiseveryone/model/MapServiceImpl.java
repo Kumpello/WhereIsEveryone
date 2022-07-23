@@ -16,6 +16,7 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.CameraPosition;
 
 import static android.content.Context.SENSOR_SERVICE;
 
