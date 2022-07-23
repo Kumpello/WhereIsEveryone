@@ -5,6 +5,7 @@ import static com.kumpello.whereiseveryone.utils.GraphicalUtils.getBitmapFromVec
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.maps.GoogleMapOptions;
@@ -132,13 +134,14 @@ public class MapFragment extends BaseFragment<MapPresenter> implements OnMapRead
     public void centerCamera() {
         if (presenter.updateUserLocationAndDirection()) {
             if (!centerCamera) {
-                binding.getLocation.setPressed(true);
+                binding.getLocation.setAlpha(1f);
                 centerCamera = true;
                 cameraPosition = presenter.getBaseCameraPosition();
                 mMap.getUiSettings().setScrollGesturesEnabled(false);
                 mMap.getUiSettings().setRotateGesturesEnabled(false);
                 getActivity().runOnUiThread(() -> mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition)));
             } else {
+                binding.getLocation.setAlpha(0.5f);
                 binding.getLocation.setPressed(false);
                 centerCamera = false;
                 mMap.getUiSettings().setScrollGesturesEnabled(true);
