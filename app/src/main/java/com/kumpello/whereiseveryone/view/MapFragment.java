@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.maps.GoogleMapOptions;
 import com.kumpello.whereiseveryone.R;
 import com.kumpello.whereiseveryone.databinding.FragmentMapBinding;
 import com.kumpello.whereiseveryone.model.User;
@@ -61,7 +62,6 @@ public class MapFragment extends BaseFragment<MapPresenter> implements OnMapRead
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         currentZoom = INITIAL_ZOOM;
         resources = getResources();
         friendsMarkers = new HashMap<>();
@@ -184,6 +184,7 @@ public class MapFragment extends BaseFragment<MapPresenter> implements OnMapRead
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
         mMap.getUiSettings().setAllGesturesEnabled(true);
+        mMap.getUiSettings().setCompassEnabled(true);
 
         presenter.updateLastLocation();
     }
