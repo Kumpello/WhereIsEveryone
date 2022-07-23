@@ -30,13 +30,15 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
     private final boolean userExists;
     private final List<User> friends;
     //Get this field to common settings file
-    private static final float INITIAL_ZOOM = 15;
+    private static final float INITIAL_ZOOM = 18;
+    private boolean followAzimuthChange;
 
 
     public MapPresenterImpl(MapService mapService, PermissionHandler permissionHandler, UserService userService, SimpleTimer timer) {
         permissionsNeeded = new ArrayList<>();
         permissionsNeeded.add(Manifest.permission.ACCESS_COARSE_LOCATION);
         permissionsNeeded.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        followAzimuthChange = false;
         this.mapService = mapService;
         this.permissionHandler = permissionHandler;
         userMarkerPlaced = false;
@@ -91,6 +93,7 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
         }
     }
 
+    @Override
     public float getAzimuth() {
         return mapService.getAzimuth();
     }
