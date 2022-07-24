@@ -5,6 +5,7 @@ import static com.kumpello.whereiseveryone.utils.GraphicalUtils.getBitmapFromVec
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,8 +13,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.maps.GoogleMapOptions;
+import com.google.android.gms.maps.model.LatLng;
 import com.kumpello.whereiseveryone.R;
 import com.kumpello.whereiseveryone.databinding.FragmentMapBinding;
 import com.kumpello.whereiseveryone.model.User;
@@ -44,6 +48,11 @@ public class MapFragment extends BaseFragment<MapPresenter> implements OnMapRead
     private Marker userMarker;
     private Map<String, Marker> friendsMarkers;
     private FragmentMapBinding binding;
+    private CameraPosition cameraPosition;
+    private Float currentZoom;
+    //Get this field to common settings file
+    private static final float INITIAL_ZOOM = 18;
+    private boolean centerCamera;
 
 
     public MapFragment() {
@@ -57,11 +66,10 @@ public class MapFragment extends BaseFragment<MapPresenter> implements OnMapRead
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        currentZoom = INITIAL_ZOOM;
+        centerCamera = false;
         resources = getResources();
-
         friendsMarkers = new HashMap<>();
-
         presenter.startLocationUpdates();
     }
 
@@ -75,6 +83,9 @@ public class MapFragment extends BaseFragment<MapPresenter> implements OnMapRead
         mapFragment.getMapAsync(this);
 
         binding.getLocation.setOnClickListener(v -> centerCamera());
+        binding.zoomIn.setOnClickListener(v -> zoomIn());
+        binding.zoomOut.setOnClickListener(v -> zoomOut());
+        binding.mapType.setOnClickListener(v -> changeMapType());
 
         return binding.getRoot();
     }
@@ -119,25 +130,60 @@ public class MapFragment extends BaseFragment<MapPresenter> implements OnMapRead
         });
     }
 
-
     @Override
     public void centerCamera() {
         if (presenter.updateUserLocationAndDirection()) {
-            CameraPosition cameraPosition = new CameraPosition.Builder()
-                    .target(presenter.getUserLatLng())
-                    .zoom(15)
-                    .bearing(presenter.getAzimuth())
-                    .build();
-            getActivity().runOnUiThread(() -> mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition)));
+            if (!centerCamera) {
+                binding.getLocation.setAlpha(1f);
+                centerCamera = true;
+                cameraPosition = presenter.getBaseCameraPosition();
+                mMap.getUiSettings().setScrollGesturesEnabled(false);
+                mMap.getUiSettings().setRotateGesturesEnabled(false);
+                getActivity().runOnUiThread(() -> mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition)));
+            } else {
+                binding.getLocation.setAlpha(0.5f);
+                binding.getLocation.setPressed(false);
+                centerCamera = false;
+                mMap.getUiSettings().setScrollGesturesEnabled(true);
+                mMap.getUiSettings().setRotateGesturesEnabled(true);
+            }
         }
+    }
+
+    public void changeMapType() {
+        int mapType = mMap.getMapType() + 1;
+        if (mapType > 4) {
+            mapType = 1;
+        }
+        mMap.setMapType(mapType);
+    }
+
+    public void zoomIn() {
+        currentZoom += 1;
+        cameraPosition = CameraPosition.builder(cameraPosition).zoom(currentZoom).build();
+        getActivity().runOnUiThread(() -> mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition)));
+    }
+
+    public void zoomOut() {
+        currentZoom -= 1;
+        cameraPosition = CameraPosition.builder(cameraPosition).zoom(currentZoom).build();
+        getActivity().runOnUiThread(() -> mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition)));
     }
 
     @Override
     public void updateUserLocation() {
         presenter.updateUserLocationAndDirection();
+        LatLng userLatLng = presenter.getUserLatLng();
+        float bearing = presenter.getAzimuth();
         getActivity().runOnUiThread(() -> {
-            userMarker.setPosition(presenter.getUserLatLng());
-            userMarker.setRotation(presenter.getAzimuth());
+            userMarker.setPosition(userLatLng);
+            userMarker.setRotation(bearing);
+            if (centerCamera) {
+                cameraPosition = CameraPosition.builder(cameraPosition).bearing(bearing).build();
+            } else {
+                cameraPosition = CameraPosition.builder(cameraPosition).build();
+            }
+            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         });
     }
 
@@ -166,12 +212,12 @@ public class MapFragment extends BaseFragment<MapPresenter> implements OnMapRead
         presenter.stopLocationUpdates();
     }
 
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
         mMap.getUiSettings().setAllGesturesEnabled(true);
+        mMap.getUiSettings().setCompassEnabled(true);
 
         presenter.updateLastLocation();
     }

@@ -4,6 +4,7 @@ package com.kumpello.whereiseveryone.presenter;
 import android.Manifest;
 import android.location.Location;
 
+import com.google.android.gms.maps.model.CameraPosition;
 import com.kumpello.whereiseveryone.model.MapService;
 import com.kumpello.whereiseveryone.model.PermissionHandler;
 import com.kumpello.whereiseveryone.model.User;
@@ -28,12 +29,16 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
     private final User user;
     private final boolean userExists;
     private final List<User> friends;
+    //Get this field to common settings file
+    private static final float INITIAL_ZOOM = 18;
+    private boolean followAzimuthChange;
 
 
     public MapPresenterImpl(MapService mapService, PermissionHandler permissionHandler, UserService userService, SimpleTimer timer) {
         permissionsNeeded = new ArrayList<>();
         permissionsNeeded.add(Manifest.permission.ACCESS_COARSE_LOCATION);
         permissionsNeeded.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        followAzimuthChange = false;
         this.mapService = mapService;
         this.permissionHandler = permissionHandler;
         userMarkerPlaced = false;
@@ -88,6 +93,7 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
         }
     }
 
+    @Override
     public float getAzimuth() {
         return mapService.getAzimuth();
     }
@@ -96,6 +102,16 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
     public LatLng getUserLatLng() {
         Location userLocation = mapService.getLocation();
         return new LatLng(userLocation.getLatitude(), userLocation.getLongitude());
+    }
+
+    @Override
+    public CameraPosition getBaseCameraPosition() {
+        return new CameraPosition.Builder()
+                .target(getUserLatLng())
+                .zoom(INITIAL_ZOOM)
+                .tilt(20)
+                .bearing(getAzimuth())
+                .build();
     }
 
     @Override

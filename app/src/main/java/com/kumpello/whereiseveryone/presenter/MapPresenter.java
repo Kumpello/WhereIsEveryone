@@ -1,5 +1,6 @@
 package com.kumpello.whereiseveryone.presenter;
 
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.kumpello.whereiseveryone.mvp.Contract;
 import com.kumpello.whereiseveryone.view.MapView;
@@ -18,4 +19,5 @@ public interface MapPresenter extends Contract.Presenter<MapView> {
     void onPause();
     void onResume();
     void onStop();
+    CameraPosition getBaseCameraPosition();
 }
