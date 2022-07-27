@@ -4,6 +4,8 @@ package com.kumpello.whereiseveryone.presenter;
 import android.Manifest;
 import android.location.Location;
 
+import androidx.annotation.NonNull;
+
 import com.google.android.gms.maps.model.CameraPosition;
 import com.kumpello.whereiseveryone.model.MapService;
 import com.kumpello.whereiseveryone.model.PermissionHandler;
@@ -31,14 +33,12 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
     private final List<User> friends;
     //Get this field to common settings file
     private static final float INITIAL_ZOOM = 18;
-    private boolean followAzimuthChange;
 
 
     public MapPresenterImpl(MapService mapService, PermissionHandler permissionHandler, UserService userService, SimpleTimer timer) {
         permissionsNeeded = new ArrayList<>();
         permissionsNeeded.add(Manifest.permission.ACCESS_COARSE_LOCATION);
         permissionsNeeded.add(Manifest.permission.ACCESS_FINE_LOCATION);
-        followAzimuthChange = false;
         this.mapService = mapService;
         this.permissionHandler = permissionHandler;
         userMarkerPlaced = false;
@@ -48,6 +48,16 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
         userExists = userService.userExists();
         friends = new ArrayList<>();
         getFriendList();
+    }
+
+    @Override
+    public void addNotification(String text) {
+        userService.addNotification(text);
+    }
+
+    @Override
+    public void getNotification(@NonNull OnResult<String> handler) {
+        userService.getNotification(handler);
     }
 
     @Override

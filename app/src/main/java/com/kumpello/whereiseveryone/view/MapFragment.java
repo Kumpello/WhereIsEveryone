@@ -1,37 +1,40 @@
 package com.kumpello.whereiseveryone.view;
 
 import static com.kumpello.whereiseveryone.utils.GraphicalUtils.getBitmapFromVectorDrawable;
+import static com.kumpello.whereiseveryone.utils.TextUtils.isNullOrEmpty;
 
+import android.app.AlertDialog;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.gms.maps.GoogleMapOptions;
-import com.google.android.gms.maps.model.LatLng;
-import com.kumpello.whereiseveryone.R;
-import com.kumpello.whereiseveryone.databinding.FragmentMapBinding;
-import com.kumpello.whereiseveryone.model.User;
-import com.kumpello.whereiseveryone.mvp.BaseFragment;
-import com.kumpello.whereiseveryone.presenter.MapPresenter;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.kumpello.whereiseveryone.R;
+import com.kumpello.whereiseveryone.databinding.FragmentMapBinding;
+import com.kumpello.whereiseveryone.model.User;
+import com.kumpello.whereiseveryone.mvp.BaseFragment;
+import com.kumpello.whereiseveryone.presenter.MapPresenter;
+import com.kumpello.whereiseveryone.utils.OnResult;
+import com.kumpello.whereiseveryone.utils.TextUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -86,6 +89,7 @@ public class MapFragment extends BaseFragment<MapPresenter> implements OnMapRead
         binding.zoomIn.setOnClickListener(v -> zoomIn());
         binding.zoomOut.setOnClickListener(v -> zoomOut());
         binding.mapType.setOnClickListener(v -> changeMapType());
+        binding.addNotification.setOnClickListener(v -> addNotification());
 
         return binding.getRoot();
     }
@@ -127,6 +131,7 @@ public class MapFragment extends BaseFragment<MapPresenter> implements OnMapRead
             Marker friendMarker = friendsMarkers.get(user.userID);
             friendMarker.setPosition(user.userLocation);
             friendMarker.setRotation(user.userAzimuth);
+            friendMarker.setSnippet(user.message);
         });
     }
 
@@ -150,10 +155,69 @@ public class MapFragment extends BaseFragment<MapPresenter> implements OnMapRead
         }
     }
 
+    public void addNotification() {
+        final String[] previousMessage = new String[1];
+        //Probably can be done better, may not work all the time
+        presenter.getNotification(new OnResult<String>() {
+            @Override
+            public void onSuccess(String result) {
+                previousMessage[0] = result;
+            }
+
+            @Override
+            public void onError(Throwable error) {
+
+            }
+        });
+        makeAlertWindow(getString(R.string.add_notification), previousMessage[0], new OnResult<String>() {
+            @Override
+            public void onSuccess(String result) {
+                if (!isNullOrEmpty(result)) {
+                    Log.d("MapFragment", "Set to " + result);
+                    presenter.addNotification(result.trim());
+                } else {
+                    Log.d("MapFragment", "Text is null or empty");
+                }
+            }
+
+            @Override
+            public void onError(Throwable error) {
+                Log.e("MapFragment", error.getMessage());
+            }
+        });
+    }
+
+    //Extract somewhere (common function with FriendsFragment)
+    private void makeAlertWindow(String title, String previousMessage, OnResult<String> handler) {
+        AlertDialog.Builder messageAlert = new AlertDialog.Builder(getActivity());
+        EditText messageEditText = new EditText(getContext());
+        if (isNullOrEmpty(previousMessage)) {
+            previousMessage = getString(R.string.message_field);
+        }
+        messageEditText.setHint(previousMessage);
+
+        messageAlert.setTitle(title);
+        messageAlert.setView(messageEditText);
+
+        LinearLayout messageAlertLayout = new LinearLayout(getContext());
+        messageAlertLayout.setOrientation(LinearLayout.VERTICAL);
+        messageAlertLayout.addView(messageEditText);
+        messageAlert.setView(messageAlertLayout);
+
+        messageAlert.setPositiveButton("Continue", (dialog, whichButton) -> {
+            Log.d("FriendsFragment", "value: " + messageEditText.getText().toString());
+            handler.onSuccess(messageEditText.getText().toString());
+        });
+
+        messageAlert.setNegativeButton("Cancel", (dialog, whichButton) -> dialog.cancel());
+
+        messageAlert.create().show();
+    }
+
     public void changeMapType() {
         int mapType = mMap.getMapType() + 1;
         if (mapType > 4) {
-            mapType = 1;
+            mapType = 0;
         }
         mMap.setMapType(mapType);
     }
@@ -180,8 +244,6 @@ public class MapFragment extends BaseFragment<MapPresenter> implements OnMapRead
             userMarker.setRotation(bearing);
             if (centerCamera) {
                 cameraPosition = CameraPosition.builder(cameraPosition).bearing(bearing).build();
-            } else {
-                cameraPosition = CameraPosition.builder(cameraPosition).build();
             }
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         });

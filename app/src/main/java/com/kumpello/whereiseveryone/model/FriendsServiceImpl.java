@@ -25,6 +25,7 @@ public class FriendsServiceImpl implements FriendsService {
     private final String userFriendsKey = "userFriends";
     private final String contactsKey = "contacts";
     private final String userTypeKey = "type";
+    private final String messageKey = "userMessage";
     private final String userID;
     private final SharedPreferences sharedPreferences;
     private User user;
@@ -207,7 +208,7 @@ public class FriendsServiceImpl implements FriendsService {
                 Map<String, String> tempMap = (HashMap<String, String>) task.getResult().getValue();
                 User user = null;
                 if (tempMap != null) {
-                    user = new User(tempMap.get(userIDKey), tempMap.get(emailKey), UserType.valueOf(tempMap.get(userTypeKey)));
+                    user = new User(tempMap.get(userIDKey), tempMap.get(emailKey), UserType.valueOf(tempMap.get(userTypeKey)), tempMap.get(messageKey));
                 }  else {
                     handler.onError(new Throwable("User has no friends"));
                 }

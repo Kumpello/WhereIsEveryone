@@ -32,8 +32,15 @@ public interface UserService {
 
     boolean userExists();
 
+    void addNotification(String text);
+
+    void getNotification(@NonNull OnResult<String> handler);
+
     void getFriendsList(CallbackIterator<User> userList);
+
     void updateFriendsList(List<User> friends, CallbackIterator<User> userList);
+
     void checkFriendship(User user, OnResult<Boolean> result);
+
     void saveLoginType(UserType type);
 }

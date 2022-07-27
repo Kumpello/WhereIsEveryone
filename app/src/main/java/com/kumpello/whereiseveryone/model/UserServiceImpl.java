@@ -34,6 +34,7 @@ public class UserServiceImpl implements UserService {
     private final String latitudeKey = "latitude";
     private final String longitudeKey = "longitude";
     private final String azimuthKey = "userAzimuth";
+    private final String messageKey = "userMessage";
     private String userID;
     private String email;
     private final SharedPreferences sharedPreferences;
@@ -48,6 +49,27 @@ public class UserServiceImpl implements UserService {
         this.resources = resources;
         userID = getToken();
         email = getEmail();
+    }
+
+    @Override
+    public void addNotification(String text) {
+        database.child(usersKey).child(userID).child("userMessage").setValue(text);
+    }
+
+    @Override
+    public void getNotification(@NonNull OnResult<String> handler) {
+        database.child(usersKey).child(userID).child("userMessage").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                if (task.getResult().getValue() != null) {
+                    handler.onSuccess((String) task.getResult().getValue());
+                } else {
+                    handler.onSuccess(null);
+                }
+            } else {
+                handler.onError(task.getException());
+                Log.e("firebase", "Error getting data", task.getException());
+            }
+        });
     }
 
     @Override
