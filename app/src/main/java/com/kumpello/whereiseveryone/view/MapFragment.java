@@ -223,13 +223,13 @@ public class MapFragment extends BaseFragment<MapPresenter> implements OnMapRead
     }
 
     public void zoomIn() {
-        currentZoom += 1;
+        currentZoom += 0.5f;
         cameraPosition = CameraPosition.builder(cameraPosition).zoom(currentZoom).build();
         getActivity().runOnUiThread(() -> mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition)));
     }
 
     public void zoomOut() {
-        currentZoom -= 1;
+        currentZoom -= 0.5f;
         cameraPosition = CameraPosition.builder(cameraPosition).zoom(currentZoom).build();
         getActivity().runOnUiThread(() -> mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition)));
     }

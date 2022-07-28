@@ -9,6 +9,8 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.kumpello.whereiseveryone.R;
 import com.kumpello.whereiseveryone.utils.CallbackIterator;
@@ -53,12 +55,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void addNotification(String text) {
-        database.child(usersKey).child(userID).child("userMessage").setValue(text);
+        database.child(usersKey).child(userID).child(messageKey).setValue(text);
     }
 
     @Override
     public void getNotification(@NonNull OnResult<String> handler) {
-        database.child(usersKey).child(userID).child("userMessage").get().addOnCompleteListener(task -> {
+        database.child(usersKey).child(userID).child(messageKey).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 if (task.getResult().getValue() != null) {
                     handler.onSuccess((String) task.getResult().getValue());
@@ -125,7 +127,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUserOnServer(User user) {
-        database.child(usersKey).child(userID).setValue(user);
+        database.child(usersKey).child(userID).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                //For debug reasons
+                task.getException();
+            }
+        });
     }
     @Override
     public void updateUserLocationAndDirection(User user) {

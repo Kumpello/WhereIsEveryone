@@ -3,6 +3,7 @@ package com.kumpello.whereiseveryone.presenter;
 
 import android.Manifest;
 import android.location.Location;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -44,6 +45,7 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
         userMarkerPlaced = false;
         this.userService = userService;
         this.timer = timer;
+        Log.d("MapPresenter", userService.getToken() + " " + userService.getEmail() + " " + userService.getUserType());
         user = new User(userService.getToken(), userService.getEmail(), userService.getUserType());
         userExists = userService.userExists();
         friends = new ArrayList<>();

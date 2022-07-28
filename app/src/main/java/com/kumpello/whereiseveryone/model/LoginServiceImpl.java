@@ -5,11 +5,16 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.kumpello.whereiseveryone.R;
@@ -63,6 +68,18 @@ public class LoginServiceImpl implements LoginService {
                         consumer.accept(new LoginResult(LoginResult.Error.LoginFailed, null));
                     }
                 });
+    }
+
+    @Override
+    public void loginByGoogle(AuthCredential credential, Consumer<LoginResult> consumer) {
+        mAuth.signInWithCredential(credential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                final FirebaseUser user = mAuth.getCurrentUser();
+                Exception exception = task.getException();
+                consumer.accept(new LoginResult(null, user.getUid()));
+            }
+        });
     }
 
     @Override
