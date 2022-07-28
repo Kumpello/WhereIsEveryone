@@ -113,8 +113,9 @@ public class FriendsServiceImpl implements FriendsService {
     public void getFriendsList(@NonNull CallbackIterator<User> handler) {
         String email = getEmail();
         String userHash = getHash(email);
+        String userType = getUserType();
 
-        database.child(userFriendsKey).child(userHash).child(contactsKey).get().addOnCompleteListener(task -> {
+        database.child(userFriendsKey).child(userType).child(userHash).child(contactsKey).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 if (task.getResult().getValue() != null) {
                     @SuppressWarnings("unchecked")
@@ -145,6 +146,10 @@ public class FriendsServiceImpl implements FriendsService {
     private String getToken() {
         String userKeySharedPreferences = "userid";
         return sharedPreferences.getString(userKeySharedPreferences, "");
+    }
+
+    private String getUserType() {
+        return sharedPreferences.getString(userTypeKey, "");
     }
 
     private String getEmail() {
