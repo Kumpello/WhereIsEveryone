@@ -8,12 +8,14 @@ import android.content.Intent;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.kumpello.whereiseveryone.R;
+import com.kumpello.whereiseveryone.model.LoginResult;
 import com.kumpello.whereiseveryone.model.LoginService;
 import com.kumpello.whereiseveryone.model.UserService;
 import com.kumpello.whereiseveryone.model.UserType;
 import com.kumpello.whereiseveryone.mvp.BasePresenter;
+import com.kumpello.whereiseveryone.utils.Consumer;
 import com.kumpello.whereiseveryone.utils.OnResult;
 import com.kumpello.whereiseveryone.view.LoginView;
 
@@ -65,18 +67,20 @@ public class LoginPresenterImpl extends BasePresenter<LoginView> implements Logi
     public void saveUserData(UserType userType, Intent intent, OnResult<ConnectionResult> connectionResult) {
         switch (userType) {
             case GOOGLE:
-                Task<GoogleSignInAccount> task = loginService.getGoogleAccount(intent);
-                task.addOnCompleteListener((result) -> {
-                    if (task.isSuccessful()) {
-                        GoogleSignInAccount account = result.getResult();
-                        userService.saveToken(account.getId());
-                        userService.saveEmail(account.getEmail());
-                        userService.saveLoginType(UserType.GOOGLE);
-                        connectionResult.onSuccess(ConnectionResult.RESULT_SUCCESS);
-                    } else {
-                        connectionResult.onError(task.getException());
-                    }
-                });
+                GoogleSignInAccount account = loginService.getGoogleAccount(intent).getResult();
+                if (account != null) {
+                    loginService.loginByGoogle(GoogleAuthProvider.getCredential(account.getIdToken(), null), new Consumer<LoginResult>() {
+                        @Override
+                        public void accept(LoginResult value) {
+                            userService.saveToken(value.getToken());
+                            userService.saveEmail(account.getEmail());
+                            userService.saveLoginType(UserType.GOOGLE);
+                            connectionResult.onSuccess(ConnectionResult.RESULT_SUCCESS);
+                        }
+                    });
+                } else {
+                    connectionResult.onError(new Exception("Getting account problem"));
+                }
                 break;
             //More to be added!
         }

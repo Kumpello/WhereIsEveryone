@@ -32,4 +32,7 @@
     <string name="text_is_empty">Text is empty!</string>
     <string name="friends_id_not_found">Friends ID not found!</string>
     <string name="error_getting_friend_from_database">Error getting friend from database!</string>
+    <string name="add_notification">Here you can put notification over your marker</string>
+    <string name="add_marker">Here you can write marker text</string>
+    <string name="message_field">Write your message here</string>
 </resources>

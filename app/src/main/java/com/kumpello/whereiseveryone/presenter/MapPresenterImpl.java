@@ -3,6 +3,9 @@ package com.kumpello.whereiseveryone.presenter;
 
 import android.Manifest;
 import android.location.Location;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import com.google.android.gms.maps.model.CameraPosition;
 import com.kumpello.whereiseveryone.model.MapService;
@@ -31,14 +34,12 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
     private final List<User> friends;
     //Get this field to common settings file
     private static final float INITIAL_ZOOM = 18;
-    private boolean followAzimuthChange;
 
 
     public MapPresenterImpl(MapService mapService, PermissionHandler permissionHandler, UserService userService, SimpleTimer timer) {
         permissionsNeeded = new ArrayList<>();
         permissionsNeeded.add(Manifest.permission.ACCESS_COARSE_LOCATION);
         permissionsNeeded.add(Manifest.permission.ACCESS_FINE_LOCATION);
-        followAzimuthChange = false;
         this.mapService = mapService;
         this.permissionHandler = permissionHandler;
         userMarkerPlaced = false;
@@ -51,14 +52,28 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
     }
 
     @Override
+    public void addNotification(String text) {
+        userService.addNotification(text);
+    }
+
+    @Override
+    public void getNotification(@NonNull OnResult<String> handler) {
+        userService.getNotification(handler);
+    }
+
+    @Override
     public void getFriendList() {
-        userService.getFriendsList(new CallbackIterator<User>() {
+        Log.d("MapPresenter: getting friend list", String.valueOf(friends.size()));
+        userService.getFriendsList(new CallbackIterator<>() {
             @Override
             public void onNext(User result) {
-                userService.checkFriendship(result, new OnResult<Boolean>() {
+                Log.d("MapPresenter: User got, checking friendship", result.userID);
+                userService.checkFriendship(result, new OnResult<>() {
                     @Override
                     public void onSuccess(Boolean friendShipResult) {
+                        Log.d("MapPresenter: result:", String.valueOf(friendShipResult));
                         if (friendShipResult) {
+                            Log.d("MapPresenter: friendship is true", result.userID);
                             friends.add(result);
                         }
                     }

@@ -94,7 +94,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == GOOGLE_CODE) {
-            presenter.saveUserData(UserType.GOOGLE, data, new OnResult<ConnectionResult>() {
+            presenter.saveUserData(UserType.GOOGLE, data, new OnResult<>() {
                 @Override
                 public void onSuccess(ConnectionResult result) {
                     showSuccess();
