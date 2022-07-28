@@ -50,6 +50,15 @@ public class User {
         this.message = null;
     }
 
+    public User(String userID, String email, String userType) {
+        this.userID = userID;
+        this.email = email;
+        this.userAzimuth = 0;
+        this.nick = "NoName";
+        this.type = UserType.valueOf(userType);
+        this.message = null;
+    }
+
     public User(String userID, String email, UserType userType, String message) {
         this.userID = userID;
         this.email = email;
@@ -58,6 +67,7 @@ public class User {
         this.type = userType;
         this.message = message;
     }
+
 
 
     @Override

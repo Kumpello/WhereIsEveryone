@@ -143,8 +143,9 @@ public class UserServiceImpl implements UserService {
 
     public void checkFriendship(User user, OnResult<Boolean> result) {
         String hashedMail = getHash(user.email);
-
-        database.child(userFriendsKey).child(hashedMail).child(contactsKey).child(userID).get().addOnCompleteListener(task -> {
+        String userType = String.valueOf(user.type);
+        //Checked in friends
+        database.child(userFriendsKey).child(userType).child(hashedMail).child(contactsKey).child(userID).get().addOnCompleteListener(task -> {
             Log.d("Checking friendship", String.valueOf(task.getResult().getValue()));
             result.onSuccess((Boolean) task.getResult().getValue());
         });
@@ -153,24 +154,27 @@ public class UserServiceImpl implements UserService {
     @Override
     public void getFriendsList(@NonNull CallbackIterator<User> handler) {
         String userHash = getHash(email);
+        String userType = getUserType().toString();
 
-        database.child(userFriendsKey).child(userHash).child(contactsKey).get().addOnCompleteListener(task -> {
+        Log.d("User Service:Getting friend list, fetching data", userHash + " " + userType);
+        database.child(userFriendsKey).child(userType).child(userHash).child(contactsKey).get().addOnCompleteListener(task -> {
+            Log.d("User Service:Getting friend list, task completed", String.valueOf(task.getException()));
             if (task.isSuccessful()) {
                 if (task.getResult().getValue() != null) {
                     @SuppressWarnings("unchecked")
                     HashMap<String, Boolean> tempMap = (HashMap<String, Boolean>) task.getResult().getValue();
                     for (Map.Entry<String, Boolean> p : tempMap.entrySet()) {
-                        Log.d("Getting friend list, friend key", p.getKey());
+                        Log.d("User Service:Getting friend list, friend key", p.getKey());
                         getUser(p.getKey(), new OnResult<User>() {
                             @Override
                             public void onSuccess(User result) {
-                                Log.d("Adding friend ", result.email);
+                                Log.d("User Service:Adding friend ", result.email);
                                 handler.onNext(result);
                             }
 
                             @Override
                             public void onError(Throwable error) {
-                                //ToDO
+                                Log.d("User Service:Error adding friend ", error.getMessage());
                             }
                         });
                     }
@@ -209,7 +213,7 @@ public class UserServiceImpl implements UserService {
                 try {
                     Map<String, Object> tempMap = (HashMap<String, Object>) task.getResult().getValue();
                     if (tempMap != null) {
-                        User user = new User((String) tempMap.get(userIDKey), (String) tempMap.get(emailKey), (UserType) tempMap.get(userTypeKey));
+                        User user = new User((String) tempMap.get(userIDKey), (String) tempMap.get(emailKey), (String) tempMap.get(userTypeKey));
                         Log.d("User added ", user.email + " " + user.userID);
                         user.nick = (String) Objects.requireNonNull(tempMap.get(nickKey));
                         HashMap<String, Double> latLng = (HashMap<String, Double>) tempMap.get(locationKey);
