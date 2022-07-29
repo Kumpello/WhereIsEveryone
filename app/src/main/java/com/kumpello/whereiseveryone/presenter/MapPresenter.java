@@ -24,5 +24,6 @@ public interface MapPresenter extends Contract.Presenter<MapView> {
     void onStop();
     void addNotification(String text);
     void getNotification(@NonNull OnResult<String> handler);
+    LatLng getLastPosition();
     CameraPosition getBaseCameraPosition();
 }

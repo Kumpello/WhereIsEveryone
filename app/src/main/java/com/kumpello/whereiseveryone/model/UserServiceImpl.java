@@ -243,5 +243,18 @@ public class UserServiceImpl implements UserService {
         return firstRun.equals(String.valueOf(true));
     }
 
+    @Override
+    public void savePosition(LatLng latLng) {
+        myEdit.putFloat("lat", (float) latLng.latitude);
+        myEdit.putFloat("lng", (float) latLng.longitude);
+        myEdit.commit();
+    }
+
+    @Override
+    public LatLng getLastPosition() {
+        Double lat = (double) sharedPreferences.getFloat("lat", 0f);
+        Double lng = (double) sharedPreferences.getFloat("lng", 0f);
+        return new LatLng(lat, lng);
+    }
 
 }

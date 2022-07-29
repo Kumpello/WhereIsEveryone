@@ -97,6 +97,7 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
     public boolean updateUserLocationAndDirection() {
         if (mapService.updateUserLocationAndDirection()) {
             user.userLocation = getUserLatLng();
+            userService.savePosition(user.userLocation);
             user.userAzimuth = getAzimuth();
             if (userExists) {
                 userService.updateUserLocationAndDirection(user);
@@ -122,6 +123,11 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
         Location userLocation = mapService.getLocation();
         userLatLng = new LatLng(userLocation.getLatitude(), userLocation.getLongitude());
         return userLatLng;
+    }
+
+    @Override
+    public LatLng getLastPosition() {
+        return userService.getLastPosition();
     }
 
     @Override
@@ -166,7 +172,7 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
                     }
                 });
             }
-        }, 1000);
+        }, 1500);
     }
 
     @Override
@@ -209,6 +215,5 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
             }
         }
     }
-
 
 }

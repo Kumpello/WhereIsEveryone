@@ -282,10 +282,12 @@ public class MapFragment extends BaseFragment<MapPresenter> implements OnMapRead
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(CameraPosition.fromLatLngZoom(presenter.getLastPosition(), 15)));
         mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
         mMap.getUiSettings().setAllGesturesEnabled(true);
         mMap.getUiSettings().setCompassEnabled(true);
 
+        mMap.clear();
         presenter.updateLastLocation();
     }
 
