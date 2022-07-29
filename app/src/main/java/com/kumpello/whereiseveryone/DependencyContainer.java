@@ -10,7 +10,8 @@ import android.content.res.Resources;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.kumpello.whereiseveryone.R;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.kumpello.whereiseveryone.model.FriendsServiceImpl;
 import com.kumpello.whereiseveryone.model.LoginService;
 import com.kumpello.whereiseveryone.model.LoginServiceImpl;
@@ -37,8 +38,6 @@ import com.kumpello.whereiseveryone.view.LoginView;
 import com.kumpello.whereiseveryone.view.MainView;
 import com.kumpello.whereiseveryone.view.MapView;
 import com.kumpello.whereiseveryone.view.SignUpView;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -124,7 +123,7 @@ public class DependencyContainer {
 
     @NonNull
     public FriendsPresenter getFriendsPresenter(DatabaseReference databaseRef, SharedPreferences prefs, Resources resources) {
-        return new FriendsPresenterImpl(new FriendsServiceImpl(databaseRef, prefs, resources));
+        return new FriendsPresenterImpl(new FriendsServiceImpl(databaseRef, prefs, resources), new UserServiceImpl(databaseReference, prefs, resources));
     }
 
     @NonNull

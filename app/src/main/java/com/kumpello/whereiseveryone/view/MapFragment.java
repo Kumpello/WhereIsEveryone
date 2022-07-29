@@ -104,22 +104,26 @@ public class MapFragment extends BaseFragment<MapPresenter> implements OnMapRead
     @Override
     public void addUserMarker() {
         getActivity().runOnUiThread(() -> userMarker = mMap.addMarker(new MarkerOptions().position(presenter.getUserLatLng())
+                .zIndex(0.7f)
                 .flat(true)
                 .anchor(0.5f, 0.5f)
                 .rotation(presenter.getAzimuth()).visible(true)
                 .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(getActivity().getApplicationContext(),
                         R.drawable.ic_round_navigation_24)))));
     }
-
+    //Todo Change icons for markers?
     @Override
     public void addFriendsMarker(User user) {
         Log.d("adding friends marker", user.toString());
         Bitmap smallMarker = Bitmap.createScaledBitmap(getBitmapFromVectorDrawable(getActivity().getApplicationContext(),
                 R.drawable.ic_friends_map_icon), 30, 30, false);
         getActivity().runOnUiThread(() -> friendsMarkers.put(user.userID, mMap.addMarker(new MarkerOptions().position(user.userLocation)
+                .zIndex(1f)
+                .alpha(0.9f)
                 .flat(true)
                 .anchor(0.5f, 0.5f)
                 .title(user.nick)
+                .snippet(user.message)
                 .rotation(user.userAzimuth).visible(true)
                 .icon(BitmapDescriptorFactory.fromBitmap(smallMarker)))));
     }
@@ -129,6 +133,7 @@ public class MapFragment extends BaseFragment<MapPresenter> implements OnMapRead
         getActivity().runOnUiThread(() -> {
             Log.d("updating friends marker", user.toString());
             Marker friendMarker = friendsMarkers.get(user.userID);
+            friendMarker.setTitle(user.nick);
             friendMarker.setPosition(user.userLocation);
             friendMarker.setRotation(user.userAzimuth);
             friendMarker.setSnippet(user.message);
@@ -244,8 +249,8 @@ public class MapFragment extends BaseFragment<MapPresenter> implements OnMapRead
             userMarker.setRotation(bearing);
             if (centerCamera) {
                 cameraPosition = CameraPosition.builder(cameraPosition).bearing(bearing).build();
+                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
             }
-            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         });
     }
 

@@ -72,6 +72,7 @@ public class LoginPresenterImpl extends BasePresenter<LoginView> implements Logi
                     loginService.loginByGoogle(GoogleAuthProvider.getCredential(account.getIdToken(), null), new Consumer<LoginResult>() {
                         @Override
                         public void accept(LoginResult value) {
+                            userService.firstRun(true);
                             userService.saveToken(value.getToken());
                             userService.saveEmail(account.getEmail());
                             userService.saveLoginType(UserType.GOOGLE);

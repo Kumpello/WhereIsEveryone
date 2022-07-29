@@ -1,6 +1,7 @@
 package com.kumpello.whereiseveryone.model;
 
 import static com.kumpello.whereiseveryone.utils.TextUtils.getHash;
+import static com.kumpello.whereiseveryone.utils.TextUtils.isNullOrEmpty;
 
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -37,6 +38,7 @@ public class UserServiceImpl implements UserService {
     private final String longitudeKey = "longitude";
     private final String azimuthKey = "userAzimuth";
     private final String messageKey = "userMessage";
+    private final String firstRunKey = "firstRun";
     private String userID;
     private String email;
     private final SharedPreferences sharedPreferences;
@@ -127,13 +129,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUserOnServer(User user) {
-        database.child(usersKey).child(userID).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                //For debug reasons
-                task.getException();
-            }
-        });
+        database.child(usersKey).child(userID).setValue(user);
     }
     @Override
     public void updateUserLocationAndDirection(User user) {
@@ -231,26 +227,19 @@ public class UserServiceImpl implements UserService {
         });
     }
 
+    @Override
+    public void firstRun(Boolean value) {
+        myEdit.putString(firstRunKey, String.valueOf(value));
+        myEdit.commit();
+        Log.d("UserService", "first run");
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public boolean userExists() {
-        AtomicBoolean userExists = new AtomicBoolean(false);
-        database.child(usersKey).child(userID).get().addOnCompleteListener(task -> {
-            if (!task.isSuccessful()) {
-                Log.e("firebase", "Error getting data", task.getException());
-            } else {
-                Map<String, String> tempMap = (HashMap<String, String>) task.getResult().getValue();
-                if (tempMap != null) {
-                    userExists.set(true);
-                    Log.d("userService", "user exists");
-                } else {
-                    userExists.set(false);
-                    Log.d("userService", "user doesn't exist");
-                }
-            }
-        });
-
-        return userExists.get();
+        // Boolean value that is false when account is created and set true on first user upload
+        String firstRun = sharedPreferences.getString(firstRunKey, "");
+        return firstRun.equals(String.valueOf(true));
     }
 
 

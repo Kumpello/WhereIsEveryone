@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.kumpello.whereiseveryone.model.FriendsService;
 import com.kumpello.whereiseveryone.model.User;
+import com.kumpello.whereiseveryone.model.UserService;
 import com.kumpello.whereiseveryone.model.UserType;
 import com.kumpello.whereiseveryone.mvp.BasePresenter;
 import com.kumpello.whereiseveryone.utils.CallbackIterator;
@@ -17,39 +18,38 @@ import java.util.List;
 public class FriendsPresenterImpl extends BasePresenter<FriendsView> implements FriendsPresenter{
 
     FriendsService friendsService;
+    UserService userService;
 
-    public FriendsPresenterImpl(FriendsService friendsService) {
+    public FriendsPresenterImpl(FriendsService friendsService, UserService userService) {
+        this.userService = userService;
         this.friendsService = friendsService;
     }
 
     @Override
     public boolean addFriend(String email) {
         email = email.toLowerCase();
-        List<Boolean> responses = new ArrayList<>();
-        for (UserType userType : UserType.values()) {
-            responses.add(friendsService.addFriend(email, userType, new OnResult<String>() {
-                @Override
-                public void onSuccess(String result) {
-                    friendsService.getUser(result, new OnResult<User>() {
-                        @Override
-                        public void onSuccess(User result) {
-                            view.addFriendToAdapter(result);
-                        }
+        UserType userType = userService.getUserType();
+        return friendsService.addFriend(email, userType, new OnResult<String>() {
+            @Override
+            public void onSuccess(String result) {
+                friendsService.getUser(result, new OnResult<User>() {
+                    @Override
+                    public void onSuccess(User result) {
+                        view.addFriendToAdapter(result);
+                    }
 
-                        @Override
-                        public void onError(Throwable error) {
-                            //TODO
-                        }
-                    });
-                }
+                    @Override
+                    public void onError(Throwable error) {
+                        //TODO
+                    }
+                });
+            }
 
-                @Override
-                public void onError(Throwable error) {
-                    //TODO
-                }
-            }));
-        }
-        return responses.contains(Boolean.TRUE);
+            @Override
+            public void onError(Throwable error) {
+                //TODO
+            }
+        });
     }
 
     @Override

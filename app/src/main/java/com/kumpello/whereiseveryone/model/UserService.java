@@ -42,5 +42,7 @@ public interface UserService {
 
     void checkFriendship(User user, OnResult<Boolean> result);
 
+    void firstRun(Boolean value);
+
     void saveLoginType(UserType type);
 }
