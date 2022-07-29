@@ -154,7 +154,7 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
                     }
                 }
                 view.updateUserLocation();
-                userService.updateFriendsList(friends, new CallbackIterator<User>() {
+                userService.updateFriendsList(friends, new CallbackIterator<>() {
                     @Override
                     public void onNext(User result) {
                         view.updateFriendsLocation(result);

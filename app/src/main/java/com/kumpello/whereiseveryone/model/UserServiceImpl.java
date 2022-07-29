@@ -212,6 +212,7 @@ public class UserServiceImpl implements UserService {
                         User user = new User((String) tempMap.get(userIDKey), (String) tempMap.get(emailKey), (String) tempMap.get(userTypeKey));
                         Log.d("User added ", user.email + " " + user.userID);
                         user.nick = (String) Objects.requireNonNull(tempMap.get(nickKey));
+                        user.message = (String) tempMap.get(messageKey);
                         HashMap<String, Double> latLng = (HashMap<String, Double>) tempMap.get(locationKey);
                         user.userLocation = new LatLng(latLng.get(latitudeKey), latLng.get(longitudeKey));
                         Double userAzimuth = (Double) tempMap.get(azimuthKey);

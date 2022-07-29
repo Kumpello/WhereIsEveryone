@@ -131,7 +131,7 @@ public class MapFragment extends BaseFragment<MapPresenter> implements OnMapRead
     @Override
     public void updateFriendsLocation(User user) {
         getActivity().runOnUiThread(() -> {
-            Log.d("updating friends marker", user.toString());
+            Log.d("updating friends marker", user.toString() + "    " + user.message);
             Marker friendMarker = friendsMarkers.get(user.userID);
             friendMarker.setTitle(user.nick);
             friendMarker.setPosition(user.userLocation);
