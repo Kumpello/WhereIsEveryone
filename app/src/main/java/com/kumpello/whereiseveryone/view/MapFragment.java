@@ -244,8 +244,8 @@ public class MapFragment extends BaseFragment<MapPresenter> implements OnMapRead
             userMarker.setRotation(bearing);
             if (centerCamera) {
                 cameraPosition = CameraPosition.builder(cameraPosition).bearing(bearing).build();
+                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
             }
-            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         });
     }
 

@@ -32,6 +32,7 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
     private final User user;
     private final boolean userExists;
     private final List<User> friends;
+    private LatLng userLatLng;
     //Get this field to common settings file
     private static final float INITIAL_ZOOM = 18;
 
@@ -99,8 +100,10 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
             user.userAzimuth = getAzimuth();
             if (userExists) {
                 userService.updateUserLocationAndDirection(user);
+                Log.d("MapPresenter:updating user location", user.nick);
             } else {
                 userService.updateUserOnServer(user);
+                Log.d("MapPresenter:updating user on server", user.nick);
             }
             return true;
         } else {
@@ -116,13 +119,14 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
     @Override
     public LatLng getUserLatLng() {
         Location userLocation = mapService.getLocation();
-        return new LatLng(userLocation.getLatitude(), userLocation.getLongitude());
+        userLatLng = new LatLng(userLocation.getLatitude(), userLocation.getLongitude());
+        return userLatLng;
     }
 
     @Override
     public CameraPosition getBaseCameraPosition() {
         return new CameraPosition.Builder()
-                .target(getUserLatLng())
+                .target(userLatLng)
                 .zoom(INITIAL_ZOOM)
                 .tilt(20)
                 .bearing(getAzimuth())

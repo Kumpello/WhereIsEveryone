@@ -1,6 +1,7 @@
 package com.kumpello.whereiseveryone.model;
 
 import static com.kumpello.whereiseveryone.utils.TextUtils.getHash;
+import static com.kumpello.whereiseveryone.utils.TextUtils.isNullOrEmpty;
 
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -234,23 +235,7 @@ public class UserServiceImpl implements UserService {
     @SuppressWarnings("unchecked")
     @Override
     public boolean userExists() {
-        AtomicBoolean userExists = new AtomicBoolean(false);
-        database.child(usersKey).child(userID).get().addOnCompleteListener(task -> {
-            if (!task.isSuccessful()) {
-                Log.e("firebase", "Error getting data", task.getException());
-            } else {
-                Map<String, String> tempMap = (HashMap<String, String>) task.getResult().getValue();
-                if (tempMap != null) {
-                    userExists.set(true);
-                    Log.d("userService", "user exists");
-                } else {
-                    userExists.set(false);
-                    Log.d("userService", "user doesn't exist");
-                }
-            }
-        });
-
-        return userExists.get();
+        return (!isNullOrEmpty(email));
     }
 
 
