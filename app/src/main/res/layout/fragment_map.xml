@@ -64,6 +64,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="100dp"
+        android:gravity="center_horizontal"
         android:orientation="horizontal">
 
         <ImageButton
@@ -79,7 +80,7 @@
             android:id="@+id/addLocation"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_marginStart="30dp"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="20dp"
             android:background="@android:color/transparent"
             app:srcCompat="@drawable/ic_baseline_add_location_24" />
@@ -88,7 +89,7 @@
             android:id="@+id/removeLocation"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_marginStart="22dp"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="20dp"
             android:background="@android:color/transparent"
             app:srcCompat="@drawable/ic_baseline_location_off_24" />
@@ -97,7 +98,7 @@
             android:id="@+id/showLocations"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_marginStart="30dp"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="50dp"
             android:background="@android:color/transparent"

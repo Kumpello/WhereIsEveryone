@@ -67,21 +67,24 @@ public class FriendsServiceImpl implements FriendsService {
         String email = getEmail();
         String userHash = getHash(email);
 
-        findFriendID(friendsEmail, userType, new OnResult<String>() {
-            @Override
-            public void onSuccess(String result) {
-                Log.d("FriendsService", "friendsID is " + result);
-                if (result != null) {
-                    database.child(userFriendsKey).child(String.valueOf(userType)).child(userHash).child(contactsKey).child(result).setValue(true);
-                    onResult.onSuccess(result);
+        for (UserType type : UserType.values()) {
+            findFriendID(friendsEmail, type, new OnResult<String>() {
+                @Override
+                public void onSuccess(String result) {
+                    Log.d("FriendsService", "friendsID is " + result);
+                    if (result != null) {
+                        database.child(userFriendsKey).child(String.valueOf(userType)).child(userHash).child(contactsKey).child(result).setValue(true);
+                        onResult.onSuccess(result);
+                    }
                 }
-            }
 
-            @Override
-            public void onError(Throwable error) {
-                onResult.onError(new Throwable(resources.getString(R.string.friends_id_not_found)));
-            }
-        });
+                @Override
+                public void onError(Throwable error) {
+                    onResult.onError(new Throwable(resources.getString(R.string.friends_id_not_found)));
+                }
+            });
+        }
+
         return true;
     }
 
@@ -164,6 +167,7 @@ public class FriendsServiceImpl implements FriendsService {
                 Log.e("firebase", "Error getting data", task.getException());
                 handler.onError(task.getException());
             } else {
+                Log.d("FriendsService", "Success finding friends ID", task.getException());
                 handler.onSuccess(String.valueOf(task.getResult().getValue()));
             }
         });

@@ -30,7 +30,7 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
     private final SimpleTimer timer;
     private final UserService userService;
     private final User user;
-    private final boolean userExists;
+    private boolean userExists;
     private final List<User> friends;
     private LatLng userLatLng;
     //Get this field to common settings file
@@ -102,6 +102,7 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
                 userService.updateUserLocationAndDirection(user);
                 Log.d("MapPresenter:updating user location", user.nick);
             } else {
+                userService.firstRun(false);
                 userService.updateUserOnServer(user);
                 Log.d("MapPresenter:updating user on server", user.nick);
             }

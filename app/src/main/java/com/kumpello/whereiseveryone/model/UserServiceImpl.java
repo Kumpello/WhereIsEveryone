@@ -38,6 +38,7 @@ public class UserServiceImpl implements UserService {
     private final String longitudeKey = "longitude";
     private final String azimuthKey = "userAzimuth";
     private final String messageKey = "userMessage";
+    private final String firstRunKey = "firstRun";
     private String userID;
     private String email;
     private final SharedPreferences sharedPreferences;
@@ -128,13 +129,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUserOnServer(User user) {
-        database.child(usersKey).child(userID).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                //For debug reasons
-                task.getException();
-            }
-        });
+        database.child(usersKey).child(userID).setValue(user);
     }
     @Override
     public void updateUserLocationAndDirection(User user) {
@@ -232,10 +227,19 @@ public class UserServiceImpl implements UserService {
         });
     }
 
+    @Override
+    public void firstRun(Boolean value) {
+        myEdit.putString(firstRunKey, String.valueOf(value));
+        myEdit.commit();
+        Log.d("UserService", "first run");
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public boolean userExists() {
-        return (!isNullOrEmpty(email));
+        // Boolean value that is false when account is created and set true on first user upload
+        String firstRun = sharedPreferences.getString(firstRunKey, "");
+        return firstRun.equals(String.valueOf(true));
     }
 
 
