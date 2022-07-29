@@ -111,7 +111,7 @@ public class MapFragment extends BaseFragment<MapPresenter> implements OnMapRead
                 .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(getActivity().getApplicationContext(),
                         R.drawable.ic_round_navigation_24)))));
     }
-    //Todo set Z indexes./Change icons for markers?
+    //Todo Change icons for markers?
     @Override
     public void addFriendsMarker(User user) {
         Log.d("adding friends marker", user.toString());
@@ -133,6 +133,7 @@ public class MapFragment extends BaseFragment<MapPresenter> implements OnMapRead
         getActivity().runOnUiThread(() -> {
             Log.d("updating friends marker", user.toString());
             Marker friendMarker = friendsMarkers.get(user.userID);
+            friendMarker.setTitle(user.nick);
             friendMarker.setPosition(user.userLocation);
             friendMarker.setRotation(user.userAzimuth);
             friendMarker.setSnippet(user.message);

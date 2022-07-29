@@ -102,7 +102,7 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
                 userService.updateUserLocationAndDirection(user);
                 Log.d("MapPresenter:updating user location", user.nick);
             } else {
-                userService.firstRun(false);
+                userService.firstRun(true);
                 userService.updateUserOnServer(user);
                 Log.d("MapPresenter:updating user on server", user.nick);
             }
