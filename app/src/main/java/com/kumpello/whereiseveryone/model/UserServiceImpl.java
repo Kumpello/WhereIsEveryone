@@ -212,6 +212,7 @@ public class UserServiceImpl implements UserService {
                         User user = new User((String) tempMap.get(userIDKey), (String) tempMap.get(emailKey), (String) tempMap.get(userTypeKey));
                         Log.d("User added ", user.email + " " + user.userID);
                         user.nick = (String) Objects.requireNonNull(tempMap.get(nickKey));
+                        user.message = (String) tempMap.get(messageKey);
                         HashMap<String, Double> latLng = (HashMap<String, Double>) tempMap.get(locationKey);
                         user.userLocation = new LatLng(latLng.get(latitudeKey), latLng.get(longitudeKey));
                         Double userAzimuth = (Double) tempMap.get(azimuthKey);
@@ -242,5 +243,28 @@ public class UserServiceImpl implements UserService {
         return firstRun.equals(String.valueOf(true));
     }
 
+    @Override
+    public void savePosition(LatLng latLng) {
+        myEdit.putFloat("lat", (float) latLng.latitude);
+        myEdit.putFloat("lng", (float) latLng.longitude);
+        myEdit.commit();
+    }
 
+    @Override
+    public LatLng getLastPosition() {
+        Double lat = (double) sharedPreferences.getFloat("lat", 0f);
+        Double lng = (double) sharedPreferences.getFloat("lng", 0f);
+        return new LatLng(lat, lng);
+    }
+
+    @Override
+    public void setUserPlaced(Boolean placed) {
+        myEdit.putBoolean("userPlaced", placed);
+        myEdit.commit();
+    }
+
+    @Override
+    public boolean getUserPlaced() {
+        return sharedPreferences.getBoolean("userPlaced", false);
+    }
 }

@@ -3,6 +3,7 @@ package com.kumpello.whereiseveryone.model;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.kumpello.whereiseveryone.utils.CallbackIterator;
 import com.kumpello.whereiseveryone.utils.OnResult;
 
@@ -45,4 +46,12 @@ public interface UserService {
     void firstRun(Boolean value);
 
     void saveLoginType(UserType type);
+
+    void savePosition(LatLng latLng);
+
+    LatLng getLastPosition();
+
+    void setUserPlaced(Boolean placed);
+
+    boolean getUserPlaced();
 }

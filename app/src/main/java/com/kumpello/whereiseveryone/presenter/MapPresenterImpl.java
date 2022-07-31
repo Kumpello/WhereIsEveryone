@@ -97,6 +97,7 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
     public boolean updateUserLocationAndDirection() {
         if (mapService.updateUserLocationAndDirection()) {
             user.userLocation = getUserLatLng();
+            userService.savePosition(user.userLocation);
             user.userAzimuth = getAzimuth();
             if (userExists) {
                 userService.updateUserLocationAndDirection(user);
@@ -125,6 +126,11 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
     }
 
     @Override
+    public LatLng getLastPosition() {
+        return userService.getLastPosition();
+    }
+
+    @Override
     public CameraPosition getBaseCameraPosition() {
         return new CameraPosition.Builder()
                 .target(userLatLng)
@@ -140,9 +146,14 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
         mapService.startLocationUpdates();
         ArrayList<String> friendsMarkersPlaced = new ArrayList<>();
 
+        Log.d("MapPresenter", "Timer starts!" + userMarkerPlaced);
+        userMarkerPlaced = false;
         timer.start(() -> {
+            Log.d("Timer", "Iteration start" + userMarkerPlaced);
             if (mapService.locationCallbackReady()) {
+                Log.d("Timer", "Callback ready!" + userMarkerPlaced);
                 if (!userMarkerPlaced) {
+                    Log.d("Timer", "Markers not placed, placing!");
                     view.addUserMarker();
                     userMarkerPlaced = true;
                     view.centerCamera();
@@ -154,7 +165,7 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
                     }
                 }
                 view.updateUserLocation();
-                userService.updateFriendsList(friends, new CallbackIterator<User>() {
+                userService.updateFriendsList(friends, new CallbackIterator<>() {
                     @Override
                     public void onNext(User result) {
                         view.updateFriendsLocation(result);
@@ -166,7 +177,7 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
                     }
                 });
             }
-        }, 1000);
+        }, 1500);
     }
 
     @Override
@@ -209,6 +220,5 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
             }
         }
     }
-
 
 }
