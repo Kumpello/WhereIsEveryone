@@ -6,7 +6,6 @@ import static com.kumpello.whereiseveryone.utils.TextUtils.isNullOrEmpty;
 import android.app.AlertDialog;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,7 +33,6 @@ import com.kumpello.whereiseveryone.model.User;
 import com.kumpello.whereiseveryone.mvp.BaseFragment;
 import com.kumpello.whereiseveryone.presenter.MapPresenter;
 import com.kumpello.whereiseveryone.utils.OnResult;
-import com.kumpello.whereiseveryone.utils.TextUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -109,14 +107,12 @@ public class MapFragment extends BaseFragment<MapPresenter> implements OnMapRead
                 .anchor(0.5f, 0.5f)
                 .rotation(presenter.getAzimuth()).visible(true)
                 .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(getActivity().getApplicationContext(),
-                        R.drawable.ic_round_navigation_24)))));
+                        R.drawable.ic_user_marker_bottle)))));
     }
     //Todo Change icons for markers?
     @Override
     public void addFriendsMarker(User user) {
         Log.d("adding friends marker", user.toString());
-        Bitmap smallMarker = Bitmap.createScaledBitmap(getBitmapFromVectorDrawable(getActivity().getApplicationContext(),
-                R.drawable.ic_friends_map_icon), 30, 30, false);
         getActivity().runOnUiThread(() -> friendsMarkers.put(user.userID, mMap.addMarker(new MarkerOptions().position(user.userLocation)
                 .zIndex(1f)
                 .alpha(0.9f)
@@ -125,7 +121,8 @@ public class MapFragment extends BaseFragment<MapPresenter> implements OnMapRead
                 .title(user.nick)
                 .snippet(user.message)
                 .rotation(user.userAzimuth).visible(true)
-                .icon(BitmapDescriptorFactory.fromBitmap(smallMarker)))));
+                .icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(getActivity().getApplicationContext(),
+                        R.drawable.ic_friend_marker_bottle))))));
     }
 
     @Override

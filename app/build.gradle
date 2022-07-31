@@ -18,7 +18,7 @@ android {
         minSdkVersion 24
         targetSdkVersion 33
         versionCode 1
-        versionName "1.0"
+        versionName "0.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -43,9 +43,9 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.navigation:navigation-fragment:2.5.0'
-    implementation 'androidx.navigation:navigation-ui:2.5.0'
-    implementation 'androidx.navigation:navigation-dynamic-features-fragment:2.5.0'
+    implementation 'androidx.navigation:navigation-fragment:2.5.1'
+    implementation 'androidx.navigation:navigation-ui:2.5.1'
+    implementation 'androidx.navigation:navigation-dynamic-features-fragment:2.5.1'
 
 
     implementation platform('com.google.firebase:firebase-bom:30.3.0')
@@ -61,7 +61,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:20.2.0'
     implementation 'org.jetbrains:annotations:23.0.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.fragment:fragment:1.5.0'
+    implementation 'androidx.fragment:fragment:1.5.1'
 
     implementation "android.arch.lifecycle:extensions:1.1.1"
     annotationProcessor "android.arch.lifecycle:compiler:1.1.1"

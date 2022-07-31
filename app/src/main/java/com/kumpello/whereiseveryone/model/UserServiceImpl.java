@@ -257,4 +257,14 @@ public class UserServiceImpl implements UserService {
         return new LatLng(lat, lng);
     }
 
+    @Override
+    public void setUserPlaced(Boolean placed) {
+        myEdit.putBoolean("userPlaced", placed);
+        myEdit.commit();
+    }
+
+    @Override
+    public boolean getUserPlaced() {
+        return sharedPreferences.getBoolean("userPlaced", false);
+    }
 }

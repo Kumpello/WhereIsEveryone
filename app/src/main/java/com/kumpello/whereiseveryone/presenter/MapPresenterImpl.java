@@ -146,9 +146,14 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
         mapService.startLocationUpdates();
         ArrayList<String> friendsMarkersPlaced = new ArrayList<>();
 
+        Log.d("MapPresenter", "Timer starts!" + userMarkerPlaced);
+        userMarkerPlaced = false;
         timer.start(() -> {
+            Log.d("Timer", "Iteration start" + userMarkerPlaced);
             if (mapService.locationCallbackReady()) {
+                Log.d("Timer", "Callback ready!" + userMarkerPlaced);
                 if (!userMarkerPlaced) {
+                    Log.d("Timer", "Markers not placed, placing!");
                     view.addUserMarker();
                     userMarkerPlaced = true;
                     view.centerCamera();

@@ -50,4 +50,8 @@ public interface UserService {
     void savePosition(LatLng latLng);
 
     LatLng getLastPosition();
+
+    void setUserPlaced(Boolean placed);
+
+    boolean getUserPlaced();
 }
